@@ -1,0 +1,135 @@
+<section class="cabecalho">
+  <p class="sobretitulo">Passo 2</p>
+  <h1>Resultado</h1>
+</section>
+
+@if (!zona.temRequisitos()) {
+  <div class="folha vazio">
+    <p>Preencha os <strong>Requisitos Estimados</strong> da zona para ver a sugestão.</p>
+    <a class="btn primario" routerLink="/requisitos">Ir para os requisitos</a>
+  </div>
+} @else if (resultado.error()) {
+  <div class="folha vazio erro" role="alert">
+    <p>O otimizador falhou: {{ $any(resultado.error())?.message ?? resultado.error() }}</p>
+    <button type="button" class="btn discreto" (click)="resultado.reload()">Tentar de novo</button>
+  </div>
+} @else if (resultado.hasValue()) {
+  @let r = resultado.value();
+  <section class="placar folha" [class.inviavel]="!r.viavel" [class.recarregando]="resultado.isLoading()" aria-live="polite">
+    <div class="placar-num">
+      <span class="num grande">{{ r.total }}</span>
+      <span class="unidade">
+        Aniimo
+        <small>{{ zona.complementar() ? 'a adicionar' : 'no mínimo' }}</small>
+      </span>
+    </div>
+    <div class="placar-info">
+      @if (r.viavel) {
+        <span class="selo ok">✓ Todas as {{ requeridasTotal() }} aptidões atendidas</span>
+      } @else {
+        <span class="selo falta">Impossível com o que está disponível</span>
+      }
+      <span class="detalhes">
+        Soma de níveis nas aptidões pedidas: <strong class="num">{{ r.somaNiveis }}</strong>
+        @if (zona.soMeus()) { · só o seu roster }
+        @if (zona.excluirPrismana()) { · sem Prismana }
+      </span>
+    </div>
+  </section>
+
+  @if (!r.viavel) {
+    <section class="faltando folha" role="alert">
+      <h2>O que ficou faltando</h2>
+      <p>Mesmo usando tudo o que está disponível, estas aptidões não chegam ao requisito:</p>
+      <ul>
+        @for (f of r.faltando; track f.aptidao) {
+          <li>
+            <app-aptidao-icone [aptidao]="f.aptidao" [tamanho]="24" />
+            <span>{{ nomeAptidao(f.aptidao) }}</span>
+            <strong class="num">faltam {{ f.falta }}</strong>
+          </li>
+        }
+      </ul>
+      <p class="dica">
+        A lista abaixo é a melhor cobertura possível.
+        @if (zona.soMeus()) { Adicione mais Aniimo ao <a routerLink="/roster">seu roster</a> ou desligue "Só os meus". }
+        @else if (zona.excluirPrismana()) { Tente incluir as formas Prismana. }
+        @else { Aumente as cópias por Aniimo nas opções. }
+      </p>
+    </section>
+  }
+
+  <div class="colunas">
+    <section class="lista" aria-labelledby="titulo-escolhidos">
+      <h2 id="titulo-escolhidos">{{ zona.complementar() ? 'Adicione' : 'Escale' }}</h2>
+      @if (!escolhidos().length) {
+        <p class="nada">Nada a adicionar: a zona já atende tudo que é possível.</p>
+      }
+      <ol class="escolhidos">
+        @for (e of escolhidos(); track e.aniimo.id; let i = $index) {
+          <li class="escolhido folha" [class.prismana]="e.aniimo.prismana" [style.--i]="i">
+            <span class="retrato">
+              @if (e.aniimo.imagem) {
+                <img [src]="e.aniimo.imagem" alt="" loading="lazy" decoding="async" width="72" height="72" (error)="escondeImagem($event)" />
+              }
+            </span>
+            <div class="info">
+              <div class="linha-nome">
+                <span class="nome">{{ e.aniimo.nome }}</span>
+                @if (e.copias > 1) { <span class="copias num">×{{ e.copias }}</span> }
+              </div>
+              <span class="forma">
+                @if (e.aniimo.prismana) { <span class="selo-prismana">Prismana</span> } @else { {{ e.aniimo.forma }} }
+              </span>
+              <ul class="apts" aria-label="Aptidões">
+                @for (a of e.aptidoes; track a.chave) {
+                  <li class="apt" [class.fora]="!a.requerida" [style.--cor]="'var(--ap-' + a.chave + ')'">
+                    <app-aptidao-icone [aptidao]="a.chave" [tamanho]="20" />
+                    <span>{{ nomeAptidao(a.chave) }}</span>
+                    <span class="nivel num" [attr.aria-label]="'nível ' + a.nivel">Nv {{ a.nivel }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <section class="cobertura folha" aria-labelledby="titulo-cobertura">
+      <div class="cobertura-topo">
+        <h2 id="titulo-cobertura">Cobertura</h2>
+        <span class="num">{{ atendidas() }}/{{ requeridasTotal() }}</span>
+      </div>
+      <ul>
+        @for (c of cobertura(); track c.aptidao) {
+          <li
+            class="linha"
+            [class.ok]="c.requerido > 0 && c.atendido"
+            [class.nok]="!c.atendido"
+            [class.livre]="c.requerido === 0"
+            [style.--cor]="'var(--ap-' + c.aptidao + ')'"
+          >
+            <app-aptidao-icone [aptidao]="c.aptidao" [tamanho]="26" />
+            <span class="nome-apt">{{ c.nome }}</span>
+            <span class="medidor" aria-hidden="true">
+              @if (c.pips.length) {
+                @for (p of c.pips; track $index) { <i [class]="p"></i> }
+              } @else if (c.total > 0) {
+                <span class="barra"><span [style.width.%]="(100 * c.atingido) / c.total"></span></span>
+              }
+            </span>
+            <span class="valor num" [attr.aria-label]="c.atingido + ' de ' + c.requerido + (c.atendido ? ', atendido' : ', faltando')">
+              {{ c.atingido }}<span>/{{ c.requerido }}</span>
+            </span>
+          </li>
+        }
+      </ul>
+      @if (zona.complementar()) {
+        <p class="legenda"><i class="atual"></i> já na zona <i class="novo"></i> sugerido <i class="falta"></i> faltando</p>
+      }
+    </section>
+  </div>
+} @else {
+  <p class="calculando" aria-live="polite"><span class="giro" aria-hidden="true"></span> Calculando a melhor combinação…</p>
+}

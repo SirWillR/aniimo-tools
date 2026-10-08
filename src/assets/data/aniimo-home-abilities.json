@@ -1,0 +1,3560 @@
+{
+  "fonte": {
+    "site": "https://wiki.aniimo.com",
+    "endpoint": "https://wiki.aniimo.com/item/{numero}/{forma}/_payload.json (EN e /pt)",
+    "extraidoEm": "2026-09-25T12:53:07.388Z",
+    "formas": 208,
+    "nota": "A wiki publica só códigos home-XXXX e níveis. Mapeamento código→aptidão em scripts/extract-home-abilities.ts."
+  },
+  "aptidoes": [
+    {
+      "chave": "fire",
+      "codigo": "home-1000",
+      "en": "Fire",
+      "pt": "Fogo",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "grass",
+      "codigo": "home-1001",
+      "en": "Grass",
+      "pt": "Planta",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "water",
+      "codigo": "home-1002",
+      "en": "Water",
+      "pt": "Água",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "rock",
+      "codigo": "home-1003",
+      "en": "Rock",
+      "pt": "Rocha",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "lightning",
+      "codigo": "home-1004",
+      "en": "Lightning",
+      "pt": "Elétrico",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "ice",
+      "codigo": "home-1005",
+      "en": "Ice",
+      "pt": "Gelo",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "wind",
+      "codigo": "home-1006",
+      "en": "Wind",
+      "pt": "Vento",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "dark",
+      "codigo": "home-1007",
+      "en": "Dark",
+      "pt": "Trevas",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "light",
+      "codigo": "home-1008",
+      "en": "Light",
+      "pt": "Luz",
+      "tipo": "elemental"
+    },
+    {
+      "chave": "hauling",
+      "codigo": "home-1100",
+      "en": "Hauling",
+      "pt": "Transporte",
+      "tipo": "trabalho"
+    },
+    {
+      "chave": "artisanship",
+      "codigo": "home-1101",
+      "en": "Artisanship",
+      "pt": "Artesanato",
+      "tipo": "trabalho"
+    },
+    {
+      "chave": "leisure",
+      "codigo": "home-1102",
+      "en": "Leisure",
+      "pt": "Lazer",
+      "tipo": "trabalho"
+    },
+    {
+      "chave": "perfumery",
+      "codigo": "home-1103",
+      "en": "Perfumery",
+      "pt": "Perfumaria",
+      "tipo": "trabalho"
+    }
+  ],
+  "aniimos": [
+    {
+      "id": "001-basic-form",
+      "nome": "Brasim",
+      "nomeEn": "Emberpup",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10051.png",
+      "aptidoes": {
+        "fire": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "001-highland-form",
+      "nome": "Brasim",
+      "nomeEn": "Emberpup",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005101.png",
+      "aptidoes": {
+        "rock": 1,
+        "fire": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "001-mountain-woods-form",
+      "nome": "Brasim",
+      "nomeEn": "Emberpup",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005104.png",
+      "aptidoes": {
+        "fire": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "002-basic-form",
+      "nome": "Chamaposa",
+      "nomeEn": "Flameruff",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10052.png",
+      "aptidoes": {
+        "fire": 2,
+        "hauling": 2
+      }
+    },
+    {
+      "id": "002-highland-form",
+      "nome": "Chamaposa",
+      "nomeEn": "Flameruff",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005201.png",
+      "aptidoes": {
+        "rock": 1,
+        "fire": 2,
+        "hauling": 2
+      }
+    },
+    {
+      "id": "002-mountain-woods-form",
+      "nome": "Chamaposa",
+      "nomeEn": "Flameruff",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005204.png",
+      "aptidoes": {
+        "fire": 2,
+        "hauling": 2
+      }
+    },
+    {
+      "id": "003-basic-form",
+      "nome": "Labaruivo",
+      "nomeEn": "Scorchhowl",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10053.png",
+      "aptidoes": {
+        "fire": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "003-highland-form",
+      "nome": "Labaruivo",
+      "nomeEn": "Scorchhowl",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005301.png",
+      "aptidoes": {
+        "rock": 2,
+        "fire": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "003-mountain-woods-form",
+      "nome": "Labaruivo",
+      "nomeEn": "Scorchhowl",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005304.png",
+      "aptidoes": {
+        "fire": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "003-prismana-form",
+      "nome": "Labaruivo",
+      "nomeEn": "Scorchhowl",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005303.png",
+      "aptidoes": {
+        "fire": 4,
+        "hauling": 4
+      }
+    },
+    {
+      "id": "003-thunderstorm-form",
+      "nome": "Labaruivo",
+      "nomeEn": "Scorchhowl",
+      "forma": "Tempestuoso",
+      "formaEn": "Thunderstorm Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005302.png",
+      "aptidoes": {
+        "lightning": 2,
+        "fire": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "004-basic-form",
+      "nome": "Inferlobo",
+      "nomeEn": "Inferlupa",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10055.png",
+      "aptidoes": {
+        "hauling": 3,
+        "fire": 2,
+        "dark": 3
+      }
+    },
+    {
+      "id": "004-prismana-form",
+      "nome": "Inferlobo",
+      "nomeEn": "Inferlupa",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "fire",
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1005503.png",
+      "aptidoes": {
+        "hauling": 4,
+        "fire": 3,
+        "dark": 4
+      }
+    },
+    {
+      "id": "005-basic-form",
+      "nome": "Celéstis",
+      "nomeEn": "Celestis",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10011.png",
+      "aptidoes": {
+        "leisure": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "006-basic-form",
+      "nome": "Esteláris",
+      "nomeEn": "Stellarys",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10012.png",
+      "aptidoes": {
+        "leisure": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "006-prismana-form",
+      "nome": "Esteláris",
+      "nomeEn": "Stellarys",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1001202.png",
+      "aptidoes": {
+        "ice": 3,
+        "leisure": 4,
+        "dark": 4
+      }
+    },
+    {
+      "id": "006-rainstorm-form",
+      "nome": "Esteláris",
+      "nomeEn": "Stellarys",
+      "forma": "Forma de Chuvarada",
+      "formaEn": "Rainstorm Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1001201.png",
+      "aptidoes": {
+        "water": 2,
+        "leisure": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "007-basic-form",
+      "nome": "Piu",
+      "nomeEn": "Chirpi",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10181.png",
+      "aptidoes": {
+        "wind": 1
+      }
+    },
+    {
+      "id": "007-beach-form",
+      "nome": "Piu",
+      "nomeEn": "Chirpi",
+      "forma": "Forma de Praia",
+      "formaEn": "Beach Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018101.png",
+      "aptidoes": {
+        "wind": 1,
+        "water": 1
+      }
+    },
+    {
+      "id": "007-highland-form",
+      "nome": "Piu",
+      "nomeEn": "Chirpi",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018103.png",
+      "aptidoes": {
+        "grass": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "008-basic-form",
+      "nome": "Trombico",
+      "nomeEn": "Tromber",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10184.png",
+      "aptidoes": {
+        "wind": 3
+      }
+    },
+    {
+      "id": "008-beach-form",
+      "nome": "Trombico",
+      "nomeEn": "Tromber",
+      "forma": "Forma de Praia",
+      "formaEn": "Beach Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018401.png",
+      "aptidoes": {
+        "wind": 3,
+        "water": 2
+      }
+    },
+    {
+      "id": "008-highland-form",
+      "nome": "Trombico",
+      "nomeEn": "Tromber",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018403.png",
+      "aptidoes": {
+        "grass": 2,
+        "wind": 3
+      }
+    },
+    {
+      "id": "009-basic-form",
+      "nome": "Bicorneta",
+      "nomeEn": "Cornet",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10185.png",
+      "aptidoes": {
+        "wind": 3
+      }
+    },
+    {
+      "id": "009-beach-form",
+      "nome": "Bicorneta",
+      "nomeEn": "Cornet",
+      "forma": "Forma de Praia",
+      "formaEn": "Beach Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018501.png",
+      "aptidoes": {
+        "wind": 3,
+        "water": 2
+      }
+    },
+    {
+      "id": "009-highland-form",
+      "nome": "Bicorneta",
+      "nomeEn": "Cornet",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018503.png",
+      "aptidoes": {
+        "grass": 2,
+        "wind": 3
+      }
+    },
+    {
+      "id": "009-prismana-form",
+      "nome": "Bicorneta",
+      "nomeEn": "Cornet",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "wind",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018502.png",
+      "aptidoes": {
+        "lightning": 3,
+        "wind": 4
+      }
+    },
+    {
+      "id": "010-basic-form",
+      "nome": "Tubico",
+      "nomeEn": "Tubster",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10187.png",
+      "aptidoes": {
+        "wind": 3
+      }
+    },
+    {
+      "id": "010-beach-form",
+      "nome": "Tubico",
+      "nomeEn": "Tubster",
+      "forma": "Forma de Praia",
+      "formaEn": "Beach Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018701.png",
+      "aptidoes": {
+        "wind": 3,
+        "water": 2
+      }
+    },
+    {
+      "id": "010-highland-form",
+      "nome": "Tubico",
+      "nomeEn": "Tubster",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1018703.png",
+      "aptidoes": {
+        "grass": 2,
+        "wind": 3
+      }
+    },
+    {
+      "id": "011-basic-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10211.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "011-forest-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma de Floresta",
+      "formaEn": "Forest Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021102.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "011-grassland-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma de Prado",
+      "formaEn": "Grassland Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021103.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "011-highland-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021101.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "011-mountain-woods-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021106.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "011-plateau-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma de Platô",
+      "formaEn": "Plateau Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021105.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "011-prismana-form",
+      "nome": "Íris",
+      "nomeEn": "Iris",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021104.png",
+      "aptidoes": {
+        "grass": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "012-basic-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10212.png",
+      "aptidoes": {
+        "grass": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "012-forest-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma de Floresta",
+      "formaEn": "Forest Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021202.png",
+      "aptidoes": {
+        "grass": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "012-grassland-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma de Prado",
+      "formaEn": "Grassland Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021203.png",
+      "aptidoes": {
+        "grass": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "012-highland-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021201.png",
+      "aptidoes": {
+        "grass": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "012-mountain-woods-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021206.png",
+      "aptidoes": {
+        "grass": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "012-plateau-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma de Platô",
+      "formaEn": "Plateau Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021205.png",
+      "aptidoes": {
+        "grass": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "012-prismana-form",
+      "nome": "Irisal",
+      "nomeEn": "Irisal",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1021204.png",
+      "aptidoes": {
+        "grass": 4,
+        "leisure": 4
+      }
+    },
+    {
+      "id": "013-basic-form",
+      "nome": "Saltilótus",
+      "nomeEn": "Skippy",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10041.png",
+      "aptidoes": {
+        "hauling": 1,
+        "water": 1
+      }
+    },
+    {
+      "id": "013-sea-of-flowers-form",
+      "nome": "Saltilótus",
+      "nomeEn": "Skippy",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004101.png",
+      "aptidoes": {
+        "hauling": 1,
+        "water": 1
+      }
+    },
+    {
+      "id": "013-snowfield-form",
+      "nome": "Saltilótus",
+      "nomeEn": "Skippy",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "water",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004102.png",
+      "aptidoes": {
+        "ice": 1,
+        "water": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "014-basic-form",
+      "nome": "Saltravesso",
+      "nomeEn": "Pranky",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10042.png",
+      "aptidoes": {
+        "hauling": 2,
+        "water": 2
+      }
+    },
+    {
+      "id": "014-sea-of-flowers-form",
+      "nome": "Saltravesso",
+      "nomeEn": "Pranky",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004201.png",
+      "aptidoes": {
+        "hauling": 2,
+        "water": 2
+      }
+    },
+    {
+      "id": "014-snowfield-form",
+      "nome": "Saltravesso",
+      "nomeEn": "Pranky",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "water",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004202.png",
+      "aptidoes": {
+        "ice": 1,
+        "water": 2,
+        "hauling": 2
+      }
+    },
+    {
+      "id": "015-basic-form",
+      "nome": "Géli",
+      "nomeEn": "Glacy",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10043.png",
+      "aptidoes": {
+        "ice": 2,
+        "water": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "015-prismana-form",
+      "nome": "Géli",
+      "nomeEn": "Glacy",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004303.png",
+      "aptidoes": {
+        "water": 4,
+        "light": 3,
+        "hauling": 4
+      }
+    },
+    {
+      "id": "015-sea-of-flowers-form",
+      "nome": "Géli",
+      "nomeEn": "Glacy",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "water",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004301.png",
+      "aptidoes": {
+        "ice": 2,
+        "water": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "015-snowfield-form",
+      "nome": "Géli",
+      "nomeEn": "Glacy",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "water",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1004302.png",
+      "aptidoes": {
+        "ice": 2,
+        "water": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "016-basic-form",
+      "nome": "Folhesim",
+      "nomeEn": "Leafy",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10045.png",
+      "aptidoes": {
+        "water": 2,
+        "grass": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "017-basic-form",
+      "nome": "Nimbi",
+      "nomeEn": "Nimbi",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10261.png",
+      "aptidoes": {
+        "leisure": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "017-cloudmist-form",
+      "nome": "Nimbi",
+      "nomeEn": "Nimbi",
+      "forma": "Forma de Brumanuvem",
+      "formaEn": "Cloudmist Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026102.png",
+      "aptidoes": {
+        "leisure": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "017-plateau-form",
+      "nome": "Nimbi",
+      "nomeEn": "Nimbi",
+      "forma": "Forma de Platô",
+      "formaEn": "Plateau Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026105.png",
+      "aptidoes": {
+        "ice": 1,
+        "leisure": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "017-rainstorm-form",
+      "nome": "Nimbi",
+      "nomeEn": "Nimbi",
+      "forma": "Forma de Chuvarada",
+      "formaEn": "Rainstorm Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026101.png",
+      "aptidoes": {
+        "lightning": 1,
+        "leisure": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "018-basic-form",
+      "nome": "Turbo",
+      "nomeEn": "Turbo",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10262.png",
+      "aptidoes": {
+        "leisure": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "018-cloudmist-form",
+      "nome": "Turbo",
+      "nomeEn": "Turbo",
+      "forma": "Forma de Brumanuvem",
+      "formaEn": "Cloudmist Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026202.png",
+      "aptidoes": {
+        "leisure": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "018-plateau-form",
+      "nome": "Turbo",
+      "nomeEn": "Turbo",
+      "forma": "Forma de Platô",
+      "formaEn": "Plateau Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026205.png",
+      "aptidoes": {
+        "ice": 2,
+        "leisure": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "018-prismana-form",
+      "nome": "Turbo",
+      "nomeEn": "Turbo",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark",
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026204.png",
+      "aptidoes": {
+        "leisure": 4,
+        "wind": 4,
+        "dark": 3
+      }
+    },
+    {
+      "id": "018-rainstorm-form",
+      "nome": "Turbo",
+      "nomeEn": "Turbo",
+      "forma": "Forma de Chuvarada",
+      "formaEn": "Rainstorm Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1026201.png",
+      "aptidoes": {
+        "lightning": 2,
+        "leisure": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "019-basic-form",
+      "nome": "Sonhovino",
+      "nomeEn": "Dreaple",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10263.png",
+      "aptidoes": {
+        "leisure": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "020-basic-form",
+      "nome": "Ervazum",
+      "nomeEn": "Hummin",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10201.png",
+      "aptidoes": {
+        "grass": 1
+      }
+    },
+    {
+      "id": "020-mountain-form",
+      "nome": "Ervazum",
+      "nomeEn": "Hummin",
+      "forma": "Forma de Montanha",
+      "formaEn": "Mountain Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1020101.png",
+      "aptidoes": {
+        "grass": 1
+      }
+    },
+    {
+      "id": "021-basic-form",
+      "nome": "Ervassom",
+      "nomeEn": "Witchin",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10203.png",
+      "aptidoes": {
+        "artisanship": 2,
+        "grass": 1,
+        "dark": 2
+      }
+    },
+    {
+      "id": "021-mountain-form",
+      "nome": "Ervassom",
+      "nomeEn": "Witchin",
+      "forma": "Forma de Montanha",
+      "formaEn": "Mountain Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1020301.png",
+      "aptidoes": {
+        "artisanship": 2,
+        "grass": 1,
+        "dark": 2
+      }
+    },
+    {
+      "id": "021-prismana-form",
+      "nome": "Ervassom",
+      "nomeEn": "Witchin",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1020302.png",
+      "aptidoes": {
+        "artisanship": 4,
+        "grass": 3,
+        "dark": 4
+      }
+    },
+    {
+      "id": "022-basic-form",
+      "nome": "Tuberô",
+      "nomeEn": "Tuckin",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10207.png",
+      "aptidoes": {
+        "grass": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "022-mountain-form",
+      "nome": "Tuberô",
+      "nomeEn": "Tuckin",
+      "forma": "Forma de Montanha",
+      "formaEn": "Mountain Form",
+      "prismana": false,
+      "elementos": [
+        "rock",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1020701.png",
+      "aptidoes": {
+        "rock": 2,
+        "grass": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "023-basic-form",
+      "nome": "Florigarra",
+      "nomeEn": "Budclaw",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10161.png",
+      "aptidoes": {
+        "rock": 1,
+        "grass": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "023-bay-form",
+      "nome": "Florigarra",
+      "nomeEn": "Budclaw",
+      "forma": "Forma de Baía",
+      "formaEn": "Bay Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1016103.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "023-beach-form",
+      "nome": "Florigarra",
+      "nomeEn": "Budclaw",
+      "forma": "Forma de Praia",
+      "formaEn": "Beach Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1016102.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "023-mudflat-form",
+      "nome": "Florigarra",
+      "nomeEn": "Budclaw",
+      "forma": "Forma de Lamaçal",
+      "formaEn": "Mudflat Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1016101.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "024-basic-form",
+      "nome": "Plantogarra",
+      "nomeEn": "Shrubclaw",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10162.png",
+      "aptidoes": {
+        "rock": 3,
+        "grass": 2,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "024-bay-form",
+      "nome": "Plantogarra",
+      "nomeEn": "Shrubclaw",
+      "forma": "Forma de Baía",
+      "formaEn": "Bay Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1016203.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "024-beach-form",
+      "nome": "Plantogarra",
+      "nomeEn": "Shrubclaw",
+      "forma": "Forma de Praia",
+      "formaEn": "Beach Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1016202.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "024-mudflat-form",
+      "nome": "Plantogarra",
+      "nomeEn": "Shrubclaw",
+      "forma": "Forma de Lamaçal",
+      "formaEn": "Mudflat Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1016201.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "025-basic-form",
+      "nome": "Geligarra",
+      "nomeEn": "Geoclaw",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10163.png",
+      "aptidoes": {
+        "ice": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "026-basic-form",
+      "nome": "Foguéu",
+      "nomeEn": "Sparki",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10331.png",
+      "aptidoes": {
+        "fire": 2
+      }
+    },
+    {
+      "id": "026-forest-form",
+      "nome": "Foguéu",
+      "nomeEn": "Sparki",
+      "forma": "Forma de Floresta",
+      "formaEn": "Forest Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1033102.png",
+      "aptidoes": {
+        "fire": 2
+      }
+    },
+    {
+      "id": "026-highland-form",
+      "nome": "Foguéu",
+      "nomeEn": "Sparki",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1033101.png",
+      "aptidoes": {
+        "fire": 2
+      }
+    },
+    {
+      "id": "026-sea-of-flowers-form",
+      "nome": "Foguéu",
+      "nomeEn": "Sparki",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1033103.png",
+      "aptidoes": {
+        "fire": 2
+      }
+    },
+    {
+      "id": "027-basic-form",
+      "nome": "Flamérion",
+      "nomeEn": "Flamerion",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10333.png",
+      "aptidoes": {
+        "fire": 3
+      }
+    },
+    {
+      "id": "027-forest-form",
+      "nome": "Flamérion",
+      "nomeEn": "Flamerion",
+      "forma": "Forma de Floresta",
+      "formaEn": "Forest Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1033302.png",
+      "aptidoes": {
+        "fire": 3
+      }
+    },
+    {
+      "id": "027-highland-form",
+      "nome": "Flamérion",
+      "nomeEn": "Flamerion",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1033301.png",
+      "aptidoes": {
+        "fire": 3
+      }
+    },
+    {
+      "id": "027-sea-of-flowers-form",
+      "nome": "Flamérion",
+      "nomeEn": "Flamerion",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1033303.png",
+      "aptidoes": {
+        "fire": 3
+      }
+    },
+    {
+      "id": "028-basic-form",
+      "nome": "Borboscama",
+      "nomeEn": "Flutternym",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10231.png",
+      "aptidoes": {
+        "leisure": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "028-mountain-woods-form",
+      "nome": "Borboscama",
+      "nomeEn": "Flutternym",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1023103.png",
+      "aptidoes": {
+        "rock": 1,
+        "leisure": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "028-nighttime-form",
+      "nome": "Borboscama",
+      "nomeEn": "Flutternym",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1023102.png",
+      "aptidoes": {
+        "leisure": 1,
+        "wind": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "028-sea-of-flowers-form",
+      "nome": "Borboscama",
+      "nomeEn": "Flutternym",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1023101.png",
+      "aptidoes": {
+        "leisure": 1,
+        "grass": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "029-basic-form",
+      "nome": "Borbograça",
+      "nomeEn": "Gracewing",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10232.png",
+      "aptidoes": {
+        "leisure": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "029-mountain-woods-form",
+      "nome": "Borbograça",
+      "nomeEn": "Gracewing",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1023203.png",
+      "aptidoes": {
+        "rock": 2,
+        "leisure": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "029-nighttime-form",
+      "nome": "Borbograça",
+      "nomeEn": "Gracewing",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1023202.png",
+      "aptidoes": {
+        "leisure": 3,
+        "wind": 3,
+        "dark": 2
+      }
+    },
+    {
+      "id": "029-sea-of-flowers-form",
+      "nome": "Borbograça",
+      "nomeEn": "Gracewing",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1023201.png",
+      "aptidoes": {
+        "leisure": 3,
+        "grass": 2,
+        "wind": 3
+      }
+    },
+    {
+      "id": "030-prismana-form",
+      "nome": "Borbossono",
+      "nomeEn": "Somniwing",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "wind",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10233.png",
+      "aptidoes": {
+        "leisure": 4,
+        "grass": 4,
+        "wind": 3
+      }
+    },
+    {
+      "id": "031-basic-form",
+      "nome": "Audeco",
+      "nomeEn": "Eko",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10441.png",
+      "aptidoes": {
+        "artisanship": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "032-basic-form",
+      "nome": "Lupeco",
+      "nomeEn": "Eklue",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10443.png",
+      "aptidoes": {
+        "artisanship": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "033-basic-form",
+      "nome": "Brotescudeiro",
+      "nomeEn": "Budsquire",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10321.png",
+      "aptidoes": {
+        "grass": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "033-towerwood-form",
+      "nome": "Brotescudeiro",
+      "nomeEn": "Budsquire",
+      "forma": "Forma de Torrilenha",
+      "formaEn": "Towerwood Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1032103.png",
+      "aptidoes": {
+        "grass": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "034-basic-form",
+      "nome": "Espilâmina",
+      "nomeEn": "Thornblade",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10323.png",
+      "aptidoes": {
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "034-prismana-form",
+      "nome": "Espilâmina",
+      "nomeEn": "Thornblade",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "grass",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1032302.png",
+      "aptidoes": {
+        "water": 3,
+        "grass": 4,
+        "artisanship": 4
+      }
+    },
+    {
+      "id": "034-thunderstorm-form",
+      "nome": "Espilâmina",
+      "nomeEn": "Thornblade",
+      "forma": "Tempestuoso",
+      "formaEn": "Thunderstorm Form",
+      "prismana": false,
+      "elementos": [
+        "grass",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1032301.png",
+      "aptidoes": {
+        "lightning": 2,
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "034-towerwood-form",
+      "nome": "Espilâmina",
+      "nomeEn": "Thornblade",
+      "forma": "Forma de Torrilenha",
+      "formaEn": "Towerwood Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1032303.png",
+      "aptidoes": {
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "035-basic-form",
+      "nome": "Florecanta",
+      "nomeEn": "Melloblum",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10324.png",
+      "aptidoes": {
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "035-prismana-form",
+      "nome": "Florecanta",
+      "nomeEn": "Melloblum",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1032402.png",
+      "aptidoes": {
+        "light": 3,
+        "grass": 4,
+        "artisanship": 4
+      }
+    },
+    {
+      "id": "036-basic-form",
+      "nome": "Leleovo",
+      "nomeEn": "Pomegg",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10471.png",
+      "aptidoes": {
+        "grass": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "036-highland-form",
+      "nome": "Leleovo",
+      "nomeEn": "Pomegg",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1047102.png",
+      "aptidoes": {
+        "grass": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "036-sea-of-flowers-form",
+      "nome": "Leleovo",
+      "nomeEn": "Pomegg",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1047103.png",
+      "aptidoes": {
+        "grass": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "036-snowfield-form",
+      "nome": "Leleovo",
+      "nomeEn": "Pomegg",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "grass",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1047101.png",
+      "aptidoes": {
+        "ice": 1,
+        "grass": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "037-basic-form",
+      "nome": "Rugissauro",
+      "nomeEn": "Pomawk",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10475.png",
+      "aptidoes": {
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "037-highland-form",
+      "nome": "Rugissauro",
+      "nomeEn": "Pomawk",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1047502.png",
+      "aptidoes": {
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "037-sea-of-flowers-form",
+      "nome": "Rugissauro",
+      "nomeEn": "Pomawk",
+      "forma": "Mar de Flores",
+      "formaEn": "Sea of Flowers Form",
+      "prismana": false,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1047503.png",
+      "aptidoes": {
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "037-snowfield-form",
+      "nome": "Rugissauro",
+      "nomeEn": "Pomawk",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "grass",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1047501.png",
+      "aptidoes": {
+        "ice": 2,
+        "grass": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "038-basic-form",
+      "nome": "Orval",
+      "nomeEn": "Dewy",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10351.png",
+      "aptidoes": {
+        "perfumery": 1,
+        "dark": 1,
+        "leisure": 1
+      }
+    },
+    {
+      "id": "039-basic-form",
+      "nome": "Odoran",
+      "nomeEn": "Fragrancier",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10352.png",
+      "aptidoes": {
+        "perfumery": 3,
+        "dark": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "040-basic-form",
+      "nome": "Centélis",
+      "nomeEn": "Wisptis",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10031.png",
+      "aptidoes": {
+        "artisanship": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "040-forest-form",
+      "nome": "Centélis",
+      "nomeEn": "Wisptis",
+      "forma": "Forma de Floresta",
+      "formaEn": "Forest Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1003101.png",
+      "aptidoes": {
+        "artisanship": 1,
+        "grass": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "040-highland-form",
+      "nome": "Centélis",
+      "nomeEn": "Wisptis",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1003103.png",
+      "aptidoes": {
+        "artisanship": 1,
+        "fire": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "041-basic-form",
+      "nome": "Ignítis",
+      "nomeEn": "Ignitis",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10032.png",
+      "aptidoes": {
+        "artisanship": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "041-forest-form",
+      "nome": "Ignítis",
+      "nomeEn": "Ignitis",
+      "forma": "Forma de Floresta",
+      "formaEn": "Forest Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1003201.png",
+      "aptidoes": {
+        "artisanship": 3,
+        "grass": 2,
+        "dark": 3
+      }
+    },
+    {
+      "id": "041-highland-form",
+      "nome": "Ignítis",
+      "nomeEn": "Ignitis",
+      "forma": "Forma de planalto",
+      "formaEn": "Highland Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1003203.png",
+      "aptidoes": {
+        "artisanship": 3,
+        "fire": 2,
+        "dark": 3
+      }
+    },
+    {
+      "id": "041-prismana-form",
+      "nome": "Ignítis",
+      "nomeEn": "Ignitis",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "fire",
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1003202.png",
+      "aptidoes": {
+        "artisanship": 4,
+        "fire": 3,
+        "dark": 4
+      }
+    },
+    {
+      "id": "042-basic-form",
+      "nome": "Gelosso",
+      "nomeEn": "Bonesky",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10131.png",
+      "aptidoes": {
+        "ice": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "042-nighttime-form",
+      "nome": "Gelosso",
+      "nomeEn": "Bonesky",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1013102.png",
+      "aptidoes": {
+        "ice": 1,
+        "hauling": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "043-basic-form",
+      "nome": "Gelâmina",
+      "nomeEn": "Fenrier",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10132.png",
+      "aptidoes": {
+        "ice": 2,
+        "hauling": 2
+      }
+    },
+    {
+      "id": "043-nighttime-form",
+      "nome": "Gelâmina",
+      "nomeEn": "Fenrier",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1013202.png",
+      "aptidoes": {
+        "ice": 2,
+        "hauling": 2,
+        "dark": 1
+      }
+    },
+    {
+      "id": "044-basic-form",
+      "nome": "Gelispada",
+      "nomeEn": "Glynsera",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10133.png",
+      "aptidoes": {
+        "ice": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "044-nighttime-form",
+      "nome": "Gelispada",
+      "nomeEn": "Glynsera",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1013302.png",
+      "aptidoes": {
+        "ice": 3,
+        "hauling": 3,
+        "dark": 2
+      }
+    },
+    {
+      "id": "044-prismana-form",
+      "nome": "Gelispada",
+      "nomeEn": "Glynsera",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1013301.png",
+      "aptidoes": {
+        "ice": 4,
+        "light": 3,
+        "hauling": 4
+      }
+    },
+    {
+      "id": "045-basic-form",
+      "nome": "Raí",
+      "nomeEn": "Bolty",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10221.png",
+      "aptidoes": {
+        "lightning": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "045-mountain-woods-form",
+      "nome": "Raí",
+      "nomeEn": "Bolty",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1022102.png",
+      "aptidoes": {
+        "lightning": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "046-basic-form",
+      "nome": "Pelirraio",
+      "nomeEn": "Blazen",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10222.png",
+      "aptidoes": {
+        "lightning": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "046-mountain-woods-form",
+      "nome": "Pelirraio",
+      "nomeEn": "Blazen",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1022202.png",
+      "aptidoes": {
+        "lightning": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "046-prismana-form",
+      "nome": "Pelirraio",
+      "nomeEn": "Blazen",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1022201.png",
+      "aptidoes": {
+        "lightning": 4,
+        "artisanship": 4,
+        "dark": 3
+      }
+    },
+    {
+      "id": "047-basic-form",
+      "nome": "Socauda",
+      "nomeEn": "Squarrel",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10511.png",
+      "aptidoes": {
+        "fire": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "048-basic-form",
+      "nome": "Batecauda",
+      "nomeEn": "Squashel",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10512.png",
+      "aptidoes": {
+        "fire": 2,
+        "artisanship": 2
+      }
+    },
+    {
+      "id": "049-basic-form",
+      "nome": "Timilontra",
+      "nomeEn": "Susuta",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10171.png",
+      "aptidoes": {
+        "leisure": 1,
+        "water": 1
+      }
+    },
+    {
+      "id": "049-nighttime-form",
+      "nome": "Timilontra",
+      "nomeEn": "Susuta",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1017101.png",
+      "aptidoes": {
+        "leisure": 1,
+        "water": 1
+      }
+    },
+    {
+      "id": "050-basic-form",
+      "nome": "Conchilontra",
+      "nomeEn": "Popota",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10172.png",
+      "aptidoes": {
+        "leisure": 2,
+        "water": 2
+      }
+    },
+    {
+      "id": "050-nighttime-form",
+      "nome": "Conchilontra",
+      "nomeEn": "Popota",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1017201.png",
+      "aptidoes": {
+        "leisure": 2,
+        "water": 2
+      }
+    },
+    {
+      "id": "051-basic-form",
+      "nome": "Marilontra",
+      "nomeEn": "Piopiota",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10173.png",
+      "aptidoes": {
+        "leisure": 3,
+        "water": 3
+      }
+    },
+    {
+      "id": "051-nighttime-form",
+      "nome": "Marilontra",
+      "nomeEn": "Piopiota",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1017301.png",
+      "aptidoes": {
+        "water": 3,
+        "leisure": 3,
+        "dark": 2
+      }
+    },
+    {
+      "id": "052-basic-form",
+      "nome": "Musculontra",
+      "nomeEn": "Panpanta",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10174.png",
+      "aptidoes": {
+        "leisure": 3,
+        "water": 3
+      }
+    },
+    {
+      "id": "052-nighttime-form",
+      "nome": "Musculontra",
+      "nomeEn": "Panpanta",
+      "forma": "Forma Noturna",
+      "formaEn": "Nighttime Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1017401.png",
+      "aptidoes": {
+        "leisure": 3,
+        "water": 3
+      }
+    },
+    {
+      "id": "052-prismana-form",
+      "nome": "Musculontra",
+      "nomeEn": "Panpanta",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1017402.png",
+      "aptidoes": {
+        "leisure": 4,
+        "water": 4
+      }
+    },
+    {
+      "id": "053-basic-form",
+      "nome": "Conchita",
+      "nomeEn": "Shelly",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10191.png",
+      "aptidoes": {
+        "leisure": 1,
+        "water": 1
+      }
+    },
+    {
+      "id": "054-basic-form",
+      "nome": "Constela",
+      "nomeEn": "Sheldon",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10192.png",
+      "aptidoes": {
+        "leisure": 2,
+        "water": 2
+      }
+    },
+    {
+      "id": "055-basic-form",
+      "nome": "Conchastro",
+      "nomeEn": "Sherro",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10194.png",
+      "aptidoes": {
+        "leisure": 3,
+        "water": 3
+      }
+    },
+    {
+      "id": "055-prismana-form",
+      "nome": "Conchastro",
+      "nomeEn": "Sherro",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1019402.png",
+      "aptidoes": {
+        "water": 4,
+        "light": 3,
+        "leisure": 4
+      }
+    },
+    {
+      "id": "055-thunderstorm-form",
+      "nome": "Conchastro",
+      "nomeEn": "Sherro",
+      "forma": "Tempestuoso",
+      "formaEn": "Thunderstorm Form",
+      "prismana": false,
+      "elementos": [
+        "electric",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1019401.png",
+      "aptidoes": {
+        "lightning": 2,
+        "water": 3,
+        "leisure": 3
+      }
+    },
+    {
+      "id": "056-basic-form",
+      "nome": "Bolisouro",
+      "nomeEn": "Baleetle",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10451.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "056-snowfield-form",
+      "nome": "Bolisouro",
+      "nomeEn": "Baleetle",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "rock",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1045101.png",
+      "aptidoes": {
+        "ice": 1,
+        "rock": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "057-basic-form",
+      "nome": "Murisouro",
+      "nomeEn": "Waleetle",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10453.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "057-prismana-form",
+      "nome": "Murisouro",
+      "nomeEn": "Waleetle",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1045302.png",
+      "aptidoes": {
+        "rock": 4,
+        "hauling": 4,
+        "dark": 3
+      }
+    },
+    {
+      "id": "057-snowfield-form",
+      "nome": "Murisouro",
+      "nomeEn": "Waleetle",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "rock",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1045301.png",
+      "aptidoes": {
+        "ice": 2,
+        "rock": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "058-basic-form",
+      "nome": "Gulho",
+      "nomeEn": "Bouldus",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10454.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "058-snowfield-form",
+      "nome": "Gulho",
+      "nomeEn": "Bouldus",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "rock",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1045401.png",
+      "aptidoes": {
+        "ice": 2,
+        "rock": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "059-basic-form",
+      "nome": "Fentufo",
+      "nomeEn": "Fentuft",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10291.png",
+      "aptidoes": {
+        "lightning": 1,
+        "hauling": 1
+      }
+    },
+    {
+      "id": "060-basic-form",
+      "nome": "Fenjuba",
+      "nomeEn": "Fenmane",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10293.png",
+      "aptidoes": {
+        "lightning": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "060-prismana-form",
+      "nome": "Fenjuba",
+      "nomeEn": "Fenmane",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1029301.png",
+      "aptidoes": {
+        "lightning": 4,
+        "artisanship": 4,
+        "light": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "061-basic-form",
+      "nome": "Olhelmo",
+      "nomeEn": "Helmut",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10021.png",
+      "aptidoes": {
+        "hauling": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "061-mountain-woods-form",
+      "nome": "Olhelmo",
+      "nomeEn": "Helmut",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002102.png",
+      "aptidoes": {
+        "hauling": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "061-snowfield-form",
+      "nome": "Olhelmo",
+      "nomeEn": "Helmut",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002101.png",
+      "aptidoes": {
+        "ice": 1,
+        "hauling": 1,
+        "dark": 1
+      }
+    },
+    {
+      "id": "062-basic-form",
+      "nome": "Peônio",
+      "nomeEn": "Pawney",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10026.png",
+      "aptidoes": {
+        "hauling": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "062-mountain-woods-form",
+      "nome": "Peônio",
+      "nomeEn": "Pawney",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002602.png",
+      "aptidoes": {
+        "hauling": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "062-prismana-form",
+      "nome": "Peônio",
+      "nomeEn": "Pawney",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002603.png",
+      "aptidoes": {
+        "hauling": 4,
+        "dark": 4
+      }
+    },
+    {
+      "id": "062-snowfield-form",
+      "nome": "Peônio",
+      "nomeEn": "Pawney",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002601.png",
+      "aptidoes": {
+        "ice": 2,
+        "hauling": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "063-basic-form",
+      "nome": "Guerrônio",
+      "nomeEn": "Rookey",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10027.png",
+      "aptidoes": {
+        "hauling": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "063-mountain-woods-form",
+      "nome": "Guerrônio",
+      "nomeEn": "Rookey",
+      "forma": "Forma de Bosque-montanhês",
+      "formaEn": "Mountain Woods Form",
+      "prismana": false,
+      "elementos": [
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002702.png",
+      "aptidoes": {
+        "hauling": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "063-snowfield-form",
+      "nome": "Guerrônio",
+      "nomeEn": "Rookey",
+      "forma": "Forma de Nevasca",
+      "formaEn": "Snowfield Form",
+      "prismana": false,
+      "elementos": [
+        "dark",
+        "ice"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002701.png",
+      "aptidoes": {
+        "ice": 2,
+        "hauling": 3,
+        "dark": 3
+      }
+    },
+    {
+      "id": "064-basic-form",
+      "nome": "Mordelino",
+      "nomeEn": "Jawling",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10024.png",
+      "aptidoes": {
+        "hauling": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "064-mountain-form",
+      "nome": "Mordelino",
+      "nomeEn": "Jawling",
+      "forma": "Forma de Montanha",
+      "formaEn": "Mountain Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002401.png",
+      "aptidoes": {
+        "hauling": 1,
+        "wind": 1
+      }
+    },
+    {
+      "id": "065-basic-form",
+      "nome": "Elmelino",
+      "nomeEn": "Helmwhelp",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10022.png",
+      "aptidoes": {
+        "hauling": 2,
+        "wind": 2
+      }
+    },
+    {
+      "id": "065-mountain-form",
+      "nome": "Elmelino",
+      "nomeEn": "Helmwhelp",
+      "forma": "Forma de Montanha",
+      "formaEn": "Mountain Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002201.png",
+      "aptidoes": {
+        "hauling": 2,
+        "wind": 2
+      }
+    },
+    {
+      "id": "066-basic-form",
+      "nome": "Elmedon",
+      "nomeEn": "Helgon",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10023.png",
+      "aptidoes": {
+        "hauling": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "066-mountain-form",
+      "nome": "Elmedon",
+      "nomeEn": "Helgon",
+      "forma": "Forma de Montanha",
+      "formaEn": "Mountain Form",
+      "prismana": false,
+      "elementos": [
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002301.png",
+      "aptidoes": {
+        "hauling": 3,
+        "wind": 3
+      }
+    },
+    {
+      "id": "067-basic-form",
+      "nome": "Infergon",
+      "nomeEn": "Infergon",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10025.png",
+      "aptidoes": {
+        "fire": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "067-prismana-form",
+      "nome": "Infergon",
+      "nomeEn": "Infergon",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "fire",
+        "wind"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1002503.png",
+      "aptidoes": {
+        "hauling": 4,
+        "fire": 4,
+        "wind": 3
+      }
+    },
+    {
+      "id": "068-basic-form",
+      "nome": "Ursonho",
+      "nomeEn": "Cubbo",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10501.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "069-basic-form",
+      "nome": "Ferurso",
+      "nomeEn": "Grizbo",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10503.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "069-prismana-form",
+      "nome": "Ferurso",
+      "nomeEn": "Grizbo",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "dark",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1050301.png",
+      "aptidoes": {
+        "rock": 4,
+        "hauling": 4,
+        "dark": 3
+      }
+    },
+    {
+      "id": "070-basic-form",
+      "nome": "Pedrego",
+      "nomeEn": "Pebbling",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10281.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "071-basic-form",
+      "nome": "Lavazar",
+      "nomeEn": "Lavazar",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10282.png",
+      "aptidoes": {
+        "rock": 1,
+        "fire": 2,
+        "hauling": 2
+      }
+    },
+    {
+      "id": "072-basic-form",
+      "nome": "Magmarex",
+      "nomeEn": "Magmarex",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire",
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10283.png",
+      "aptidoes": {
+        "rock": 2,
+        "fire": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "072-prismana-form",
+      "nome": "Magmarex",
+      "nomeEn": "Magmarex",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "fire",
+        "dark"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1028301.png",
+      "aptidoes": {
+        "hauling": 4,
+        "fire": 4,
+        "dark": 3
+      }
+    },
+    {
+      "id": "073-basic-form",
+      "nome": "Cristapaça",
+      "nomeEn": "Geodeback",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10284.png",
+      "aptidoes": {
+        "hauling": 2,
+        "rock": 2
+      }
+    },
+    {
+      "id": "074-basic-form",
+      "nome": "Geospina",
+      "nomeEn": "Minespine",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10285.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "075-basic-form",
+      "nome": "Casita",
+      "nomeEn": "Cozite",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10431.png",
+      "aptidoes": {
+        "hauling": 1,
+        "rock": 1
+      }
+    },
+    {
+      "id": "076-basic-form",
+      "nome": "Baialita",
+      "nomeEn": "Bailite",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "rock"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10433.png",
+      "aptidoes": {
+        "hauling": 3,
+        "rock": 3
+      }
+    },
+    {
+      "id": "077-basic-form",
+      "nome": "Bulbim",
+      "nomeEn": "Bulbly",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10141.png",
+      "aptidoes": {
+        "lightning": 1,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "078-basic-form",
+      "nome": "Luminusa",
+      "nomeEn": "Veilfloat",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10142.png",
+      "aptidoes": {
+        "lightning": 2,
+        "artisanship": 2
+      }
+    },
+    {
+      "id": "079-basic-form",
+      "nome": "Luminela",
+      "nomeEn": "Luminelle",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10143.png",
+      "aptidoes": {
+        "lightning": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "079-prismana-form",
+      "nome": "Luminela",
+      "nomeEn": "Luminelle",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1014302.png",
+      "aptidoes": {
+        "lightning": 4,
+        "light": 3,
+        "artisanship": 4
+      }
+    },
+    {
+      "id": "079-rainstorm-form",
+      "nome": "Luminela",
+      "nomeEn": "Luminelle",
+      "forma": "Forma de Chuvarada",
+      "formaEn": "Rainstorm Form",
+      "prismana": false,
+      "elementos": [
+        "electric",
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1014301.png",
+      "aptidoes": {
+        "lightning": 3,
+        "water": 2,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "080-basic-form",
+      "nome": "Fahluu",
+      "nomeEn": "Fahloo",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10481.png",
+      "aptidoes": {
+        "water": 1
+      }
+    },
+    {
+      "id": "081-basic-form",
+      "nome": "Erlath",
+      "nomeEn": "Erlath",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "water"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10483.png",
+      "aptidoes": {
+        "water": 3
+      }
+    },
+    {
+      "id": "082-basic-form",
+      "nome": "Gingo",
+      "nomeEn": "Besauce",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10122.png",
+      "aptidoes": {
+        "lightning": 3,
+        "artisanship": 1
+      }
+    },
+    {
+      "id": "10001-prismana-form",
+      "nome": "Irisális",
+      "nomeEn": "Irisalis",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "grass"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10213.png",
+      "aptidoes": {
+        "grass": 4,
+        "leisure": 4
+      }
+    },
+    {
+      "id": "10002-basic-form",
+      "nome": "Dançauro",
+      "nomeEn": "Dazmand",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10474.png",
+      "aptidoes": {
+        "lightning": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "10003-basic-form",
+      "nome": "Fulminte",
+      "nomeEn": "Fulmintis",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10033.png",
+      "aptidoes": {
+        "lightning": 3,
+        "artisanship": 3
+      }
+    },
+    {
+      "id": "10003-prismana-form",
+      "nome": "Fulminte",
+      "nomeEn": "Fulmintis",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "holy",
+        "electric"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_1003305.png",
+      "aptidoes": {
+        "lightning": 4,
+        "light": 3,
+        "artisanship": 4
+      }
+    },
+    {
+      "id": "11001-basic-form",
+      "nome": "Pequeno Espírito de Fogo",
+      "nomeEn": "Little Fire Spirit",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_69993.png",
+      "aptidoes": {
+        "fire": 3
+      }
+    },
+    {
+      "id": "11001-prismana-form",
+      "nome": "Pequeno Espírito de Fogo",
+      "nomeEn": "Little Fire Spirit",
+      "forma": "Forma prismana",
+      "formaEn": "Prismana Form",
+      "prismana": true,
+      "elementos": [
+        "fire"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_6999301.png",
+      "aptidoes": {
+        "fire": 4
+      }
+    },
+    {
+      "id": "99996-basic-form",
+      "nome": "Lunara",
+      "nomeEn": "Lunara",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "holy"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10371.png",
+      "aptidoes": {
+        "light": 3,
+        "hauling": 3
+      }
+    },
+    {
+      "id": "99998-basic-form",
+      "nome": "Hélion",
+      "nomeEn": "Helion",
+      "forma": "Forma Básica",
+      "formaEn": "Basic Form",
+      "prismana": false,
+      "elementos": [
+        "holy"
+      ],
+      "imagem": "https://worldx-website-cdn.aniimo.com/official-website/worldx/wiki_stage/init/Wiki_Aniimo_10361.png",
+      "aptidoes": {
+        "light": 3,
+        "hauling": 3
+      }
+    }
+  ]
+}

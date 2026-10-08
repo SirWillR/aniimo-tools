@@ -1,0 +1,96 @@
+<div class="filtros">
+  <label class="busca">
+    <span class="visualmente-oculto">Buscar Aniimo</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM15.5 15.5 20 20" /></svg>
+    <input
+      type="search"
+      placeholder="Buscar por nome ou forma…"
+      autocomplete="off"
+      [value]="busca()"
+      (input)="busca.set($any($event.target).value)"
+    />
+  </label>
+
+  <div class="chips" role="group" aria-label="Filtrar por aptidão">
+    @for (ap of aptidoes(); track ap.chave) {
+      <button
+        type="button"
+        class="chip-apt"
+        [class.ativo]="filtroAptidao() === ap.chave"
+        [attr.aria-pressed]="filtroAptidao() === ap.chave"
+        [attr.title]="ap.pt"
+        (click)="alternarFiltro(ap.chave)"
+      >
+        <app-aptidao-icone [aptidao]="ap.chave" [tamanho]="26" />
+        <span class="visualmente-oculto">{{ ap.pt }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="alternar">
+    <label class="chave">
+      <input type="checkbox" [checked]="soSelecionados()" (change)="soSelecionados.set($any($event.target).checked)" />
+      <span>Só selecionados</span>
+    </label>
+    <label class="chave">
+      <input type="checkbox" [checked]="semPrismana()" (change)="semPrismana.set($any($event.target).checked)" />
+      <span>Esconder Prismana</span>
+    </label>
+  </div>
+</div>
+
+<p class="contagem" aria-live="polite">
+  {{ filtrados().length }} {{ filtrados().length === 1 ? 'forma' : 'formas' }}
+  @if (filtroAptidao(); as ap) { com {{ infoAptidao().get(ap)?.pt }} }
+</p>
+
+<ul class="grade">
+  @for (a of filtrados(); track a.id) {
+    @let qtd = quantidades()[a.id] ?? 0;
+    <li class="cartao" [class.selecionado]="qtd > 0" [class.prismana]="a.prismana">
+      <button
+        type="button"
+        class="cartao-corpo"
+        [attr.aria-label]="(qtd ? 'Adicionar mais um ' : 'Selecionar ') + a.nome + ', ' + a.forma"
+        (click)="alterar(a.id, qtd + 1)"
+      >
+        <span class="retrato">
+          @if (a.imagem) {
+            <img [src]="a.imagem" alt="" loading="lazy" decoding="async" width="64" height="64" (error)="escondeImagem($event)" />
+          }
+        </span>
+        <span class="info">
+          <span class="nome">{{ a.nome }}</span>
+          <span class="forma">
+            @if (a.prismana) { <span class="selo-prismana">Prismana</span> } @else { {{ a.forma }} }
+          </span>
+          <span class="apts">
+            @for (ap of aptidoesDe(a); track ap.chave) {
+              <span class="apt" [title]="infoAptidao().get(ap.chave)?.pt + ' nível ' + ap.nivel">
+                <app-aptidao-icone [aptidao]="ap.chave" [tamanho]="20" />
+                <span class="nivel num">{{ ap.nivel }}</span>
+              </span>
+            }
+          </span>
+        </span>
+      </button>
+
+      <div class="qtd" role="group" [attr.aria-label]="rotuloQuantidade() + ' de ' + a.nome">
+        <button type="button" class="passo" [disabled]="qtd === 0" (click)="alterar(a.id, qtd - 1)" aria-label="Menos um">−</button>
+        <input
+          class="num"
+          type="number"
+          inputmode="numeric"
+          min="0"
+          max="99"
+          [value]="qtd"
+          [attr.aria-label]="rotuloQuantidade()"
+          (change)="digitar(a.id, $event)"
+        />
+        <button type="button" class="passo" (click)="alterar(a.id, qtd + 1)" aria-label="Mais um">+</button>
+      </div>
+    </li>
+  } @empty {
+    <li class="vazio">Nenhum Aniimo encontrado com esses filtros.</li>
+  }
+</ul>

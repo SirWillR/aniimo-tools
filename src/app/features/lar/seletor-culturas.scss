@@ -1,0 +1,110 @@
+:host { display: block; margin-bottom: 1.5rem; }
+
+.culturas { padding: 0.9rem 1.1rem 1rem; }
+
+summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.75rem;
+  align-items: baseline;
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker { display: none; }
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--tinta-suave);
+    border-bottom: 2px solid var(--tinta-suave);
+    transform: rotate(-45deg);
+    transition: transform 0.2s;
+    align-self: center;
+  }
+
+  &:focus-visible { outline: 2px solid var(--acento); outline-offset: 4px; border-radius: 6px; }
+}
+
+details[open] summary::before { transform: rotate(45deg); }
+
+.titulo { font: 700 1.2rem var(--fonte-titulo); }
+.conta { color: var(--acento); font-weight: 700; }
+.dica { color: var(--tinta-suave); font-size: 0.9rem; }
+
+.acoes { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; margin: 0.8rem 0 0.4rem; }
+
+.travado {
+  margin: 0.8rem 0 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--acento) 12%, transparent);
+  font-size: 0.88rem;
+}
+
+.chip:disabled { cursor: default; }
+.chip:disabled:hover { border-color: var(--linha-forte); }
+
+.grupos {
+  display: grid;
+  gap: 0.9rem 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.grupo {
+  h3 { margin: 0 0 0.45rem; font-size: 1rem; }
+
+  ul { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+}
+
+.selo {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--cor);
+  color: var(--cor);
+  background: color-mix(in srgb, var(--cor) 14%, transparent);
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  &.neutro { --cor: var(--tinta-suave); background: transparent; border-color: var(--linha-forte); }
+}
+
+.chip {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.25rem 0.7rem 0.25rem 0.4rem;
+  border: 1.5px dashed var(--linha-forte);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tinta-suave);
+  font: 600 0.9rem var(--fonte-texto);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+  .amostra { opacity: 0.45; filter: grayscale(0.8); }
+
+  &.ligada {
+    border-style: solid;
+    border-color: var(--linha-forte);
+    background: var(--papel);
+    color: var(--tinta);
+
+    .amostra { opacity: 1; filter: none; }
+  }
+
+  &:hover { border-color: var(--acento); }
+  &:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+}
+
+.amostra {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 55% 45%, var(--fruto) 0 32%, var(--copa) 34%);
+  box-shadow: inset 0 0 0 1.5px rgb(0 0 0 / 14%);
+}
+
+.tipo { font-size: 0.72rem; font-weight: 500; color: var(--tinta-suave); }

@@ -1,0 +1,8387 @@
+{
+  "fonte": {
+    "repositorio": "https://github.com/ae-bii/aniimax",
+    "commit": "26e6b6f0df756015317e4515bb67b4458a5d1636",
+    "licenca": "MIT",
+    "autor": "aebii",
+    "extraidoEm": "2026-09-29T11:50:01.287Z",
+    "nota": "Dados de construção do Lar do aniimax (data/*.csv e web/facility-config.js). Tamanhos marcados como estimados vêm de scripts/tamanhos-estimados.ts. Quantidades do RV 20 de Fazenda, Bosque e Mina corrigidas com o que o usuário viu no jogo (CORRECOES_USUARIO)."
+  },
+  "rvMaximo": 20,
+  "rvVerificado": 11,
+  "aniimoPorRv": [
+    null,
+    8,
+    11,
+    14,
+    17,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    42,
+    43,
+    44,
+    45
+  ],
+  "modulosPorRv": {
+    "ecological_module": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      4,
+      5,
+      5,
+      6,
+      6,
+      6,
+      7,
+      8,
+      8,
+      8
+    ],
+    "kitchen_module": [
+      0,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      4,
+      4,
+      4,
+      5,
+      5,
+      5,
+      6,
+      6,
+      6,
+      7,
+      7
+    ],
+    "resource_detector": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      4,
+      5,
+      5,
+      6,
+      6,
+      7,
+      7,
+      8,
+      8
+    ],
+    "crafting_module": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      5,
+      6,
+      7,
+      7
+    ]
+  },
+  "custoPorRv": [
+    {
+      "moedas": 0,
+      "itens": []
+    },
+    {
+      "moedas": 140,
+      "itens": [
+        {
+          "produto": "wood_block",
+          "quantidade": 3
+        }
+      ]
+    },
+    {
+      "moedas": 800,
+      "itens": [
+        {
+          "produto": "wood_block",
+          "quantidade": 25
+        }
+      ]
+    },
+    {
+      "moedas": 2900,
+      "itens": [
+        {
+          "produto": "wood_block",
+          "quantidade": 100
+        },
+        {
+          "produto": "mineral_sand",
+          "quantidade": 120
+        }
+      ]
+    },
+    {
+      "moedas": 7300,
+      "itens": [
+        {
+          "produto": "wood_block",
+          "quantidade": 550
+        },
+        {
+          "produto": "mineral_sand",
+          "quantidade": 250
+        }
+      ]
+    },
+    {
+      "moedas": 32000,
+      "itens": [
+        {
+          "produto": "wood_block",
+          "quantidade": 1300
+        },
+        {
+          "produto": "mineral_sand",
+          "quantidade": 700
+        }
+      ]
+    },
+    {
+      "moedas": 69000,
+      "itens": [
+        {
+          "produto": "rough_lumber",
+          "quantidade": 290
+        },
+        {
+          "produto": "coarse_sifted_ore",
+          "quantidade": 360
+        }
+      ]
+    },
+    {
+      "moedas": 180000,
+      "itens": [
+        {
+          "produto": "rough_lumber",
+          "quantidade": 1100
+        },
+        {
+          "produto": "coarse_sifted_ore",
+          "quantidade": 640
+        }
+      ]
+    },
+    {
+      "moedas": 260000,
+      "itens": [
+        {
+          "produto": "rough_lumber",
+          "quantidade": 1520
+        },
+        {
+          "produto": "coarse_sifted_ore",
+          "quantidade": 800
+        }
+      ]
+    },
+    {
+      "moedas": 510000,
+      "itens": [
+        {
+          "produto": "rough_lumber",
+          "quantidade": 2000
+        },
+        {
+          "produto": "coarse_sifted_ore",
+          "quantidade": 2400
+        }
+      ]
+    },
+    {
+      "moedas": 680000,
+      "itens": [
+        {
+          "produto": "standard_planks",
+          "quantidade": 320
+        },
+        {
+          "produto": "sintered_ore_brick",
+          "quantidade": 350
+        }
+      ]
+    },
+    {
+      "moedas": 1060000,
+      "itens": [
+        {
+          "produto": "standard_planks",
+          "quantidade": 910
+        },
+        {
+          "produto": "sintered_ore_brick",
+          "quantidade": 480
+        }
+      ]
+    },
+    {
+      "moedas": 1930000,
+      "itens": [
+        {
+          "produto": "standard_planks",
+          "quantidade": 1230
+        },
+        {
+          "produto": "sintered_ore_brick",
+          "quantidade": 760
+        }
+      ]
+    },
+    {
+      "moedas": 2620000,
+      "itens": [
+        {
+          "produto": "standard_planks",
+          "quantidade": 1590
+        },
+        {
+          "produto": "sintered_ore_brick",
+          "quantidade": 1060
+        }
+      ]
+    },
+    {
+      "moedas": 3760000,
+      "itens": [
+        {
+          "produto": "laminated_beams",
+          "quantidade": 390
+        },
+        {
+          "produto": "refined_ore",
+          "quantidade": 150
+        }
+      ]
+    },
+    {
+      "moedas": 4900000,
+      "itens": [
+        {
+          "produto": "laminated_beams",
+          "quantidade": 480
+        },
+        {
+          "produto": "refined_ore",
+          "quantidade": 310
+        }
+      ]
+    },
+    {
+      "moedas": 8630000,
+      "itens": [
+        {
+          "produto": "laminated_beams",
+          "quantidade": 630
+        },
+        {
+          "produto": "refined_ore",
+          "quantidade": 380
+        }
+      ]
+    },
+    {
+      "moedas": 11600000,
+      "itens": [
+        {
+          "produto": "laminated_beams",
+          "quantidade": 800
+        },
+        {
+          "produto": "refined_ore",
+          "quantidade": 520
+        }
+      ]
+    },
+    {
+      "moedas": 17100000,
+      "itens": [
+        {
+          "produto": "densified_timber_component",
+          "quantidade": 400
+        },
+        {
+          "produto": "microcrystalline_ore_plate",
+          "quantidade": 220
+        }
+      ]
+    },
+    {
+      "moedas": 20800000,
+      "itens": [
+        {
+          "produto": "densified_timber_component",
+          "quantidade": 490
+        },
+        {
+          "produto": "microcrystalline_ore_plate",
+          "quantidade": 270
+        }
+      ]
+    }
+  ],
+  "construcoes": [
+    {
+      "chave": "farmland",
+      "nomeEn": "Farmland",
+      "categoria": "materiais",
+      "tamanho": 2,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40,
+        40
+      ],
+      "nivelPorRv": [
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6,
+        6,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "aptidao": null,
+      "personalidade": null,
+      "verificada": true
+    },
+    {
+      "chave": "woodland",
+      "nomeEn": "Woodland",
+      "categoria": "materiais",
+      "tamanho": 4,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        20
+      ],
+      "nivelPorRv": [
+        0,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6
+      ],
+      "aptidao": null,
+      "personalidade": null,
+      "verificada": true
+    },
+    {
+      "chave": "mine",
+      "nomeEn": "Mine",
+      "categoria": "materiais",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        7,
+        7,
+        8,
+        8,
+        9,
+        9,
+        10,
+        10
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6
+      ],
+      "aptidao": "rock",
+      "personalidade": "Playful",
+      "verificada": true
+    },
+    {
+      "chave": "well",
+      "nomeEn": "Well",
+      "categoria": "materiais",
+      "tamanho": 2,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5
+      ],
+      "aptidao": "water",
+      "personalidade": "Faithful",
+      "verificada": true
+    },
+    {
+      "chave": "tidewhisper-sandcastle",
+      "nomeEn": "Tidewhisper Sandcastle",
+      "categoria": "materiais-aniimo",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "aptidao": "leisure",
+      "personalidade": "Judicious",
+      "verificada": true
+    },
+    {
+      "chave": "dewy-house",
+      "nomeEn": "Dewy House",
+      "categoria": "materiais-aniimo",
+      "tamanho": 2,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "aptidao": "leisure",
+      "personalidade": "Instinctive",
+      "verificada": true
+    },
+    {
+      "chave": "nimbus-bed",
+      "nomeEn": "Nimbus Bed",
+      "categoria": "materiais-aniimo",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "aptidao": "leisure",
+      "personalidade": "Judicious",
+      "verificada": true
+    },
+    {
+      "chave": "starfall-hammock",
+      "nomeEn": "Starfall Hammock",
+      "categoria": "materiais-aniimo",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "aptidao": "leisure",
+      "personalidade": "Faithful",
+      "verificada": false
+    },
+    {
+      "chave": "floral-windmill",
+      "nomeEn": "Floral Windmill",
+      "categoria": "materiais-aniimo",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "aptidao": "leisure",
+      "personalidade": "Nimble",
+      "verificada": false
+    },
+    {
+      "chave": "heat-furnace",
+      "nomeEn": "Heat Furnace",
+      "categoria": "ambiente",
+      "tamanho": 1,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "aptidao": "fire",
+      "personalidade": null,
+      "verificada": true
+    },
+    {
+      "chave": "cooling-unit",
+      "nomeEn": "Cooling Unit",
+      "categoria": "ambiente",
+      "tamanho": 2,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "aptidao": "ice",
+      "personalidade": null,
+      "verificada": true
+    },
+    {
+      "chave": "sunlamp",
+      "nomeEn": "Sunlamp",
+      "categoria": "ambiente",
+      "tamanho": 1,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "aptidao": "light",
+      "personalidade": null,
+      "verificada": true
+    },
+    {
+      "chave": "carousel-mill",
+      "nomeEn": "Carousel Mill",
+      "categoria": "processamento",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        6
+      ],
+      "aptidao": "wind",
+      "personalidade": "Tenacious",
+      "verificada": true
+    },
+    {
+      "chave": "crafting-table",
+      "nomeEn": "Crafting Table",
+      "categoria": "processamento",
+      "tamanho": 4,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6,
+        7,
+        7,
+        8
+      ],
+      "aptidao": "artisanship",
+      "personalidade": "Judicious",
+      "verificada": true
+    },
+    {
+      "chave": "claw-game-cooker",
+      "nomeEn": "Claw Game Cooker",
+      "categoria": "processamento",
+      "tamanho": 4,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6,
+        7,
+        7
+      ],
+      "aptidao": "fire",
+      "personalidade": "Practical",
+      "verificada": true
+    },
+    {
+      "chave": "jukebox-dryer",
+      "nomeEn": "Jukebox Dryer",
+      "categoria": "processamento",
+      "tamanho": 3,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        6,
+        6,
+        7,
+        7,
+        7
+      ],
+      "aptidao": "dark",
+      "personalidade": "Nimble",
+      "verificada": true
+    },
+    {
+      "chave": "simmering-pot",
+      "nomeEn": "Simmering Pot",
+      "categoria": "processamento",
+      "tamanho": 2,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6
+      ],
+      "aptidao": "fire",
+      "personalidade": "Tenacious",
+      "verificada": true
+    },
+    {
+      "chave": "phonolfactory-table",
+      "nomeEn": "Phonolfactory Table",
+      "categoria": "processamento",
+      "tamanho": 4,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6
+      ],
+      "aptidao": "perfumery",
+      "personalidade": "Instinctive",
+      "verificada": true
+    },
+    {
+      "chave": "bouncy-brew-keg",
+      "nomeEn": "Bouncy Brew Keg",
+      "categoria": "processamento",
+      "tamanho": 4,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5
+      ],
+      "aptidao": "water",
+      "personalidade": "Energetic",
+      "verificada": true
+    },
+    {
+      "chave": "blazing-stove",
+      "nomeEn": "Blazing Stove",
+      "categoria": "processamento",
+      "tamanho": 3,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        5
+      ],
+      "aptidao": "fire",
+      "personalidade": "Nimble",
+      "verificada": true
+    },
+    {
+      "chave": "pickling-jar",
+      "nomeEn": "Pickling Jar",
+      "categoria": "processamento",
+      "tamanho": 3,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5
+      ],
+      "aptidao": "dark",
+      "personalidade": "Playful",
+      "verificada": true
+    },
+    {
+      "chave": "joy-wheel-loom",
+      "nomeEn": "Joy Wheel Loom",
+      "categoria": "processamento",
+      "tamanho": 4,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4
+      ],
+      "aptidao": "wind",
+      "personalidade": "Faithful",
+      "verificada": true
+    },
+    {
+      "chave": "dance-pad-polisher",
+      "nomeEn": "Dance Pad Polisher",
+      "categoria": "processamento",
+      "tamanho": 3,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "aptidao": "lightning",
+      "personalidade": null,
+      "verificada": false
+    },
+    {
+      "chave": "aniipod-maker",
+      "nomeEn": "Aniipod Maker",
+      "categoria": "processamento",
+      "tamanho": 5,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "aptidao": "lightning",
+      "personalidade": null,
+      "verificada": false
+    },
+    {
+      "chave": "woodworking-bench",
+      "nomeEn": "Woodworking Bench",
+      "categoria": "processamento",
+      "tamanho": 2,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4
+      ],
+      "aptidao": "artisanship",
+      "personalidade": "Energetic",
+      "verificada": true
+    },
+    {
+      "chave": "chimney-kiln",
+      "nomeEn": "Chimney Kiln",
+      "categoria": "processamento",
+      "tamanho": 6,
+      "tamanhoEstimado": false,
+      "quantidadePorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "nivelPorRv": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4
+      ],
+      "aptidao": "fire",
+      "personalidade": "Practical",
+      "verificada": true
+    }
+  ],
+  "produtos": [
+    {
+      "chave": "wheat",
+      "nomeEn": "Wheat",
+      "construcao": "farmland",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 240,
+      "trabalho": null,
+      "rendimento": 5,
+      "venda": 1,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "potato",
+      "nomeEn": "Potato",
+      "construcao": "farmland",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 640,
+      "trabalho": null,
+      "rendimento": 2,
+      "venda": 8,
+      "moeda": "coins",
+      "custo": 1,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_wheat",
+      "nomeEn": "Quick Wheat",
+      "construcao": "farmland",
+      "nivel": 2,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 1
+      },
+      "ambiente": null,
+      "tempo": 1200,
+      "trabalho": null,
+      "rendimento": 42,
+      "venda": 1,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rice",
+      "nomeEn": "Rice",
+      "construcao": "farmland",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 18,
+      "venda": 10,
+      "moeda": "coins",
+      "custo": 12,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "soybean",
+      "nomeEn": "Soybean",
+      "construcao": "farmland",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 16,
+      "venda": 11,
+      "moeda": "coins",
+      "custo": 12,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rose",
+      "nomeEn": "Rose",
+      "construcao": "farmland",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": "cool",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 8,
+      "venda": 39,
+      "moeda": "coins",
+      "custo": 21,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cotton",
+      "nomeEn": "Cotton",
+      "construcao": "farmland",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 7,
+      "venda": 44,
+      "moeda": "coins",
+      "custo": 21,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_potato",
+      "nomeEn": "Quick Potato",
+      "construcao": "farmland",
+      "nivel": 4,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 3
+      },
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 46,
+      "venda": 8,
+      "moeda": "coins",
+      "custo": 1,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "strawberry",
+      "nomeEn": "Strawberry",
+      "construcao": "farmland",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": "cool",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 8,
+      "venda": 61,
+      "moeda": "coins",
+      "custo": 32,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lavender",
+      "nomeEn": "Lavender",
+      "construcao": "farmland",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": "adequate",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 7,
+      "venda": 69,
+      "moeda": "coins",
+      "custo": 32,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "sugarcane",
+      "nomeEn": "Sugarcane",
+      "construcao": "farmland",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 6,
+      "venda": 81,
+      "moeda": "coins",
+      "custo": 32,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "ginseng",
+      "nomeEn": "Ginseng",
+      "construcao": "farmland",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": "cool",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 3,
+      "venda": 280,
+      "moeda": "coins",
+      "custo": 56,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "grape",
+      "nomeEn": "Grape",
+      "construcao": "farmland",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": "adequate",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 9,
+      "venda": 93,
+      "moeda": "coins",
+      "custo": 56,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_wheat",
+      "nomeEn": "Premium Wheat",
+      "construcao": "farmland",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 15,
+      "venda": 52,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_rice",
+      "nomeEn": "Quick Rice",
+      "construcao": "farmland",
+      "nivel": 6,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 5
+      },
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 79,
+      "venda": 10,
+      "moeda": "coins",
+      "custo": 12,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Reaping",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cranberry",
+      "nomeEn": "Cranberry",
+      "construcao": "farmland",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": "freeze",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 7,
+      "venda": 210,
+      "moeda": "coins",
+      "custo": 97,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "agave",
+      "nomeEn": "Agave",
+      "construcao": "farmland",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 6,
+      "venda": 240,
+      "moeda": "coins",
+      "custo": 97,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_strawberry",
+      "nomeEn": "Quick Strawberry",
+      "construcao": "farmland",
+      "nivel": 7,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 7
+      },
+      "ambiente": "cool",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 26,
+      "venda": 61,
+      "moeda": "coins",
+      "custo": 32,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "willow_wood",
+      "nomeEn": "Willow Wood",
+      "construcao": "woodland",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 640,
+      "trabalho": null,
+      "rendimento": 5,
+      "venda": 3,
+      "moeda": "coins",
+      "custo": 1,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 1
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "bamboo",
+      "nomeEn": "Bamboo",
+      "construcao": "woodland",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 10,
+      "venda": 13,
+      "moeda": "coins",
+      "custo": 8,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 8
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lemon",
+      "nomeEn": "Lemon",
+      "construcao": "woodland",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 8,
+      "venda": 16,
+      "moeda": "coins",
+      "custo": 8,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 8
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cherry_blossom",
+      "nomeEn": "Cherry Blossom",
+      "construcao": "woodland",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": "warm",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 7,
+      "venda": 44,
+      "moeda": "coins",
+      "custo": 21,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 21
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "apple",
+      "nomeEn": "Apple",
+      "construcao": "woodland",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": "cool",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 8,
+      "venda": 39,
+      "moeda": "coins",
+      "custo": 21,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 21
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "maple_syrup",
+      "nomeEn": "Maple Syrup",
+      "construcao": "woodland",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": "freeze",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 9,
+      "venda": 35,
+      "moeda": "coins",
+      "custo": 21,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 21
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_bamboo",
+      "nomeEn": "Quick Bamboo",
+      "construcao": "woodland",
+      "nivel": 3,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 2
+      },
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 23,
+      "venda": 13,
+      "moeda": "coins",
+      "custo": 8,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 21
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "palm_bark",
+      "nomeEn": "Palm Bark",
+      "construcao": "woodland",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 6,
+      "venda": 120,
+      "moeda": "coins",
+      "custo": 47,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 47
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "chestnut",
+      "nomeEn": "Chestnut",
+      "construcao": "woodland",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": "warm",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 7,
+      "venda": 100,
+      "moeda": "coins",
+      "custo": 47,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 47
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "walnut",
+      "nomeEn": "Walnut",
+      "construcao": "woodland",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": "adequate",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 6,
+      "venda": 120,
+      "moeda": "coins",
+      "custo": 47,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 47
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_lemon",
+      "nomeEn": "Quick Lemon",
+      "construcao": "woodland",
+      "nivel": 4,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 4
+      },
+      "ambiente": null,
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 42,
+      "venda": 16,
+      "moeda": "coins",
+      "custo": 8,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 47
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "natural_rubber",
+      "nomeEn": "Natural Rubber",
+      "construcao": "woodland",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 3,
+      "venda": 370,
+      "moeda": "coins",
+      "custo": 75,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 75
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coconut",
+      "nomeEn": "Coconut",
+      "construcao": "woodland",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 5,
+      "venda": 220,
+      "moeda": "coins",
+      "custo": 75,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 75
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_maple_syrup",
+      "nomeEn": "Quick Maple Syrup",
+      "construcao": "woodland",
+      "nivel": 5,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 6
+      },
+      "ambiente": "freeze",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 30,
+      "venda": 35,
+      "moeda": "coins",
+      "custo": 21,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 75
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Logging",
+          "aptidao": "dark",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cocoa",
+      "nomeEn": "Cocoa",
+      "construcao": "woodland",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 6,
+      "venda": 310,
+      "moeda": "coins",
+      "custo": 122,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 122
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "orange_flower",
+      "nomeEn": "Orange Flower",
+      "construcao": "woodland",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": "adequate",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 8,
+      "venda": 230,
+      "moeda": "coins",
+      "custo": 122,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 122
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_coconut",
+      "nomeEn": "Quick Coconut",
+      "construcao": "woodland",
+      "nivel": 6,
+      "modulo": {
+        "chave": "ecological_module",
+        "nivel": 8
+      },
+      "ambiente": "scorching",
+      "tempo": 2400,
+      "trabalho": null,
+      "rendimento": 8,
+      "venda": 220,
+      "moeda": "coins",
+      "custo": 75,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "wood_block",
+        "quantidade": 122
+      },
+      "aniimo": null,
+      "etapas": [
+        {
+          "etapa": "Reclaiming",
+          "aptidao": "rock",
+          "nivel": 1
+        },
+        {
+          "etapa": "Sowing",
+          "aptidao": "grass",
+          "nivel": 1
+        },
+        {
+          "etapa": "Collecting",
+          "aptidao": "grass",
+          "nivel": 1
+        }
+      ],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rock",
+      "nomeEn": "Rock",
+      "construcao": "mine",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 900,
+      "rendimento": 6,
+      "venda": 7,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "mineral_sand",
+        "quantidade": 3
+      },
+      "aniimo": {
+        "aptidao": "rock",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "clay",
+      "nomeEn": "Clay",
+      "construcao": "mine",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 10,
+      "venda": 22,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "mineral_sand",
+        "quantidade": 16
+      },
+      "aniimo": {
+        "aptidao": "rock",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "shell",
+      "nomeEn": "Shell",
+      "construcao": "mine",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 6,
+      "venda": 76,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "mineral_sand",
+        "quantidade": 32
+      },
+      "aniimo": {
+        "aptidao": "rock",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "copper_ore",
+      "nomeEn": "Copper Ore",
+      "construcao": "mine",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 5,
+      "venda": 160,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "mineral_sand",
+        "quantidade": 56
+      },
+      "aniimo": {
+        "aptidao": "rock",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quartz_ore",
+      "nomeEn": "Quartz Ore",
+      "construcao": "mine",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 4,
+      "venda": 300,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "mineral_sand",
+        "quantidade": 86
+      },
+      "aniimo": {
+        "aptidao": "rock",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "gem",
+      "nomeEn": "Gem",
+      "construcao": "mine",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 2,
+      "venda": 850,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": {
+        "produto": "mineral_sand",
+        "quantidade": 122
+      },
+      "aniimo": {
+        "aptidao": "rock",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "well_water",
+      "nomeEn": "Well Water",
+      "construcao": "well",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 1800,
+      "rendimento": 10,
+      "venda": 12,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_well_water",
+      "nomeEn": "Quick Well Water",
+      "construcao": "well",
+      "nivel": 1,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 1
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 1800,
+      "rendimento": 15,
+      "venda": 12,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "fresh_water",
+      "nomeEn": "Fresh Water",
+      "construcao": "well",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 8,
+      "venda": 46,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_fresh_water",
+      "nomeEn": "Quick Fresh Water",
+      "construcao": "well",
+      "nivel": 3,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 4
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 17,
+      "venda": 46,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "deep_rock_spring_water",
+      "nomeEn": "Deep Rock Spring Water",
+      "construcao": "well",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 6,
+      "venda": 150,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_deep_rock_spring_water",
+      "nomeEn": "Quick Deep Rock Spring Water",
+      "construcao": "well",
+      "nivel": 4,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 6
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 9,
+      "venda": 150,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "natural_mineral_spring_water",
+      "nomeEn": "Natural Mineral Spring Water",
+      "construcao": "well",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 6,
+      "venda": 250,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_natural_mineral_spring_water",
+      "nomeEn": "Quick Natural Mineral Spring Water",
+      "construcao": "well",
+      "nivel": 5,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 7
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 9,
+      "venda": 250,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "sea_salt",
+      "nomeEn": "Sea Salt",
+      "construcao": "tidewhisper-sandcastle",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 1800,
+      "rendimento": 10,
+      "venda": 16,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_sea_salt",
+      "nomeEn": "Quick Sea Salt",
+      "construcao": "tidewhisper-sandcastle",
+      "nivel": 2,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 2
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 23,
+      "venda": 16,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "pearl",
+      "nomeEn": "Pearl",
+      "construcao": "tidewhisper-sandcastle",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": "warm",
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 2,
+      "venda": 450,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "aromathyst",
+      "nomeEn": "Aromathyst",
+      "construcao": "dewy-house",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 4,
+      "venda": 56,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_aromathyst",
+      "nomeEn": "Quick Aromathyst",
+      "construcao": "dewy-house",
+      "nivel": 2,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 3
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 12,
+      "venda": 56,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "wool",
+      "nomeEn": "Wool",
+      "construcao": "nimbus-bed",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 4,
+      "venda": 140,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "quick_wool",
+      "nomeEn": "Quick Wool",
+      "construcao": "nimbus-bed",
+      "nivel": 2,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 5
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 6,
+      "venda": 140,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "petals",
+      "nomeEn": "Petals",
+      "construcao": "nimbus-bed",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 6,
+      "venda": 230,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "star",
+      "nomeEn": "Star",
+      "construcao": "starfall-hammock",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": "cool",
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 2,
+      "venda": 390,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "scales",
+      "nomeEn": "Scales",
+      "construcao": "floral-windmill",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": "adequate",
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 8,
+      "venda": 210,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "quick_scales",
+      "nomeEn": "Quick Scales",
+      "construcao": "floral-windmill",
+      "nivel": 1,
+      "modulo": {
+        "chave": "resource_detector",
+        "nivel": 8
+      },
+      "ambiente": "adequate",
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 12,
+      "venda": 210,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "leisure",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "wheatmeal",
+      "nomeEn": "Wheatmeal",
+      "construcao": "carousel-mill",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 70,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wheat",
+          "quantidade": 50
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "tofu",
+      "nomeEn": "Tofu",
+      "construcao": "carousel-mill",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 230,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "soybean",
+          "quantidade": 16
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "milled_rice",
+      "nomeEn": "Milled Rice",
+      "construcao": "carousel-mill",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 240,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rice",
+          "quantidade": 18
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lavender_powder",
+      "nomeEn": "Lavender Powder",
+      "construcao": "carousel-mill",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 650,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lavender",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rice_drink",
+      "nomeEn": "Rice Drink",
+      "construcao": "carousel-mill",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 1860,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "milled_rice",
+          "quantidade": 2
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 16
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "ginseng_powder",
+      "nomeEn": "Ginseng Powder",
+      "construcao": "carousel-mill",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1160,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "ginseng",
+          "quantidade": 3
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "refined_flour",
+      "nomeEn": "Refined Flour",
+      "construcao": "carousel-mill",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1260,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "premium_wheat",
+          "quantidade": 15
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coconut_oil",
+      "nomeEn": "Coconut Oil",
+      "construcao": "carousel-mill",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1580,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cocoa_powder",
+      "nomeEn": "Cocoa Powder",
+      "construcao": "carousel-mill",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 2470,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cocoa",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coconut_milk",
+      "nomeEn": "Coconut Milk",
+      "construcao": "carousel-mill",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 3820,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut",
+          "quantidade": 5
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "wood_sculpture",
+      "nomeEn": "Wood Sculpture",
+      "construcao": "crafting-table",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 90,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "willow_wood",
+          "quantidade": 19
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "bamboo_ware",
+      "nomeEn": "Bamboo Ware",
+      "construcao": "crafting-table",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 190,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "bamboo",
+          "quantidade": 10
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "river_washed_stones",
+      "nomeEn": "River-Washed Stones",
+      "construcao": "crafting-table",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 108,
+      "rendimento": 1,
+      "venda": 300,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rock",
+          "quantidade": 18
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_river_washed_stones",
+      "nomeEn": "Premium River-Washed Stones",
+      "construcao": "crafting-table",
+      "nivel": 2,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 1
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 108,
+      "rendimento": 1,
+      "venda": 360,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rock",
+          "quantidade": 18
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rose_freshener",
+      "nomeEn": "Rose Freshener",
+      "construcao": "crafting-table",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1270,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose_incense",
+          "quantidade": 1
+        },
+        {
+          "produto": "bamboo",
+          "quantidade": 13
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "pottery",
+      "nomeEn": "Pottery",
+      "construcao": "crafting-table",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 630,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "clay",
+          "quantidade": 15
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_rose_freshener",
+      "nomeEn": "Premium Rose Freshener",
+      "construcao": "crafting-table",
+      "nivel": 3,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 2
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1420,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose_incense",
+          "quantidade": 1
+        },
+        {
+          "produto": "bamboo",
+          "quantidade": 13
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "bouquet",
+      "nomeEn": "Bouquet",
+      "construcao": "crafting-table",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1120,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose",
+          "quantidade": 8
+        },
+        {
+          "produto": "lavender",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "shell_ornament",
+      "nomeEn": "Shell Ornament",
+      "construcao": "crafting-table",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1190,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "shell",
+          "quantidade": 6
+        },
+        {
+          "produto": "cotton_thread",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lavender_sachet",
+      "nomeEn": "Lavender Sachet",
+      "construcao": "crafting-table",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1580,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lavender_powder",
+          "quantidade": 1
+        },
+        {
+          "produto": "cotton_fabric",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "wind_chime",
+      "nomeEn": "Wind Chime",
+      "construcao": "crafting-table",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 3180,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "copper_ore",
+          "quantidade": 5
+        },
+        {
+          "produto": "woolen_yarn",
+          "quantidade": 1
+        },
+        {
+          "produto": "star",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "star_wish_lantern",
+      "nomeEn": "Star Wish Lantern",
+      "construcao": "crafting-table",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2140,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "copper_ore",
+          "quantidade": 5
+        },
+        {
+          "produto": "star",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dream_catcher",
+      "nomeEn": "Dream Catcher",
+      "construcao": "crafting-table",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 1730,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cotton_thread",
+          "quantidade": 1
+        },
+        {
+          "produto": "woolen_yarn",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "advanced_wind_chime",
+      "nomeEn": "Advanced Wind Chime",
+      "construcao": "crafting-table",
+      "nivel": 5,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 4
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 3600,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "copper_ore",
+          "quantidade": 5
+        },
+        {
+          "produto": "woolen_yarn",
+          "quantidade": 1
+        },
+        {
+          "produto": "star",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rubber_duck",
+      "nomeEn": "Rubber Duck",
+      "construcao": "crafting-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1540,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "natural_rubber",
+          "quantidade": 3
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "pearl_necklace",
+      "nomeEn": "Pearl Necklace",
+      "construcao": "crafting-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 3210,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "pearl",
+          "quantidade": 2
+        },
+        {
+          "produto": "palm_rope",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "woven_toy",
+      "nomeEn": "Woven Toy",
+      "construcao": "crafting-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1580,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "palm_rope",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "porcelain",
+      "nomeEn": "Porcelain",
+      "construcao": "crafting-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2960,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "quartz_ore",
+          "quantidade": 4
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dye",
+      "nomeEn": "Dye",
+      "construcao": "crafting-table",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4280,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "petals",
+          "quantidade": 6
+        },
+        {
+          "produto": "scales",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "gemstone_dust",
+      "nomeEn": "Gemstone Dust",
+      "construcao": "crafting-table",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4600,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "gem",
+          "quantidade": 2
+        },
+        {
+          "produto": "scales",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "flowers_in_a_bottle",
+      "nomeEn": "Flowers in a Bottle",
+      "construcao": "crafting-table",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 7700,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dried_flowers",
+          "quantidade": 1
+        },
+        {
+          "produto": "porcelain",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": true,
+      "verificado": true
+    },
+    {
+      "chave": "advanced_gemstone_dust",
+      "nomeEn": "Advanced Gemstone Dust",
+      "construcao": "crafting-table",
+      "nivel": 7,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 6
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 5210,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "gem",
+          "quantidade": 2
+        },
+        {
+          "produto": "scales",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "doll",
+      "nomeEn": "Doll",
+      "construcao": "crafting-table",
+      "nivel": 8,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 324,
+      "rendimento": 1,
+      "venda": 11110,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dyed_cotton_fabric",
+          "quantidade": 1
+        },
+        {
+          "produto": "wool_fabric",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "bread",
+      "nomeEn": "Bread",
+      "construcao": "claw-game-cooker",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 108,
+      "rendimento": 1,
+      "venda": 280,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wheatmeal",
+          "quantidade": 2
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_bread",
+      "nomeEn": "Premium Bread",
+      "construcao": "claw-game-cooker",
+      "nivel": 1,
+      "modulo": {
+        "chave": "kitchen_module",
+        "nivel": 2
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 108,
+      "rendimento": 1,
+      "venda": 330,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wheatmeal",
+          "quantidade": 2
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "roasted_soybeans",
+      "nomeEn": "Roasted Soybeans",
+      "construcao": "claw-game-cooker",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 108,
+      "rendimento": 1,
+      "venda": 450,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "soybean",
+          "quantidade": 16
+        },
+        {
+          "produto": "sea_salt",
+          "quantidade": 10
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "maple_candy_roasted_potatoes",
+      "nomeEn": "Maple Candy Roasted Potatoes",
+      "construcao": "claw-game-cooker",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 850,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "potato",
+          "quantidade": 8
+        },
+        {
+          "produto": "maple_syrup",
+          "quantidade": 9
+        },
+        {
+          "produto": "sea_salt",
+          "quantidade": 10
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "apple_tart",
+      "nomeEn": "Apple Tart",
+      "construcao": "claw-game-cooker",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 590,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wheatmeal",
+          "quantidade": 1
+        },
+        {
+          "produto": "apple",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rose_shortbread",
+      "nomeEn": "Rose Shortbread",
+      "construcao": "claw-game-cooker",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1310,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose_concentrate",
+          "quantidade": 1
+        },
+        {
+          "produto": "wheatmeal",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": true,
+      "verificado": true
+    },
+    {
+      "chave": "lavender_cookies",
+      "nomeEn": "Lavender Cookies",
+      "construcao": "claw-game-cooker",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1040,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lavender_powder",
+          "quantidade": 1
+        },
+        {
+          "produto": "wheatmeal",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "apple_candy",
+      "nomeEn": "Apple Candy",
+      "construcao": "claw-game-cooker",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1980,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "apple",
+          "quantidade": 8
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "grape_candy",
+      "nomeEn": "Grape Candy",
+      "construcao": "claw-game-cooker",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 2850,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "grape",
+          "quantidade": 9
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "caramel_nut_chips",
+      "nomeEn": "Caramel Nut Chips",
+      "construcao": "claw-game-cooker",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 3130,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "nuts",
+          "quantidade": 1
+        },
+        {
+          "produto": "maple_syrup",
+          "quantidade": 9
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "maple_candy_star",
+      "nomeEn": "Maple Candy Star",
+      "construcao": "claw-game-cooker",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2810,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "maple_sugar_chunk",
+          "quantidade": 1
+        },
+        {
+          "produto": "star",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coconut_cookie",
+      "nomeEn": "Coconut Cookie",
+      "construcao": "claw-game-cooker",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 3700,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "shredded_coconut",
+          "quantidade": 1
+        },
+        {
+          "produto": "refined_flour",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "flower_bread",
+      "nomeEn": "Flower Bread",
+      "construcao": "claw-game-cooker",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4610,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "refined_flour",
+          "quantidade": 1
+        },
+        {
+          "produto": "dried_flowers",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "berry_chocolate_coconut_pudding",
+      "nomeEn": "Berry Chocolate Coconut Pudding",
+      "construcao": "claw-game-cooker",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 567,
+      "rendimento": 1,
+      "venda": 17890,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cocoa_spread",
+          "quantidade": 1
+        },
+        {
+          "produto": "strawberry",
+          "quantidade": 16
+        },
+        {
+          "produto": "coconut_milk",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_berry_chocolate_coconut_pudding",
+      "nomeEn": "Premium Berry Chocolate Coconut Pudding",
+      "construcao": "claw-game-cooker",
+      "nivel": 7,
+      "modulo": {
+        "chave": "kitchen_module",
+        "nivel": 7
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 567,
+      "rendimento": 1,
+      "venda": 20270,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cocoa_spread",
+          "quantidade": 1
+        },
+        {
+          "produto": "strawberry",
+          "quantidade": 16
+        },
+        {
+          "produto": "coconut_milk",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "potato_chips",
+      "nomeEn": "Potato Chips",
+      "construcao": "jukebox-dryer",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 110,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "potato",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_lemon_slices",
+      "nomeEn": "Dried Lemon Slices",
+      "construcao": "jukebox-dryer",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 54,
+      "rendimento": 1,
+      "venda": 190,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lemon",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_cherry_blossom",
+      "nomeEn": "Dried Cherry Blossom",
+      "construcao": "jukebox-dryer",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 410,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cherry_blossom",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_bean_curd",
+      "nomeEn": "Dried Bean Curd",
+      "construcao": "jukebox-dryer",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 330,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "tofu",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_apple_slices",
+      "nomeEn": "Dried Apple Slices",
+      "construcao": "jukebox-dryer",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 510,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "apple",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_strawberries",
+      "nomeEn": "Dried Strawberries",
+      "construcao": "jukebox-dryer",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 690,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "strawberry",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "nuts",
+      "nomeEn": "Nuts",
+      "construcao": "jukebox-dryer",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 1980,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "chestnut",
+          "quantidade": 7
+        },
+        {
+          "produto": "walnut",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_ginseng",
+      "nomeEn": "Dried Ginseng",
+      "construcao": "jukebox-dryer",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1120,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "ginseng",
+          "quantidade": 3
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_grapes",
+      "nomeEn": "Dried Grapes",
+      "construcao": "jukebox-dryer",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1210,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "grape",
+          "quantidade": 9
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "shredded_coconut",
+      "nomeEn": "Shredded Coconut",
+      "construcao": "jukebox-dryer",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1470,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_cranberries",
+      "nomeEn": "Dried Cranberries",
+      "construcao": "jukebox-dryer",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 2080,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cranberry",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dried_flowers",
+      "nomeEn": "Dried Flowers",
+      "construcao": "jukebox-dryer",
+      "nivel": 7,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1990,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "petals",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "plain_rice_porridge",
+      "nomeEn": "Plain Rice Porridge",
+      "construcao": "simmering-pot",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 108,
+      "rendimento": 1,
+      "venda": 660,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "milled_rice",
+          "quantidade": 2
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rose_concentrate",
+      "nomeEn": "Rose Concentrate",
+      "construcao": "simmering-pot",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 770,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose",
+          "quantidade": 12
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rock_candy",
+      "nomeEn": "Rock Candy",
+      "construcao": "simmering-pot",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1180,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "sugarcane",
+          "quantidade": 6
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "strawberry_jam",
+      "nomeEn": "Strawberry Jam",
+      "construcao": "simmering-pot",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 650,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "strawberry",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "maple_candy_apple_jam",
+      "nomeEn": "Maple Candy Apple Jam",
+      "construcao": "simmering-pot",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 950,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "maple_syrup",
+          "quantidade": 9
+        },
+        {
+          "produto": "apple",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "chestnut_puree",
+      "nomeEn": "Chestnut Puree",
+      "construcao": "simmering-pot",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 980,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "chestnut",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "grape_jam",
+      "nomeEn": "Grape Jam",
+      "construcao": "simmering-pot",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1120,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "grape",
+          "quantidade": 9
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "ginseng_porridge",
+      "nomeEn": "Ginseng Porridge",
+      "construcao": "simmering-pot",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2440,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dried_ginseng",
+          "quantidade": 1
+        },
+        {
+          "produto": "milled_rice",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": true,
+      "verificado": true
+    },
+    {
+      "chave": "maple_sugar_chunk",
+      "nomeEn": "Maple Sugar Chunk",
+      "construcao": "simmering-pot",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1060,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "maple_syrup",
+          "quantidade": 18
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "malt_sugar",
+      "nomeEn": "Malt Sugar",
+      "construcao": "simmering-pot",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 3440,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "premium_wheat",
+          "quantidade": 15
+        },
+        {
+          "produto": "milled_rice",
+          "quantidade": 2
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cocoa_spread",
+      "nomeEn": "Cocoa Spread",
+      "construcao": "simmering-pot",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 324,
+      "rendimento": 1,
+      "venda": 8350,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cocoa_powder",
+          "quantidade": 1
+        },
+        {
+          "produto": "malt_sugar",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cranberry_jam",
+      "nomeEn": "Cranberry Jam",
+      "construcao": "simmering-pot",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 324,
+      "rendimento": 1,
+      "venda": 7350,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cranberry",
+          "quantidade": 7
+        },
+        {
+          "produto": "malt_sugar",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "agave_syrup",
+      "nomeEn": "Agave Syrup",
+      "construcao": "simmering-pot",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 3080,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "agave",
+          "quantidade": 6
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 9
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "bamboo_joss_stick",
+      "nomeEn": "Bamboo Joss Stick",
+      "construcao": "phonolfactory-table",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 470,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "bamboo",
+          "quantidade": 15
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rose_incense",
+      "nomeEn": "Rose Incense",
+      "construcao": "phonolfactory-table",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 790,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose",
+          "quantidade": 12
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cherry_incense",
+      "nomeEn": "Cherry Incense",
+      "construcao": "phonolfactory-table",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 840,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dried_cherry_blossom",
+          "quantidade": 1
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 4
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lavender_incense",
+      "nomeEn": "Lavender Incense",
+      "construcao": "phonolfactory-table",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1270,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lavender",
+          "quantidade": 11
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lemon_incense",
+      "nomeEn": "Lemon Incense",
+      "construcao": "phonolfactory-table",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 700,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lemon",
+          "quantidade": 12
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "advanced_lemon_incense",
+      "nomeEn": "Advanced Lemon Incense",
+      "construcao": "phonolfactory-table",
+      "nivel": 3,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 3
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 900,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lemon",
+          "quantidade": 12
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "herbal_ginseng_aroma",
+      "nomeEn": "Herbal Ginseng Aroma",
+      "construcao": "phonolfactory-table",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2360,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "ginseng_powder",
+          "quantidade": 1
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "soap",
+      "nomeEn": "Soap",
+      "construcao": "phonolfactory-table",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 5500,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut_oil",
+          "quantidade": 1
+        },
+        {
+          "produto": "petals",
+          "quantidade": 6
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_soap",
+      "nomeEn": "Premium Soap",
+      "construcao": "phonolfactory-table",
+      "nivel": 5,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 5
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 6320,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut_oil",
+          "quantidade": 1
+        },
+        {
+          "produto": "petals",
+          "quantidade": 6
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "orange_flower_incense",
+      "nomeEn": "Orange Flower Incense",
+      "construcao": "phonolfactory-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 3640,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "orange_flower",
+          "quantidade": 8
+        },
+        {
+          "produto": "aromathyst",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "mixed_perfume",
+      "nomeEn": "Mixed Perfume",
+      "construcao": "phonolfactory-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4850,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dried_flowers",
+          "quantidade": 1
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "lotion",
+      "nomeEn": "Lotion",
+      "construcao": "phonolfactory-table",
+      "nivel": 6,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 7030,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "orange_flower",
+          "quantidade": 8
+        },
+        {
+          "produto": "coconut_oil",
+          "quantidade": 2
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": true,
+      "verificado": true
+    },
+    {
+      "chave": "premium_mixed_perfume",
+      "nomeEn": "Premium Mixed Perfume",
+      "construcao": "phonolfactory-table",
+      "nivel": 6,
+      "modulo": {
+        "chave": "crafting_module",
+        "nivel": 7
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 5520,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dried_flowers",
+          "quantidade": 1
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "perfumery",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "wheat_tea",
+      "nomeEn": "Wheat Tea",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 330,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wheat",
+          "quantidade": 50
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 10
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "toasted_rice_green_tea",
+      "nomeEn": "Toasted Rice Green Tea",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 740,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "milled_rice",
+          "quantidade": 2
+        },
+        {
+          "produto": "well_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "potato_kvass",
+      "nomeEn": "Potato Kvass",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 270,
+      "rendimento": 1,
+      "venda": 2640,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "potato",
+          "quantidade": 15
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": true,
+      "verificado": true
+    },
+    {
+      "chave": "strawberry_juice",
+      "nomeEn": "Strawberry Juice",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1180,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "strawberry",
+          "quantidade": 8
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "apple_juice",
+      "nomeEn": "Apple Juice",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 1000,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "apple",
+          "quantidade": 8
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "sugarcane_juice",
+      "nomeEn": "Sugarcane Juice",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 650,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "sugarcane",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "grape_juice",
+      "nomeEn": "Grape Juice",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2390,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "grape",
+          "quantidade": 9
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "ginseng_water",
+      "nomeEn": "Ginseng Water",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2670,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "dried_ginseng",
+          "quantidade": 1
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "grape_lemon_drink",
+      "nomeEn": "Grape Lemon Drink",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 2970,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "grape",
+          "quantidade": 9
+        },
+        {
+          "produto": "lemon",
+          "quantidade": 16
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "walnut_milk",
+      "nomeEn": "Walnut Milk",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2270,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "walnut",
+          "quantidade": 6
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cranberry_juice",
+      "nomeEn": "Cranberry Juice",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4060,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cranberry",
+          "quantidade": 7
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coconut_cooler",
+      "nomeEn": "Coconut Cooler",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1650,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut",
+          "quantidade": 5
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "agave_drink",
+      "nomeEn": "Agave Drink",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 6610,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "agave_syrup",
+          "quantidade": 1
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "hot_cocoa",
+      "nomeEn": "Hot Cocoa",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 5330,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cocoa_powder",
+          "quantidade": 1
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coconut_cocoa",
+      "nomeEn": "Coconut Cocoa",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4930,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coconut",
+          "quantidade": 5
+        },
+        {
+          "produto": "cocoa_powder",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "orange_flower_dew",
+      "nomeEn": "Orange Flower Dew",
+      "construcao": "bouncy-brew-keg",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 4700,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "orange_flower",
+          "quantidade": 8
+        },
+        {
+          "produto": "natural_mineral_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "water",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "soy_sauce_fried_rice",
+      "nomeEn": "Soy Sauce Fried Rice",
+      "construcao": "blazing-stove",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1280,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "milled_rice",
+          "quantidade": 1
+        },
+        {
+          "produto": "soy_sauce",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "creamy_potato_soup",
+      "nomeEn": "Creamy Potato Soup",
+      "construcao": "blazing-stove",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 750,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "potato",
+          "quantidade": 15
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cherry_blossom_rice_ball",
+      "nomeEn": "Cherry Blossom Rice Ball",
+      "construcao": "blazing-stove",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1410,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "salted_cherry_blossom",
+          "quantidade": 1
+        },
+        {
+          "produto": "milled_rice",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_potato_soup",
+      "nomeEn": "Premium Potato Soup",
+      "construcao": "blazing-stove",
+      "nivel": 1,
+      "modulo": {
+        "chave": "kitchen_module",
+        "nivel": 3
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 880,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "potato",
+          "quantidade": 15
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "tanghulu",
+      "nomeEn": "Tanghulu",
+      "construcao": "blazing-stove",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 2260,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "strawberry",
+          "quantidade": 8
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "soy_sauce_tofu",
+      "nomeEn": "Soy Sauce Tofu",
+      "construcao": "blazing-stove",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 1470,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "tofu",
+          "quantidade": 1
+        },
+        {
+          "produto": "soy_sauce",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "sugar_roasted_chestnuts",
+      "nomeEn": "Sugar-Roasted Chestnuts",
+      "construcao": "blazing-stove",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 203,
+      "rendimento": 1,
+      "venda": 2470,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "chestnut",
+          "quantidade": 7
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "steamed_vermicelli_roll",
+      "nomeEn": "Steamed Vermicelli Roll",
+      "construcao": "blazing-stove",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2510,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rice_drink",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "ginseng_chestnut_cake",
+      "nomeEn": "Ginseng Chestnut Cake",
+      "construcao": "blazing-stove",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2510,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "ginseng_powder",
+          "quantidade": 1
+        },
+        {
+          "produto": "chestnut",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "walnut_cake",
+      "nomeEn": "Walnut Cake",
+      "construcao": "blazing-stove",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 3550,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "walnut",
+          "quantidade": 6
+        },
+        {
+          "produto": "rice_drink",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "jello",
+      "nomeEn": "Jello",
+      "construcao": "blazing-stove",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 4790,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "petals",
+          "quantidade": 6
+        },
+        {
+          "produto": "maple_sugar_chunk",
+          "quantidade": 1
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "strawberry_candy",
+      "nomeEn": "Strawberry Candy",
+      "construcao": "blazing-stove",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 324,
+      "rendimento": 1,
+      "venda": 6840,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "strawberry",
+          "quantidade": 8
+        },
+        {
+          "produto": "malt_sugar",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": true,
+      "verificado": true
+    },
+    {
+      "chave": "rich_grape_compote",
+      "nomeEn": "Rich Grape Compote",
+      "construcao": "blazing-stove",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 5050,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "grape_juice",
+          "quantidade": 1
+        },
+        {
+          "produto": "dried_grapes",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_jello",
+      "nomeEn": "Premium Jello",
+      "construcao": "blazing-stove",
+      "nivel": 4,
+      "modulo": {
+        "chave": "kitchen_module",
+        "nivel": 6
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 5520,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "petals",
+          "quantidade": 6
+        },
+        {
+          "produto": "maple_sugar_chunk",
+          "quantidade": 1
+        },
+        {
+          "produto": "deep_rock_spring_water",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "strawberry_cream_puff",
+      "nomeEn": "Strawberry Cream Puff",
+      "construcao": "blazing-stove",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 5650,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "refined_flour",
+          "quantidade": 1
+        },
+        {
+          "produto": "strawberry",
+          "quantidade": 16
+        },
+        {
+          "produto": "coconut_oil",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cranberry_chocolate",
+      "nomeEn": "Cranberry Chocolate",
+      "construcao": "blazing-stove",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 405,
+      "rendimento": 1,
+      "venda": 13480,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cocoa_spread",
+          "quantidade": 1
+        },
+        {
+          "produto": "dried_cranberries",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "soy_sauce",
+      "nomeEn": "Soy Sauce",
+      "construcao": "pickling-jar",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 650,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "soybean",
+          "quantidade": 16
+        },
+        {
+          "produto": "sea_salt",
+          "quantidade": 13
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "salted_cherry_blossom",
+      "nomeEn": "Salted Cherry Blossom",
+      "construcao": "pickling-jar",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 135,
+      "rendimento": 1,
+      "venda": 780,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cherry_blossom",
+          "quantidade": 7
+        },
+        {
+          "produto": "sea_salt",
+          "quantidade": 13
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "sweet_rice_drink",
+      "nomeEn": "Sweet Rice Drink",
+      "construcao": "pickling-jar",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 270,
+      "rendimento": 1,
+      "venda": 2580,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "milled_rice",
+          "quantidade": 1
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cider_vinegar",
+      "nomeEn": "Cider Vinegar",
+      "construcao": "pickling-jar",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 510,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "apple",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_sweet_rice_wine",
+      "nomeEn": "Premium Sweet Rice Wine",
+      "construcao": "pickling-jar",
+      "nivel": 2,
+      "modulo": {
+        "chave": "kitchen_module",
+        "nivel": 4
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 270,
+      "rendimento": 1,
+      "venda": 2980,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "milled_rice",
+          "quantidade": 1
+        },
+        {
+          "produto": "fresh_water",
+          "quantidade": 8
+        },
+        {
+          "produto": "rock_candy",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "rice_vinegar",
+      "nomeEn": "Rice Vinegar",
+      "construcao": "pickling-jar",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2510,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rice_drink",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "salted_lemon",
+      "nomeEn": "Salted Lemon",
+      "construcao": "pickling-jar",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 1110,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lemon",
+          "quantidade": 16
+        },
+        {
+          "produto": "sea_salt",
+          "quantidade": 13
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "premium_salted_lemon",
+      "nomeEn": "Premium Salted Lemon",
+      "construcao": "pickling-jar",
+      "nivel": 3,
+      "modulo": {
+        "chave": "kitchen_module",
+        "nivel": 5
+      },
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 1440,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "lemon",
+          "quantidade": 16
+        },
+        {
+          "produto": "sea_salt",
+          "quantidade": 13
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "candied_strawberries",
+      "nomeEn": "Candied Strawberries",
+      "construcao": "pickling-jar",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 162,
+      "rendimento": 1,
+      "venda": 2090,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "maple_syrup",
+          "quantidade": 18
+        },
+        {
+          "produto": "strawberry",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "candied_orange_flower",
+      "nomeEn": "Candied Orange Flower",
+      "construcao": "pickling-jar",
+      "nivel": 5,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 6950,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "agave_syrup",
+          "quantidade": 1
+        },
+        {
+          "produto": "orange_flower",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "dark",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cotton_thread",
+      "nomeEn": "Cotton Thread",
+      "construcao": "joy-wheel-loom",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 410,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cotton",
+          "quantidade": 7
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "woolen_yarn",
+      "nomeEn": "Woolen Yarn",
+      "construcao": "joy-wheel-loom",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 760,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wool",
+          "quantidade": 4
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "cotton_fabric",
+      "nomeEn": "Cotton Fabric",
+      "construcao": "joy-wheel-loom",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 68,
+      "rendimento": 1,
+      "venda": 610,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cotton_thread",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "palm_rope",
+      "nomeEn": "Palm Rope",
+      "construcao": "joy-wheel-loom",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1150,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "palm_bark",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "wool_fabric",
+      "nomeEn": "Wool Fabric",
+      "construcao": "joy-wheel-loom",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 81,
+      "rendimento": 1,
+      "venda": 1190,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "woolen_yarn",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "dyed_cotton_fabric",
+      "nomeEn": "Dyed Cotton Fabric",
+      "construcao": "joy-wheel-loom",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 243,
+      "rendimento": 1,
+      "venda": 6920,
+      "moeda": "coins",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "cotton_fabric",
+          "quantidade": 1
+        },
+        {
+          "produto": "dye",
+          "quantidade": 1
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "wind",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "growth_bud",
+      "nomeEn": "Growth Bud",
+      "construcao": "dance-pad-polisher",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 1200,
+      "rendimento": 3,
+      "venda": 1000,
+      "moeda": "aniimo_exp",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "potato",
+          "quantidade": 23
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "lightning",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "growth_flower",
+      "nomeEn": "Growth Flower",
+      "construcao": "dance-pad-polisher",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 3000,
+      "rendimento": 2,
+      "venda": 5000,
+      "moeda": "aniimo_exp",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "soybean",
+          "quantidade": 16
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "lightning",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "growth_fruit",
+      "nomeEn": "Growth Fruit",
+      "construcao": "dance-pad-polisher",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 5400,
+      "rendimento": 1,
+      "venda": 25000,
+      "moeda": "aniimo_exp",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rose",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "lightning",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "aniipod",
+      "nomeEn": "Aniipod",
+      "construcao": "aniipod-maker",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 1800,
+      "rendimento": 1,
+      "venda": 1,
+      "moeda": "aniipods",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rock",
+          "quantidade": 12
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "lightning",
+        "nivel": 1
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "aniipod_pro",
+      "nomeEn": "Aniipod Pro",
+      "construcao": "aniipod-maker",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2250,
+      "rendimento": 1,
+      "venda": 1,
+      "moeda": "aniipods",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "clay",
+          "quantidade": 10
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "lightning",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "aniipod_mega",
+      "nomeEn": "Aniipod Mega",
+      "construcao": "aniipod-maker",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 2700,
+      "rendimento": 1,
+      "venda": 1,
+      "moeda": "aniipods",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "shell",
+          "quantidade": 6
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "lightning",
+        "nivel": 3
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": false
+    },
+    {
+      "chave": "rough_lumber",
+      "nomeEn": "Rough Lumber",
+      "construcao": "woodworking-bench",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 34,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "wood_block",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "standard_planks",
+      "nomeEn": "Standard Planks",
+      "construcao": "woodworking-bench",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 34,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "rough_lumber",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "laminated_beams",
+      "nomeEn": "Laminated Beams",
+      "construcao": "woodworking-bench",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 41,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "standard_planks",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "densified_timber_component",
+      "nomeEn": "Densified Timber Component",
+      "construcao": "woodworking-bench",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 41,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "laminated_beams",
+          "quantidade": 4
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "artisanship",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "coarse_sifted_ore",
+      "nomeEn": "Coarse-Sifted Ore",
+      "construcao": "chimney-kiln",
+      "nivel": 1,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 34,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "mineral_sand",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "sintered_ore_brick",
+      "nomeEn": "Sintered Ore Brick",
+      "construcao": "chimney-kiln",
+      "nivel": 2,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 34,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "coarse_sifted_ore",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "refined_ore",
+      "nomeEn": "Refined Ore",
+      "construcao": "chimney-kiln",
+      "nivel": 3,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 41,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "sintered_ore_brick",
+          "quantidade": 8
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    },
+    {
+      "chave": "microcrystalline_ore_plate",
+      "nomeEn": "Microcrystalline Ore Plate",
+      "construcao": "chimney-kiln",
+      "nivel": 4,
+      "modulo": null,
+      "ambiente": null,
+      "tempo": null,
+      "trabalho": 41,
+      "rendimento": 1,
+      "venda": 0,
+      "moeda": "none",
+      "custo": 0,
+      "ingredientes": [
+        {
+          "produto": "refined_ore",
+          "quantidade": 4
+        }
+      ],
+      "subproduto": null,
+      "aniimo": {
+        "aptidao": "fire",
+        "nivel": 2
+      },
+      "etapas": [],
+      "especial": false,
+      "verificado": true
+    }
+  ],
+  "regras": {
+    "raioCobertura": 4.5,
+    "grade": 0.25,
+    "temperatura": {
+      "freeze": -2,
+      "cool": -1,
+      "warm": 1,
+      "scorching": 2
+    },
+    "velocidadeFora": [
+      0.8,
+      0.5
+    ],
+    "construcoes": {
+      "heat-furnace": {
+        "modos": [
+          "warm",
+          "scorching"
+        ],
+        "aptidao": "fire"
+      },
+      "cooling-unit": {
+        "modos": [
+          "cool",
+          "freeze"
+        ],
+        "aptidao": "ice"
+      },
+      "sunlamp": {
+        "modos": [
+          "adequate"
+        ],
+        "aptidao": "light"
+      }
+    },
+    "regasPorCiclo": 2
+  }
+}

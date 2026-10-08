@@ -1,0 +1,211 @@
+:host { display: block; }
+
+.filtros {
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.busca {
+  position: relative;
+  display: block;
+
+  svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    fill: none;
+    stroke: var(--tinta-suave);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.6rem 1rem 0.6rem 2.75rem;
+    border: 1.5px solid var(--linha-forte);
+    border-radius: 999px;
+    background: var(--folha);
+    font-size: 1rem;
+
+    &:focus { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px color-mix(in srgb, var(--acento) 25%, transparent); }
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip-apt {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.12s ease, transform 0.12s ease, border-color 0.12s ease;
+
+  &:hover { opacity: 1; transform: translateY(-1px); }
+  &.ativo { opacity: 1; border-color: var(--tinta); }
+}
+
+.alternar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.95rem;
+  .chave { align-items: center; }
+}
+
+.contagem {
+  margin: 0 0 0.6rem;
+  color: var(--tinta-suave);
+  font-size: 0.85rem;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.35rem;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio);
+  background: var(--folha);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &.selecionado {
+    border-color: var(--tinta);
+    box-shadow: 3px 3px 0 var(--tinta);
+  }
+}
+
+.cartao-corpo {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.retrato {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--papel-2);
+  overflow: hidden;
+
+  img { width: 100%; height: 100%; object-fit: contain; }
+
+  .prismana & { background: var(--prismana); }
+}
+
+.info { display: flex; flex-direction: column; min-width: 0; gap: 0.1rem; }
+
+.nome {
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forma {
+  font-size: 0.78rem;
+  color: var(--tinta-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.apts { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.15rem; }
+
+.apt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.nivel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+.qtd {
+  display: flex;
+  align-items: center;
+  flex: none;
+
+  input {
+    width: 2.4rem;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-family: var(--fonte-titulo);
+    font-size: 1.1rem;
+    font-weight: 700;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  }
+}
+
+.passo {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1.5px solid var(--linha-forte);
+  border-radius: 50%;
+  background: var(--papel);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { border-color: var(--tinta); }
+  &:disabled { opacity: 0.35; cursor: default; }
+}
+
+.vazio {
+  grid-column: 1 / -1;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--tinta-suave);
+}
+
+@media (max-width: 420px) {
+  .grade { grid-template-columns: 1fr; }
+  .retrato { width: 48px; height: 48px; }
+}

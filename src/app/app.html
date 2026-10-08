@@ -1,0 +1,51 @@
+<header class="topo">
+  <a class="marca" routerLink="/requisitos" aria-label="Zona de Produção, início">
+    <span class="marca-selo" aria-hidden="true">
+      <svg viewBox="0 0 32 32"><path d="M5 27V13l11-8 11 8v14H19v-8h-6v8z" /></svg>
+    </span>
+    <span class="marca-texto">
+      <span class="marca-sobre">Aniimo · Lar</span>
+      <span class="marca-nome">Zona de Produção</span>
+    </span>
+  </a>
+
+  <nav class="abas" aria-label="Seções">
+    <a routerLink="/requisitos" routerLinkActive="ativa" ariaCurrentWhenActive="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h10" /></svg>
+      <span>Requisitos</span>
+    </a>
+    <a routerLink="/roster" routerLinkActive="ativa" ariaCurrentWhenActive="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a5.5 5.5 0 0 1 11 0M16 11a3 3 0 1 0 0-6M18 20h3.5a5 5 0 0 0-4.5-5" /></svg>
+      <span>Meus Aniimo</span>
+      @if (roster.total()) {
+        <span class="contador num" [attr.aria-label]="roster.total() + ' no roster'">{{ roster.total() }}</span>
+      }
+    </a>
+    <a routerLink="/resultado" routerLinkActive="ativa" ariaCurrentWhenActive="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6" /></svg>
+      <span>Resultado</span>
+    </a>
+    <a routerLink="/lar" routerLinkActive="ativa" ariaCurrentWhenActive="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6" /></svg>
+      <span>Lar</span>
+    </a>
+  </nav>
+</header>
+
+<main class="conteudo">
+  @if (erroDados()) {
+    <p class="erro-dados folha" role="alert">
+      Não foi possível carregar os dados dos Aniimo. Recarregue a página; se persistir, rode <code>npm run data</code>.
+    </p>
+  }
+  <router-outlet />
+</main>
+
+<footer class="rodape">
+  <p>
+    Dados da <a href="https://wiki.aniimo.com" rel="noopener" target="_blank">wiki oficial</a>
+    @if (extraidoEm(); as data) { · extraídos em {{ data }} }
+    · Construção do Lar: <a href="https://github.com/ae-bii/aniimax" rel="noopener" target="_blank">aniimax</a> (MIT, aebii)
+    · Fan-site sem fins comerciais. Aniimo © Pawprint Studio.
+  </p>
+</footer>

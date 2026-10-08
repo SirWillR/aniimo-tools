@@ -1,0 +1,162 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  --largura: 1120px;
+}
+
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem max(16px, calc((100% - var(--largura)) / 2));
+  background: color-mix(in srgb, var(--papel) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--linha);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.marca-selo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--acento);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--acento) 60%, black);
+  transform: rotate(-4deg);
+
+  svg { width: 24px; height: 24px; fill: var(--acento-tinta); }
+}
+
+.marca-texto { display: flex; flex-direction: column; line-height: 1; }
+.marca-sobre {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+.marca-nome {
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+}
+
+.abas {
+  display: flex;
+  gap: 0.25rem;
+
+  a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    color: var(--tinta-suave);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover { color: var(--tinta); background: var(--papel-2); }
+    &.ativa { color: var(--acento-tinta); background: var(--tinta); }
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.contador {
+  min-width: 1.4rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--acento);
+  color: var(--acento-tinta);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4rem;
+  text-align: center;
+}
+
+.conteudo {
+  flex: 1;
+  width: 100%;
+  max-width: calc(var(--largura) + 32px);
+  margin: 0 auto;
+  padding: 1.5rem 16px 3rem;
+}
+
+.erro-dados {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  border-color: var(--falta);
+  background: var(--falta-fundo);
+}
+
+.rodape {
+  padding: 1.25rem 16px 1.5rem;
+  border-top: 1px solid var(--linha);
+  color: var(--tinta-suave);
+  font-size: 0.8rem;
+  text-align: center;
+
+  p { margin: 0; }
+}
+
+// Celular: navegação vira barra inferior fixa
+@media (max-width: 720px) {
+  // backdrop-filter criaria um bloco de contenção e prenderia a barra fixa dentro do cabeçalho.
+  .topo { justify-content: center; backdrop-filter: none; background: var(--papel); }
+
+  .abas {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 20;
+    justify-content: space-around;
+    padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom));
+    background: var(--folha);
+    border-top: 1px solid var(--linha);
+    box-shadow: 0 -8px 24px -16px rgb(0 0 0 / 35%);
+
+    a {
+      flex: 1;
+      flex-direction: column;
+      gap: 0.1rem;
+      padding: 0.35rem 0.25rem;
+      border-radius: 12px;
+      font-size: 0.72rem;
+    }
+  }
+
+  .contador {
+    position: absolute;
+    top: 2px;
+    right: calc(50% - 22px);
+    min-width: 1.15rem;
+    line-height: 1.15rem;
+    font-size: 0.65rem;
+  }
+
+  .rodape { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+}

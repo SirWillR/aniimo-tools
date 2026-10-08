@@ -1,0 +1,272 @@
+<section class="cabecalho">
+  <div>
+    <p class="sobretitulo">Construção do Lar</p>
+    <h1>Planta do Lar</h1>
+    <p class="lede">
+      A base completa do nível {{ rv() }}, já no lugar: lotes em volta dos ambientes, máquinas na oficina,
+      caminhos, cercas e jardim. Escolha as culturas que quer cultivar e o seu nível: o que já dá para
+      construir fica em destaque e os espaços reservados para depois ficam apagados.
+    </p>
+  </div>
+
+  <div class="painel folha">
+    <label class="campo">
+      <span>Seu nível</span>
+      <select (change)="escolherRvAtual($event)">
+        @for (n of niveis(); track n) {
+          <option [value]="n" [selected]="n === rvAtual()">RV {{ n }}</option>
+        }
+      </select>
+    </label>
+    <label class="campo" title="Fazendas sem cultura fixa, para sementes de evento">
+      <span>Coringas</span>
+      <input type="number" min="0" [max]="maxCoringas" inputmode="numeric" [value]="lar.coringas()"
+        (change)="escolherCoringas($event)" />
+    </label>
+    <label class="campo">
+      <span>Armazéns</span>
+      <input type="number" min="0" [max]="maxArmazens" inputmode="numeric" [value]="lar.armazens()"
+        (change)="escolherArmazens($event)" />
+    </label>
+    <label class="campo">
+      <span>Chocadeiras</span>
+      <input type="number" min="0" [max]="maxChocadeiras" inputmode="numeric" [value]="lar.chocadeiras()"
+        (change)="escolherChocadeiras($event)" />
+    </label>
+    <div class="campo giro">
+      <span id="rotulo-giro">Girar mapa <span class="graus num">{{ lar.rotacao() }}°</span></span>
+      <div class="giro-controles">
+        <button type="button" class="girar" (click)="lar.definirRotacao(lar.rotacao() - 90)" aria-label="Girar 90° para a esquerda">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4.3h4.3" /></svg>
+        </button>
+        <input type="range" min="0" max="359" step="1" [value]="lar.rotacao()" aria-labelledby="rotulo-giro"
+          (input)="girar($event)" />
+        <button type="button" class="girar" (click)="lar.definirRotacao(lar.rotacao() + 90)" aria-label="Girar 90° para a direita">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4.3h-4.3" /></svg>
+        </button>
+      </div>
+    </div>
+    <div class="campo">
+      <span id="rotulo-foco">Foco</span>
+      <div class="segmentado" role="radiogroup" aria-labelledby="rotulo-foco">
+        @for (f of focos; track f.valor) {
+          <button type="button" role="radio" [attr.aria-checked]="lar.foco() === f.valor" [title]="f.dica"
+            (click)="lar.definirFoco(f.valor)">{{ f.rotulo }}</button>
+        }
+      </div>
+    </div>
+    <label class="interruptor">
+      <input type="checkbox" [checked]="grade()" (change)="grade.set(!grade())" />
+      <span class="trilho" aria-hidden="true"></span>
+      <span>Ver grade</span>
+    </label>
+  </div>
+</section>
+
+@if (planta(); as p) {
+  <p class="progresso">
+    @if (rvAtual() < rv()) {
+      No RV {{ rvAtual() }} você já pode construir <strong class="num">{{ progresso().liberados }}</strong> de
+      <strong class="num">{{ progresso().total }}</strong> espaços da base; os apagados liberam nos próximos níveis.
+    } @else {
+      Base completa: todos os <strong class="num">{{ progresso().total }}</strong> espaços liberados.
+    }
+  </p>
+  @if (!p.verificado) {
+    <p class="aviso">
+      Fazendas, Bosques e Minas do RV {{ rv() }} foram conferidos no jogo; as demais quantidades vêm do aniimax,
+      conferidas até o RV {{ dados.dados()?.rvVerificado }}.
+    </p>
+  }
+
+  <app-seletor-culturas [rvAtual]="rvAtual()" [emUso]="culturasDoFoco()" [foco]="lar.foco()" />
+
+  <div class="palco">
+    <app-mapa-lar [planta]="p" [rotacao]="lar.rotacao()" [liberacao]="liberacao()" [rvAtual]="rvAtual()" [grade]="grade()" [construcoes]="dados.construcaoPorChave()" [(selecionado)]="selecionado" />
+
+    <aside class="lateral">
+      @if (detalhe(); as d) {
+        <div class="cartao folha" aria-live="polite">
+          <p class="cartao-sobre">Selecionado</p>
+          <h2>{{ d.nome }}</h2>
+          @if (d.produto) {
+            <p class="cartao-produto">
+              {{ d.produto }}
+              @if (d.culturaNoRv) {
+                <span class="cultura-rv" [class.futura]="d.culturaNoRv > rvAtual()">
+                  · {{ d.culturaNoRv > rvAtual() ? 'cultura libera no RV ' : 'cultura liberada desde o RV ' }}{{ d.culturaNoRv }}
+                </span>
+              }
+            </p>
+          }
+          <div class="selos">
+            @if (d.condicao) {
+              <span class="selo" [style.--cor]="d.cor">{{ d.condicao }}</span>
+            }
+            @if (d.eficiencia) {
+              <span class="selo" style="--cor: #f2a33a">~{{ d.eficiencia }}% de eficiência</span>
+            }
+            <span class="selo neutro">{{ d.tamanho }} tiles{{ d.estimado ? ' · estimado' : '' }}</span>
+            @if (d.nivel) {
+              <span class="selo neutro" [title]="'Nível da construção no RV ' + rvAtual()">nível {{ d.nivel }}</span>
+            }
+            @if (d.liberaNoRv) {
+              <span class="selo" [class.neutro]="!d.reservado" [style.--cor]="d.reservado ? 'var(--acento)' : null">
+                {{ d.reservado ? 'espaço reservado · libera no RV ' + d.liberaNoRv : 'espaço liberado desde o RV ' + d.liberaNoRv }}
+              </span>
+            }
+          </div>
+          @if (d.aptidoes.length) {
+            <ul class="aptidoes">
+              @for (a of d.aptidoes; track a.aptidao) {
+                <li [title]="a.titulo">
+                  <app-aptidao-icone [aptidao]="a.aptidao" [tamanho]="22" />
+                  <span class="num">{{ a.nivel }}+</span>
+                </li>
+              }
+            </ul>
+          }
+          @if (d.producao; as pr) {
+            <div class="deve-produzir">
+              <p class="cartao-sobre">Deve produzir</p>
+              <p class="dp-produto">{{ pr.nome }} <span class="num">· {{ pr.porHora }}/h</span></p>
+              <p class="cartao-porque">{{ pr.para }}</p>
+              @if (pr.ingredientes) {
+                <p class="cartao-porque">Usa {{ pr.ingredientes }}</p>
+              }
+              @if (pr.aniimo) {
+                <p class="dp-aniimo" [title]="'Aniimo com esta aptidão no nível ' + pr.aniimo.nivel + ' ou mais'">
+                  <app-aptidao-icone [aptidao]="pr.aniimo.aptidao" [tamanho]="18" /> nível {{ pr.aniimo.nivel }}+
+                </p>
+              }
+            </div>
+          }
+          <p class="cartao-porque">{{ d.porque }}</p>
+          @if (d.reservado && d.qtdAgora !== null && d.qtdBase !== null) {
+            <p class="cartao-porque">
+              No RV {{ rvAtual() }} dá para ter {{ d.qtdAgora }} de {{ d.qtdBase }} ({{ d.nome }}). Este espaço da base final
+              só entra no RV {{ d.liberaNoRv }}; os liberados antes são os que aparecem acesos no mapa.
+            </p>
+          }
+          @if (d.culturaNoRv && d.culturaNoRv > rvAtual()) {
+            <p class="cartao-porque">
+              {{ d.produto }} só pode ser plantado a partir do RV {{ d.culturaNoRv }}; até lá, use o espaço com outra cultura.
+            </p>
+          }
+          <button type="button" class="btn discreto" (click)="selecionado.set(null)">Fechar</button>
+        </div>
+      } @else {
+        <div class="cartao folha">
+          <p class="cartao-sobre">Como ler</p>
+          <p>
+            As auras coloridas são o alcance de cada ambiente (9×9). Onde uma aura quente encontra uma fria, as
+            temperaturas se somam e surge uma terceira zona.
+          </p>
+          <ul class="zonas">
+            @for (z of zonas; track z.nome) {
+              <li><span class="bolinha" [style.background]="z.cor"></span>{{ z.nome }}</li>
+            }
+          </ul>
+          <p class="nota">
+            @if (temEstimado()) { Contorno tracejado: tamanho estimado. }
+            Ctrl + rodinha ou pinça para dar zoom.
+          </p>
+        </div>
+      }
+
+      @if (legenda().length) {
+        <div class="cartao folha">
+          <p class="cartao-sobre">Culturas no mapa</p>
+          <ul class="legenda">
+            @for (l of legenda(); track l.nome) {
+              <li>
+                <span class="amostra" [style.--copa]="l.copa" [style.--fruto]="l.fruto"></span>
+                <span>{{ l.nome }}</span>
+                @if (l.lotes) {
+                  <span class="num">
+                    @if (l.eficiencia) {
+                      <span class="fora" title="Fora da temperatura ideal neste nível">~{{ l.eficiencia }}% ·</span>
+                    }
+                    ×{{ l.lotes }}
+                  </span>
+                } @else {
+                  <span class="sem-lote" title="Não coube neste nível: por exemplo, com uma só Fornalha e um Resfriador dá para ter no máximo três temperaturas ao mesmo tempo">sem lote</span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+    </aside>
+  </div>
+
+    @if (vendas().agora.length || vendas().plantandoMais.length) {
+      <div class="cartao folha vender">
+        <div class="cartao-topo">
+          <p class="cartao-sobre">O que vender</p>
+
+        </div>
+
+        <div class="vendas-colunas">
+        <div>
+        @if (vendas().agora.length) {
+          <p class="vendas-grupo">Com o que você planta</p>
+          <ol class="vendas">
+            @for (v of vendas().agora; track v.chave; let i = $index) {
+              <ng-container *ngTemplateOutlet="itemVenda; context: { $implicit: v, id: 'venda-a' + i }" />
+            }
+          </ol>
+        } @else {
+          <p class="nota">Nada rentável só com as culturas marcadas. Veja abaixo o que plantar.</p>
+        }
+
+        </div>
+        <div>
+        @if (vendas().plantandoMais.length) {
+          <p class="vendas-grupo">Plantando mais</p>
+          <ol class="vendas">
+            @for (v of vendas().plantandoMais; track v.chave; let i = $index) {
+              <ng-container *ngTemplateOutlet="itemVenda; context: { $implicit: v, id: 'venda-b' + i }" />
+            }
+          </ol>
+        }
+        </div>
+        </div>
+        <p class="nota">Ganho por hora de máquina no RV {{ rvAtual() }}, já descontando o valor dos ingredientes.</p>
+      </div>
+    }
+
+    <ng-template #itemVenda let-v let-id="id">
+      <li tabindex="0" [attr.aria-describedby]="id">
+        <span class="venda-nome">{{ v.nome }}</span>
+        <span class="venda-ganho num">+{{ v.ganho }}/h</span>
+        <span class="venda-maquina">
+          {{ v.maquina }}
+          @if (v.faltam) {
+            <span class="venda-falta">· falta plantar: {{ v.faltam }}</span>
+          }
+        </span>
+        <span class="venda-dica" role="tooltip" [id]="id">
+          <span class="venda-dica-titulo">Culturas usadas</span>
+          @if (v.culturas.length) {
+            <span class="venda-culturas">
+              @for (c of v.culturas; track c.nome) {
+                <span class="venda-cultura">
+                  <span class="amostra" [style.--copa]="c.cor[0]" [style.--fruto]="c.cor[1]"></span>{{ c.nome }}
+                </span>
+              }
+            </span>
+          } @else {
+            <span>Nenhuma cultura de Fazenda ou Bosque.</span>
+          }
+          @if (v.outros) {
+            <span class="venda-outros">Também usa: {{ v.outros }}</span>
+          }
+        </span>
+      </li>
+    </ng-template>
+
+} @else if (dados.carregando()) {
+  <p>Carregando…</p>
+}

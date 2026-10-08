@@ -1,0 +1,177 @@
+<section class="cabecalho">
+  <p class="sobretitulo">Passo 1</p>
+  <h1>Requisitos<br /><span>da zona</span></h1>
+  <p class="lede">
+    Copie da tela da Zona de Produção os <strong>Requisitos Estimados</strong>. O otimizador sugere o menor
+    grupo de Aniimo que cobre tudo: cada Aniimo conta 1 em cada aptidão que tem, independente do nível.
+  </p>
+</section>
+
+<section class="folha tabela-bloco" aria-labelledby="titulo-tabela">
+  <div class="tabela-topo">
+    <h2 id="titulo-tabela">Aptidões</h2>
+    <span class="total num">{{ totalRequisitos() }} no total</span>
+  </div>
+
+  <div class="tabela" [class.com-atual]="zona.complementar()" role="table" aria-label="Requisitos por aptidão">
+    <div class="rotulos" role="row">
+      <span role="columnheader">Aptidão</span>
+      @if (zona.complementar()) {
+        <span role="columnheader">Distribuição atual</span>
+      }
+      <span role="columnheader">Requisitos Estimados</span>
+    </div>
+
+    @for (l of linhas(); track l.chave; let i = $index) {
+      <div class="coluna" role="row" [style.--cor]="'var(--ap-' + l.chave + ')'" [style.--i]="i">
+        <span class="cabeca" role="rowheader">
+          <app-aptidao-icone [aptidao]="l.chave" [tamanho]="34" />
+          <span class="nome-apt">{{ l.nome }}</span>
+        </span>
+        @if (zona.complementar()) {
+          <label class="celula atual" role="cell">
+            <span class="rotulo-celula">Atual</span>
+            <input
+              class="campo-num"
+              [class.zero]="!l.atual"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              max="99"
+              [value]="l.atual"
+              [attr.aria-label]="'Distribuição atual de ' + l.nome"
+              (focus)="selecionarTudo($event)"
+              (input)="definir('atual', l.chave, $event)"
+            />
+          </label>
+        }
+        <label class="celula" role="cell">
+          <span class="rotulo-celula">Requisito</span>
+          <input
+            class="campo-num"
+            [class.zero]="!l.requisito"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            max="99"
+            [value]="l.requisito"
+            [attr.aria-label]="'Requisito de ' + l.nome"
+            (focus)="selecionarTudo($event)"
+            (input)="definir('requisito', l.chave, $event)"
+          />
+        </label>
+      </div>
+    }
+  </div>
+
+  <details class="colar">
+    <summary>Colar os 13 números de uma vez</summary>
+    <form class="colar-form" (submit)="$event.preventDefault(); aplicarColagem()">
+      <label class="visualmente-oculto" for="colagem">Requisitos separados por vírgula ou espaço</label>
+      <input
+        id="colagem"
+        type="text"
+        inputmode="numeric"
+        placeholder="4, 5, 7, 10, 1, 1, 2, 4, 1, 5, 2, 2, 1"
+        [value]="colagem()"
+        (input)="colagem.set($any($event.target).value)"
+      />
+      <button type="submit" class="btn discreto">Aplicar</button>
+    </form>
+    @if (erroColagem()) {
+      <p class="erro" role="alert">{{ erroColagem() }}</p>
+    }
+  </details>
+</section>
+
+<section class="opcoes" aria-labelledby="titulo-opcoes">
+  <h2 id="titulo-opcoes">Opções</h2>
+
+  <div class="opcoes-grade">
+    <label class="chave folha opcao">
+      <input type="checkbox" [checked]="zona.soMeus()" (change)="zona.alternar('soMeus', $any($event.target).checked)" />
+      <span>
+        Só os meus
+        <small>
+          Usa apenas os Aniimo do seu roster ({{ roster.total() }}).
+          <a routerLink="/roster">Editar roster</a>
+        </small>
+      </span>
+    </label>
+
+    <label class="chave folha opcao">
+      <input
+        type="checkbox"
+        [checked]="zona.excluirPrismana()"
+        (change)="zona.alternar('excluirPrismana', $any($event.target).checked)"
+      />
+      <span>
+        Excluir Prismana
+        <small>Ignora as formas Prismana.</small>
+      </span>
+    </label>
+
+    <label class="chave folha opcao">
+      <input
+        type="checkbox"
+        [checked]="zona.complementar()"
+        (change)="zona.alternar('complementar', $any($event.target).checked)"
+      />
+      <span>
+        Modo complementar
+        <small>Informe o que já está na zona e veja só o que falta adicionar.</small>
+      </span>
+    </label>
+
+    <div class="folha opcao copias" [class.desativada]="zona.soMeus()">
+      <label for="max-copias">
+        Cópias por Aniimo
+        <small>
+          @if (zona.soMeus()) { No modo "só os meus" vale a quantidade que você tem. }
+          @else { Quantas vezes o mesmo Aniimo pode entrar. }
+        </small>
+      </label>
+      <input
+        id="max-copias"
+        class="campo-num"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        max="20"
+        [value]="zona.maxCopias()"
+        [disabled]="zona.soMeus()"
+        (input)="zona.definirMaxCopias(+$any($event.target).value)"
+      />
+    </div>
+  </div>
+</section>
+
+@if (zona.complementar()) {
+  <section class="alocados" aria-labelledby="titulo-alocados">
+    <details class="folha" [open]="totalAlocados() > 0">
+      <summary>
+        <h2 id="titulo-alocados">Aniimo já alocados</h2>
+        <span class="num">{{ totalAlocados() }}</span>
+      </summary>
+      <p class="nota">
+        Eles não serão sugeridos de novo. Se a <strong>Distribuição atual</strong> acima estiver zerada,
+        ela é calculada a partir destes Aniimo.
+      </p>
+      <app-aniimo-picker
+        [aniimos]="dados.aniimos()"
+        [aptidoes]="dados.aptidoes()"
+        [quantidades]="zona.alocados()"
+        rotuloQuantidade="Alocados"
+        (mudar)="mudarAlocado($event)"
+      />
+    </details>
+  </section>
+}
+
+<div class="acoes">
+  <button type="button" class="btn discreto" (click)="zona.limpar()">Zerar</button>
+  <a class="btn primario grande" routerLink="/resultado" [class.inerte]="!zona.temRequisitos()">
+    Otimizar
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+  </a>
+</div>

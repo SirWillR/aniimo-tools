@@ -1,0 +1,43 @@
+<details class="culturas folha">
+  <summary>
+    <span class="titulo">Culturas</span>
+    <span class="conta num">{{ contagem().escolhidas }} de {{ contagem().total }}</span>
+    <span class="dica">Liberadas no RV {{ rvAtual() }}. Escolha o que quer cultivar: os ambientes e os lotes se ajustam.</span>
+  </summary>
+
+  @if (travado()) {
+    <p class="travado">
+      @if (foco() === 'nivel') {
+        Foco em <strong>Nível</strong>: Bosques com as árvores que dão mais Blocos de Madeira e Fazendas com as culturas que mais rendem.
+      } @else {
+        Foco em <strong>Dinheiro</strong>: as culturas dos produtos que mais rendem neste nível.
+      }
+      Escolha "Minha seleção" no Foco, lá em cima, para voltar às suas culturas.
+    </p>
+  } @else {
+    <div class="acoes">
+      <button type="button" class="btn discreto" (click)="todasOuNenhuma(true)">Todas</button>
+      <button type="button" class="btn discreto" (click)="todasOuNenhuma(false)">Nenhuma</button>
+    </div>
+  }
+
+  <div class="grupos">
+    @for (g of grupos(); track g.chave) {
+      <section class="grupo" [attr.aria-label]="g.titulo">
+        <h3><span class="selo" [class.neutro]="!g.cor" [style.--cor]="g.cor">{{ g.titulo }}</span></h3>
+        <ul>
+          @for (o of g.opcoes; track o.familia) {
+            <li>
+              <button type="button" class="chip" [class.ligada]="escolhida(o.familia)" [attr.aria-pressed]="escolhida(o.familia)" [disabled]="travado()"
+                (click)="alternar(o.familia)" [title]="o.tipo">
+                <span class="amostra" [style.--copa]="o.copa" [style.--fruto]="o.fruto"></span>
+                <span class="nome">{{ o.nome }}</span>
+                <span class="tipo">{{ o.tipo === 'Bosque' ? 'bosque' : 'fazenda' }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+</details>

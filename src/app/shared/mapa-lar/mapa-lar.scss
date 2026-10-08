@@ -1,0 +1,127 @@
+// O mapa é uma ilustração: paleta natural fixa nos dois temas. Só a moldura segue os tokens do app.
+:host { display: block; }
+
+.moldura {
+  position: relative;
+  border-radius: var(--raio);
+  overflow: hidden;
+  background: #9cc56a;
+  // Moldura de "folha colada no caderno": borda de papel + sombra.
+  box-shadow: 0 0 0 6px var(--folha), 0 0 0 7px var(--linha-forte), var(--sombra);
+  touch-action: pan-y;
+
+  &.ampliado {
+    touch-action: none;
+    .mapa { cursor: grab; }
+    .mapa:active { cursor: grabbing; }
+  }
+}
+
+.mapa {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+// No escuro o mapa escurece um pouco, como fim de tarde, para não ofuscar.
+@mixin anoitecer { .mapa { filter: brightness(0.86) saturate(0.95); } }
+@media (prefers-color-scheme: dark) { :host-context(:root:not([data-theme='light'])) { @include anoitecer; } }
+:host-context(:root[data-theme='dark']) { @include anoitecer; }
+
+.aura {
+  fill-opacity: 0.3;
+  stroke-width: 0.12;
+  stroke-opacity: 0.9;
+  stroke-dasharray: 0.45 0.3;
+
+  &.tecnica {
+    fill-opacity: 0.14;
+    stroke-width: 0.14;
+    stroke-opacity: 1;
+    stroke-dasharray: none;
+  }
+}
+
+.construcao {
+  cursor: pointer;
+
+  .alvo { fill: transparent; stroke: none; }
+  &:hover .alvo { stroke: #fffbe8; stroke-width: 0.16; stroke-opacity: 0.8; }
+  &.selecionada .alvo {
+    stroke: #fffbe8;
+    stroke-width: 0.22;
+    filter: drop-shadow(0 0 0.25px #221d17);
+  }
+}
+
+.construcao.reservada use {
+  opacity: 0.35;
+  filter: grayscale(0.75);
+}
+
+.contorno-reservado {
+  fill: #fffbe8;
+  fill-opacity: 0.12;
+  stroke: #fffbe8;
+  stroke-width: 0.12;
+  stroke-dasharray: 0.35 0.25;
+  pointer-events: none;
+}
+
+.contorno-fora {
+  fill: none;
+  stroke: #f2a33a;
+  stroke-width: 0.16;
+  stroke-dasharray: 0.4 0.25;
+  pointer-events: none;
+}
+
+.contorno-estimado {
+  fill: none;
+  stroke: #fffbe8;
+  stroke-width: 0.1;
+  stroke-dasharray: 0.3 0.22;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.cerca {
+  pointer-events: none;
+
+  path { fill: none; stroke: #9a6a40; stroke-width: 0.1; stroke-linecap: round; }
+  rect { fill: #6e4527; }
+  .pilar { fill: #5a381f; }
+}
+
+.grade { pointer-events: none; }
+
+.controles {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  button {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--linha-forte);
+    border-radius: 10px;
+    background: var(--folha);
+    color: var(--tinta);
+    font: 700 1.2rem/1 var(--fonte-titulo);
+    box-shadow: var(--sombra);
+    cursor: pointer;
+
+    &:disabled { opacity: 0.45; cursor: default; }
+    &:not(:disabled):hover { border-color: var(--acento); color: var(--acento); }
+    &:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+    svg { width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  }
+}
