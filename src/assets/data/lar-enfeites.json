@@ -1,0 +1,1097 @@
+{
+  "fonte": {
+    "site": "https://aniidex.com",
+    "endpoint": "/pt/items/{slug}/",
+    "extraidoEm": "2026-10-10T20:55:34.144Z",
+    "nota": "Nome, categoria, RV, preço e habitabilidade: Aniidex. Tamanho em tiles, desenho e usos: nossos (tamanho estimado até conferir no jogo)."
+  },
+  "moedas": {
+    "1011": "Bilhete Botão"
+  },
+  "enfeites": [
+    {
+      "id": "40300004",
+      "slug": "cherry-tree",
+      "nome": "Cerejeira",
+      "nomeEn": "Cherry Tree",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 18,
+      "preco": 416,
+      "moeda": "1011",
+      "habitabilidade": 416,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#f0a3c0",
+      "usos": [
+        "pomar",
+        "praca"
+      ]
+    },
+    {
+      "id": "40300005",
+      "slug": "apple-tree",
+      "nome": "Macieira",
+      "nomeEn": "Apple Tree",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 4,
+      "preco": 80,
+      "moeda": "1011",
+      "habitabilidade": 80,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#5c9b45",
+      "usos": [
+        "pomar"
+      ]
+    },
+    {
+      "id": "40300009",
+      "slug": "oak",
+      "nome": "Carvalho",
+      "nomeEn": "Oak",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 6,
+      "preco": 95,
+      "moeda": "1011",
+      "habitabilidade": 95,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#3f7f3f",
+      "usos": [
+        "lago",
+        "lazer",
+        "oficina"
+      ]
+    },
+    {
+      "id": "40300003",
+      "slug": "maple-tree",
+      "nome": "Árvore de Bordo",
+      "nomeEn": "Maple Tree",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 5,
+      "preco": 88,
+      "moeda": "1011",
+      "habitabilidade": 88,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#d98a3a",
+      "usos": [
+        "pomar"
+      ]
+    },
+    {
+      "id": "40300001",
+      "slug": "willow",
+      "nome": "Salgueiro",
+      "nomeEn": "Willow",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 4,
+      "preco": 80,
+      "moeda": "1011",
+      "habitabilidade": 80,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#86b86a",
+      "usos": [
+        "lago"
+      ]
+    },
+    {
+      "id": "40300007",
+      "slug": "pine-tree",
+      "nome": "Pinheiro",
+      "nomeEn": "Pine Tree",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 9,
+      "preco": 176,
+      "moeda": "1011",
+      "habitabilidade": 176,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "pinheiro",
+      "cor": null,
+      "usos": [
+        "recursos",
+        "lago"
+      ]
+    },
+    {
+      "id": "40300008",
+      "slug": "coconut-tree",
+      "nome": "Coqueiro",
+      "nomeEn": "Coconut Tree",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 5,
+      "preco": 88,
+      "moeda": "1011",
+      "habitabilidade": 88,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "palmeira",
+      "cor": null,
+      "usos": [
+        "lazer"
+      ]
+    },
+    {
+      "id": "40300016",
+      "slug": "golden-trumpet-tree",
+      "nome": "Ipê-amarelo",
+      "nomeEn": "Golden Trumpet Tree",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 5,
+      "preco": 131,
+      "moeda": "1011",
+      "habitabilidade": 131,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#f6d04d",
+      "usos": [
+        "praca"
+      ]
+    },
+    {
+      "id": "40400018",
+      "slug": "wisteria",
+      "nome": "Glicínia",
+      "nomeEn": "Wisteria",
+      "categoria": "Móveis de Exterior › Planta",
+      "rv": 7,
+      "preco": 154,
+      "moeda": "1011",
+      "habitabilidade": 154,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "arvore",
+      "cor": "#b58be0",
+      "usos": [
+        "praca",
+        "moradias"
+      ]
+    },
+    {
+      "id": "40700007",
+      "slug": "round-shrubs",
+      "nome": "Arbustos Redondos",
+      "nomeEn": "Round Shrubs",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 5,
+      "preco": 66,
+      "moeda": "1011",
+      "habitabilidade": 66,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "arbusto",
+      "cor": "#5a9a4a",
+      "usos": [
+        "praca",
+        "lago",
+        "pomar",
+        "lazer",
+        "cultivo",
+        "oficina",
+        "recursos"
+      ]
+    },
+    {
+      "id": "40700016",
+      "slug": "flowering-shrubs",
+      "nome": "Arbustos Floridos",
+      "nomeEn": "Flowering Shrubs",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 4,
+      "preco": 30,
+      "moeda": "1011",
+      "habitabilidade": 30,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "arbusto",
+      "cor": "#e58fb0",
+      "usos": [
+        "praca",
+        "moradias"
+      ]
+    },
+    {
+      "id": "40700001",
+      "slug": "box-hedge",
+      "nome": "Cerca Viva",
+      "nomeEn": "Box Hedge",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 10,
+      "preco": 188,
+      "moeda": "1011",
+      "habitabilidade": 188,
+      "largura": 2,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "cerca-viva",
+      "cor": null,
+      "usos": [
+        "praca"
+      ]
+    },
+    {
+      "id": "40400004",
+      "slug": "endless-summer",
+      "nome": "Hortênsia",
+      "nomeEn": "Endless Summer",
+      "categoria": "Móveis de Exterior › Planta (Pequena)",
+      "rv": 5,
+      "preco": 44,
+      "moeda": "1011",
+      "habitabilidade": 44,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "flores",
+      "cor": "#7fa8e8",
+      "usos": [
+        "praca",
+        "moradias"
+      ]
+    },
+    {
+      "id": "40400031",
+      "slug": "red-rose",
+      "nome": "Rosa Vermelha",
+      "nomeEn": "Red Rose",
+      "categoria": "Móveis de Exterior › Planta (Pequena)",
+      "rv": 7,
+      "preco": 51,
+      "moeda": "1011",
+      "habitabilidade": 51,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "flores",
+      "cor": "#e0455f",
+      "usos": [
+        "praca"
+      ]
+    },
+    {
+      "id": "40400012",
+      "slug": "sunflower",
+      "nome": "Girassol",
+      "nomeEn": "Sunflower",
+      "categoria": "Móveis de Exterior › Planta (Pequena)",
+      "rv": 6,
+      "preco": 143,
+      "moeda": "1011",
+      "habitabilidade": 143,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "flores",
+      "cor": "#f6c343",
+      "usos": [
+        "cultivo",
+        "pomar"
+      ]
+    },
+    {
+      "id": "40400002",
+      "slug": "lavender",
+      "nome": "Alfazema",
+      "nomeEn": "Lavender",
+      "categoria": "Móveis de Exterior › Planta (Pequena)",
+      "rv": 4,
+      "preco": 20,
+      "moeda": "1011",
+      "habitabilidade": 20,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "flores",
+      "cor": "#9c7fd6",
+      "usos": [
+        "cultivo",
+        "lago"
+      ]
+    },
+    {
+      "id": "40400033",
+      "slug": "pink-tulip",
+      "nome": "Tulipa Rosa",
+      "nomeEn": "Pink Tulip",
+      "categoria": "Móveis de Exterior › Planta (Pequena)",
+      "rv": 7,
+      "preco": 103,
+      "moeda": "1011",
+      "habitabilidade": 103,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "flores",
+      "cor": "#f28ab2",
+      "usos": [
+        "praca",
+        "moradias",
+        "lazer",
+        "oficina"
+      ]
+    },
+    {
+      "id": "40400006",
+      "slug": "daisy",
+      "nome": "Margarida",
+      "nomeEn": "Daisy",
+      "categoria": "Móveis de Exterior › Planta (Pequena)",
+      "rv": 4,
+      "preco": 20,
+      "moeda": "1011",
+      "habitabilidade": 20,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "flores",
+      "cor": "#fdfbf5",
+      "usos": [
+        "pomar",
+        "lago",
+        "ninhal"
+      ]
+    },
+    {
+      "id": "40600038",
+      "slug": "spinning-fountain",
+      "nome": "Fonte Giratória",
+      "nomeEn": "Spinning Fountain",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 6,
+      "preco": 107,
+      "moeda": "1011",
+      "habitabilidade": 107,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "fonte",
+      "cor": null,
+      "usos": [
+        "praca"
+      ]
+    },
+    {
+      "id": "40700005",
+      "slug": "curved-pond",
+      "nome": "Lago Curvo",
+      "nomeEn": "Curved Pond",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 10,
+      "preco": 188,
+      "moeda": "1011",
+      "habitabilidade": 188,
+      "largura": 4,
+      "altura": 3,
+      "tamanhoEstimado": true,
+      "forma": "lago",
+      "cor": null,
+      "usos": [
+        "lago"
+      ]
+    },
+    {
+      "id": "40700003",
+      "slug": "pond",
+      "nome": "Laguinho",
+      "nomeEn": "Pond",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 5,
+      "preco": 33,
+      "moeda": "1011",
+      "habitabilidade": 33,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "laguinho",
+      "cor": null,
+      "usos": [
+        "lazer"
+      ]
+    },
+    {
+      "id": "40500003",
+      "slug": "stone-bridge",
+      "nome": "Ponte de Pedra",
+      "nomeEn": "Stone Bridge",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 5,
+      "preco": 295,
+      "moeda": "1011",
+      "habitabilidade": 295,
+      "largura": 3,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "ponte",
+      "cor": null,
+      "usos": [
+        "lago"
+      ]
+    },
+    {
+      "id": "40500016",
+      "slug": "wooden-waterwheel",
+      "nome": "Roda-d’água de Madeira",
+      "nomeEn": "Wooden Waterwheel",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 14,
+      "preco": 349,
+      "moeda": "1011",
+      "habitabilidade": 349,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "roda-dagua",
+      "cor": null,
+      "usos": [
+        "lago"
+      ]
+    },
+    {
+      "id": "40500002",
+      "slug": "gazebo",
+      "nome": "Gazebo",
+      "nomeEn": "Gazebo",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 6,
+      "preco": 321,
+      "moeda": "1011",
+      "habitabilidade": 321,
+      "largura": 4,
+      "altura": 4,
+      "tamanhoEstimado": true,
+      "forma": "gazebo",
+      "cor": null,
+      "usos": [
+        "pomar"
+      ]
+    },
+    {
+      "id": "40500006",
+      "slug": "garden-gate",
+      "nome": "Portão de Jardim",
+      "nomeEn": "Garden Gate",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 7,
+      "preco": 346,
+      "moeda": "1011",
+      "habitabilidade": 415,
+      "largura": 2,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "portao",
+      "cor": null,
+      "usos": [
+        "praca",
+        "pomar",
+        "lazer"
+      ]
+    },
+    {
+      "id": "40700019",
+      "slug": "floral-arch",
+      "nome": "Arco Floral",
+      "nomeEn": "Floral Arch",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 7,
+      "preco": 154,
+      "moeda": "1011",
+      "habitabilidade": 154,
+      "largura": 2,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "arco-florido",
+      "cor": "#f28ab2",
+      "usos": [
+        "praca",
+        "moradias"
+      ]
+    },
+    {
+      "id": "40500014",
+      "slug": "puffby-flower-trellis",
+      "nome": "Treliça de Flor de Zangóin",
+      "nomeEn": "Puffby Flower Trellis",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 16,
+      "preco": 383,
+      "moeda": "1011",
+      "habitabilidade": 383,
+      "largura": 2,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "trelica",
+      "cor": null,
+      "usos": [
+        "pomar",
+        "moradias"
+      ]
+    },
+    {
+      "id": "40500007",
+      "slug": "pawprint-swing",
+      "nome": "Balanço com Patinhas",
+      "nomeEn": "Pawprint Swing",
+      "categoria": "Móveis de Exterior › Móveis interativos",
+      "rv": 7,
+      "preco": 346,
+      "moeda": "1011",
+      "habitabilidade": 415,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "balanco",
+      "cor": null,
+      "usos": [
+        "lazer"
+      ]
+    },
+    {
+      "id": "50900004",
+      "slug": "aniimo-climbing-frame",
+      "nome": "Estrutura de Escalada de Aniimo",
+      "nomeEn": "Aniimo Climbing Frame",
+      "categoria": "Móveis de Interior › Móvel de aniimo",
+      "rv": 19,
+      "preco": 289,
+      "moeda": "1011",
+      "habitabilidade": 289,
+      "largura": 3,
+      "altura": 3,
+      "tamanhoEstimado": true,
+      "forma": "escalada",
+      "cor": null,
+      "usos": [
+        "lazer"
+      ]
+    },
+    {
+      "id": "40500004",
+      "slug": "camping-canopy",
+      "nome": "Tenda de Acampamento",
+      "nomeEn": "Camping Canopy",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 4,
+      "preco": 180,
+      "moeda": "1011",
+      "habitabilidade": 180,
+      "largura": 3,
+      "altura": 3,
+      "tamanhoEstimado": true,
+      "forma": "tenda",
+      "cor": null,
+      "usos": [
+        "lago"
+      ]
+    },
+    {
+      "id": "40600012",
+      "slug": "bonfire",
+      "nome": "Fogueira",
+      "nomeEn": "Bonfire",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 5,
+      "preco": 131,
+      "moeda": "1011",
+      "habitabilidade": 131,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "fogueira",
+      "cor": null,
+      "usos": [
+        "lago",
+        "lazer"
+      ]
+    },
+    {
+      "id": "50900001",
+      "slug": "playful-adventure-den",
+      "nome": "Toca de Aventura Brincalhona",
+      "nomeEn": "Playful Adventure Den",
+      "categoria": "Móveis de Interior › Móvel de aniimo",
+      "rv": 18,
+      "preco": 185,
+      "moeda": "1011",
+      "habitabilidade": 185,
+      "largura": 3,
+      "altura": 3,
+      "tamanhoEstimado": true,
+      "forma": "toca-aventura",
+      "cor": null,
+      "usos": [
+        "lazer"
+      ]
+    },
+    {
+      "id": "40600004",
+      "slug": "balloon",
+      "nome": "Balão",
+      "nomeEn": "Balloon",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 5,
+      "preco": 66,
+      "moeda": "1011",
+      "habitabilidade": 66,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "balao",
+      "cor": null,
+      "usos": [
+        "lazer"
+      ]
+    },
+    {
+      "id": "51130010",
+      "slug": "cozy-bear-den",
+      "nome": "Toca de Urso Aconchegante",
+      "nomeEn": "Cozy Bear Den",
+      "categoria": "Móveis de Interior › Tecidos para Decoração",
+      "rv": 9,
+      "preco": 88,
+      "moeda": "1011",
+      "habitabilidade": 88,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "toca",
+      "cor": null,
+      "usos": [
+        "lazer",
+        "moradias"
+      ]
+    },
+    {
+      "id": "50200001",
+      "slug": "grassland-dining-table",
+      "nome": "Mesa de Jantar do Prado",
+      "nomeEn": "Grassland Dining Table",
+      "categoria": "Móveis de Interior › Mesas e Cadeiras",
+      "rv": 12,
+      "preco": 210,
+      "moeda": "1011",
+      "habitabilidade": 210,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "piquenique",
+      "cor": null,
+      "usos": [
+        "lago"
+      ]
+    },
+    {
+      "id": "40900009",
+      "slug": "solid-wood-low-stool",
+      "nome": "Banco Baixo Sólido de Madeira",
+      "nomeEn": "Solid Wood Low Stool",
+      "categoria": "Móveis de Exterior › Mesas e Cadeiras",
+      "rv": 4,
+      "preco": 72,
+      "moeda": "1011",
+      "habitabilidade": 72,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "banquinho",
+      "cor": null,
+      "usos": [
+        "praca",
+        "lago"
+      ]
+    },
+    {
+      "id": "40600036",
+      "slug": "sun-umbrella",
+      "nome": "Sombrinha",
+      "nomeEn": "Sun Umbrella",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 4,
+      "preco": 180,
+      "moeda": "1011",
+      "habitabilidade": 180,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "sombrinha",
+      "cor": null,
+      "usos": [
+        "lago",
+        "lazer"
+      ]
+    },
+    {
+      "id": "41100007",
+      "slug": "retro-streetlamp",
+      "nome": "Poste de Luz Retrô",
+      "nomeEn": "Retro Streetlamp",
+      "categoria": "Móveis de Exterior › Iluminação",
+      "rv": 5,
+      "preco": 158,
+      "moeda": "1011",
+      "habitabilidade": 158,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "poste",
+      "cor": "#ffd98a",
+      "usos": [
+        "praca",
+        "oficina",
+        "moradias"
+      ]
+    },
+    {
+      "id": "41100003",
+      "slug": "mushroom-light",
+      "nome": "Luz Cogumelo",
+      "nomeEn": "Mushroom Light",
+      "categoria": "Móveis de Exterior › Iluminação",
+      "rv": 5,
+      "preco": 158,
+      "moeda": "1011",
+      "habitabilidade": 158,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "cogumelo",
+      "cor": null,
+      "usos": [
+        "pomar",
+        "lazer"
+      ]
+    },
+    {
+      "id": "40600065",
+      "slug": "glowstone-lamp-i",
+      "nome": "Lâmpada de Pedra Brilhante I",
+      "nomeEn": "Glowstone Lamp I",
+      "categoria": "Móveis de Exterior › Decoração",
+      "rv": 6,
+      "preco": 71,
+      "moeda": "1011",
+      "habitabilidade": 71,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "lanterna",
+      "cor": null,
+      "usos": [
+        "lago",
+        "recursos"
+      ]
+    },
+    {
+      "id": "40600027",
+      "slug": "stone-carved-figure",
+      "nome": "Estatueta de Pedra",
+      "nomeEn": "Stone-Carved Figure",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 6,
+      "preco": 143,
+      "moeda": "1011",
+      "habitabilidade": 143,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "estatua",
+      "cor": null,
+      "usos": [
+        "praca"
+      ]
+    },
+    {
+      "id": "40100010",
+      "slug": "gravel-path",
+      "nome": "Caminho de Cascalho",
+      "nomeEn": "Gravel Path",
+      "categoria": "Móveis de Exterior › Solo",
+      "rv": 4,
+      "preco": 16,
+      "moeda": "1011",
+      "habitabilidade": 16,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "cascalho-chao",
+      "cor": null,
+      "usos": [
+        "lago",
+        "pomar",
+        "lazer"
+      ]
+    },
+    {
+      "id": "40100002",
+      "slug": "flagstone-pavement",
+      "nome": "Pavimento de Laje",
+      "nomeEn": "Flagstone Pavement",
+      "categoria": "Móveis de Exterior › Solo",
+      "rv": 4,
+      "preco": 16,
+      "moeda": "1011",
+      "habitabilidade": 16,
+      "largura": 2,
+      "altura": 2,
+      "tamanhoEstimado": true,
+      "forma": "laje",
+      "cor": null,
+      "usos": [
+        "praca"
+      ]
+    },
+    {
+      "id": "40200004",
+      "slug": "garden-fence",
+      "nome": "Cerca de Jardim",
+      "nomeEn": "Garden Fence",
+      "categoria": "Móveis de Exterior › Cercas",
+      "rv": 7,
+      "preco": 21,
+      "moeda": "1011",
+      "habitabilidade": 21,
+      "largura": 2,
+      "altura": 0.5,
+      "tamanhoEstimado": true,
+      "forma": "cerca-jardim",
+      "cor": null,
+      "usos": [
+        "cultivo",
+        "ninhal"
+      ]
+    },
+    {
+      "id": "40600001",
+      "slug": "hayrick",
+      "nome": "Cubo de Feno",
+      "nomeEn": "Hayrick",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 6,
+      "preco": 36,
+      "moeda": "1011",
+      "habitabilidade": 36,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "feno",
+      "cor": null,
+      "usos": [
+        "cultivo",
+        "ninhal"
+      ]
+    },
+    {
+      "id": "40600075",
+      "slug": "wheelbarrow",
+      "nome": "Carrinho de Mão",
+      "nomeEn": "Wheelbarrow",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 4,
+      "preco": 60,
+      "moeda": "1011",
+      "habitabilidade": 60,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "carrinho-mao",
+      "cor": null,
+      "usos": [
+        "cultivo"
+      ]
+    },
+    {
+      "id": "40600008",
+      "slug": "hay-cart",
+      "nome": "Carrinho com Feno",
+      "nomeEn": "Hay Cart",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 5,
+      "preco": 131,
+      "moeda": "1011",
+      "habitabilidade": 131,
+      "largura": 2,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "carroca",
+      "cor": null,
+      "usos": [
+        "cultivo"
+      ]
+    },
+    {
+      "id": "40600007",
+      "slug": "empty-cart",
+      "nome": "Carrinho Vazio",
+      "nomeEn": "Empty Cart",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 5,
+      "preco": 131,
+      "moeda": "1011",
+      "habitabilidade": 131,
+      "largura": 2,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "carrinho-minerio",
+      "cor": null,
+      "usos": [
+        "recursos"
+      ]
+    },
+    {
+      "id": "40700028",
+      "slug": "rock---repose",
+      "nome": "Pedra - Repouso",
+      "nomeEn": "Rock - Repose",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 11,
+      "preco": 298,
+      "moeda": "1011",
+      "habitabilidade": 298,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "pedra",
+      "cor": "#a9a397",
+      "usos": [
+        "recursos",
+        "lago"
+      ]
+    },
+    {
+      "id": "40600016",
+      "slug": "starine-pile-medium",
+      "nome": "Pilha de Estelina: Média",
+      "nomeEn": "Starine Pile: Medium",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 4,
+      "preco": 120,
+      "moeda": "1011",
+      "habitabilidade": 120,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "pedras-minerio",
+      "cor": null,
+      "usos": [
+        "recursos"
+      ]
+    },
+    {
+      "id": "40600002",
+      "slug": "stacked-wood-pile",
+      "nome": "Pilha de Madeira Pequena",
+      "nomeEn": "Stacked Wood Pile",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 4,
+      "preco": 30,
+      "moeda": "1011",
+      "habitabilidade": 30,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "lenha",
+      "cor": null,
+      "usos": [
+        "oficina"
+      ]
+    },
+    {
+      "id": "40600032",
+      "slug": "terracotta-vase",
+      "nome": "Vaso de Terracota",
+      "nomeEn": "Terracotta Vase",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 6,
+      "preco": 143,
+      "moeda": "1011",
+      "habitabilidade": 143,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "vaso",
+      "cor": "#f28ab2",
+      "usos": [
+        "oficina",
+        "moradias"
+      ]
+    },
+    {
+      "id": "40600009",
+      "slug": "wooden-signpost",
+      "nome": "Placa de Sinalização de Madeira",
+      "nomeEn": "Wooden Signpost",
+      "categoria": "Móveis de Exterior › Decoração (Pequena)",
+      "rv": 4,
+      "preco": 120,
+      "moeda": "1011",
+      "habitabilidade": 120,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "placa",
+      "cor": null,
+      "usos": [
+        "oficina"
+      ]
+    },
+    {
+      "id": "40700017",
+      "slug": "moss-covered-stump",
+      "nome": "Toco Coberto de Musgos",
+      "nomeEn": "Moss-Covered Stump",
+      "categoria": "Móveis de Exterior › Paisagismo de Jardim",
+      "rv": 4,
+      "preco": 30,
+      "moeda": "1011",
+      "habitabilidade": 30,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "toco",
+      "cor": null,
+      "usos": [
+        "pomar"
+      ]
+    },
+    {
+      "id": "40900017",
+      "slug": "woven-grass-nest",
+      "nome": "Ninho de Capim Trançado",
+      "nomeEn": "Woven Grass Nest",
+      "categoria": "Móveis de Exterior › Mesas e Cadeiras",
+      "rv": 6,
+      "preco": 171,
+      "moeda": "1011",
+      "habitabilidade": 171,
+      "largura": 1,
+      "altura": 1,
+      "tamanhoEstimado": true,
+      "forma": "ninho",
+      "cor": null,
+      "usos": [
+        "ninhal",
+        "moradias"
+      ]
+    }
+  ]
+}

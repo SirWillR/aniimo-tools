@@ -2,6 +2,7 @@ import json from '../../../assets/data/lar-construcao.json';
 import { liberacaoPorItem, rvDoProduto } from './liberacao';
 import type { DadosConstrucao } from './modelos-lar';
 import { plantaDoLar } from './planta';
+import { terreno } from './terrenos';
 
 const dados = json as unknown as DadosConstrucao;
 
@@ -33,7 +34,7 @@ describe('liberacaoPorItem', () => {
     const ambientes = itens.filter((i) => i.construcao in dados.regras.construcoes);
     const serveDesde = (l: (typeof itens)[number]) => {
       const blocoPronto = l.condicao ? Math.max(0, ...ambientes.filter((a) => a.bloco === l.bloco).map((a) => lib.get(a)!)) : 0;
-      return Math.max(blocoPronto, l.cultura ? (rvDoProduto(l.cultura, dados) ?? Infinity) : Infinity);
+      return Math.max(terreno(l.terreno).rv, blocoPronto, l.cultura ? (rvDoProduto(l.cultura, dados) ?? Infinity) : Infinity);
     };
     const lotes = itens.filter((i) => i.construcao === 'farmland' || i.construcao === 'woodland');
     for (const l of lotes) {
@@ -57,6 +58,10 @@ describe('liberacaoPorItem', () => {
     const l = liberacaoPorItem(p, dados, 5);
     const coringasNoRv5 = [...l.keys()].filter((i) => i.coringa && l.get(i)! <= 5);
     expect(coringasNoRv5.length).toBeGreaterThan(0);
+  });
+
+  it('nenhum espaço libera antes do seu terreno', () => {
+    for (const i of itens) expect(lib.get(i)!).toBeGreaterThanOrEqual(terreno(i.terreno).rv);
   });
 
   it('chocadeiras e armazéns não têm nível conhecido: ficam fora do mapa de liberação', () => {

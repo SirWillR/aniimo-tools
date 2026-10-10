@@ -56,6 +56,29 @@
   }
 }
 
+.construcao .nivel {
+  font-family: var(--fonte-titulo, inherit);
+  font-weight: 800;
+  text-anchor: middle;
+  fill: #fffbe8;
+  paint-order: stroke;
+  stroke: #2b3a23;
+  stroke-width: 0.16;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.mapa:focus-visible { outline: 3px solid var(--acento); outline-offset: -3px; }
+
+.enfeite {
+  cursor: pointer;
+
+  .alvo { fill: transparent; stroke: none; }
+  &:hover .alvo { stroke: #fffbe8; stroke-width: 0.1; stroke-opacity: 0.7; }
+  &.selecionado .alvo { stroke: #fffbe8; stroke-width: 0.16; filter: drop-shadow(0 0 0.2px #221d17); }
+  &.apagado use { opacity: 0.4; filter: grayscale(0.7); }
+}
+
 .construcao.reservada use {
   opacity: 0.35;
   filter: grayscale(0.75);
@@ -125,3 +148,43 @@
     svg { width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   }
 }
+
+// ---- terrenos ----
+.terreno {
+  pointer-events: none;
+
+  .numero,
+  .trava {
+    font-family: var(--fonte-titulo, inherit);
+    font-weight: 800;
+    fill: #fffbe8;
+    paint-order: stroke;
+    stroke: #2b3a23;
+    stroke-width: 0.22;
+    stroke-linejoin: round;
+  }
+
+  .numero { font-size: 0.8px; }
+
+  .trava {
+    font-size: 0.95px;
+    text-anchor: middle;
+  }
+
+  .veu {
+    fill: #24331f;
+    fill-opacity: 0.55;
+  }
+
+}
+
+.abrir {
+  fill: transparent;
+  cursor: pointer;
+  stroke: #fffbe8;
+  stroke-width: 0;
+
+  &:hover { fill: rgb(255 251 232 / 12%); stroke-width: 0.3; }
+}
+
+.moldura.ampliado .abrir { cursor: grab; }

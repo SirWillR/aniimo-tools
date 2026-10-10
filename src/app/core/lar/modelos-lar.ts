@@ -103,3 +103,37 @@ export interface DadosConstrucao {
   produtos: Produto[];
   regras: RegrasAmbiente;
 }
+
+/** Onde um enfeite pode aparecer: os quatro tipos de terreno decorativo e os temas produtivos. */
+export type UsoEnfeite = 'praca' | 'lago' | 'pomar' | 'lazer' | 'cultivo' | 'oficina' | 'recursos' | 'moradias' | 'ninhal';
+
+/** Item decorativo do jogo (lar-enfeites.json, gerado por `npm run data:enfeites`). */
+export interface Enfeite {
+  id: string;
+  /** Slug da página do item no Aniidex. */
+  slug: string;
+  nome: string;
+  nomeEn: string;
+  categoria: string | null;
+  /** Nível do Lar em que a loja libera (1 quando não é de loja). */
+  rv: number;
+  preco: number | null;
+  /** Id da moeda do preço (ver `DadosEnfeites.moedas`). */
+  moeda: string | null;
+  habitabilidade: number;
+  /** Tamanho em tiles: estimado por nós enquanto `tamanhoEstimado` (a fonte não publica). */
+  largura: number;
+  altura: number;
+  tamanhoEstimado: boolean;
+  /** Nosso desenho: id do `<symbol>` em mapa-simbolos.html, sem o prefixo `ml-`. */
+  forma: string;
+  cor: string | null;
+  usos: UsoEnfeite[];
+}
+
+export interface DadosEnfeites {
+  fonte: { site: string; endpoint: string; extraidoEm: string; nota: string };
+  /** Id da moeda → nome em PT. */
+  moedas: Record<string, string>;
+  enfeites: Enfeite[];
+}

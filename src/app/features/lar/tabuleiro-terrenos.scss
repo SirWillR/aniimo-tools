@@ -1,0 +1,88 @@
+// Visão geral dos terrenos em cartões. Paleta fixa nos dois temas, como o mapa.
+:host { display: block; }
+
+.tabuleiro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: grid; }
+
+  // Em telas largas os cartões ficam na posição do tabuleiro do jogo; no celular, na ordem dos números.
+  @media (min-width: 760px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    li { grid-column: var(--coluna); grid-row: var(--linha); }
+  }
+}
+
+.terreno {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: #f5f8ee;
+  color: #1f2a17;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 6px 16px -8px rgb(31 42 23 / 70%); }
+  &:focus-visible { outline: 3px solid #fffbe8; outline-offset: 2px; }
+  &.fechado { background: rgb(245 248 238 / 62%); }
+
+  .trava { justify-self: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terreno { transition: none; }
+  .terreno:hover { transform: none; }
+}
+
+.terreno-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.45rem;
+
+  strong { font-family: var(--fonte-titulo); font-size: 0.98rem; color: #2f6fb3; }
+  .tema { font-size: 0.78rem; font-weight: 600; color: #55604b; }
+}
+
+.terreno-nota { font-size: 0.76rem; font-weight: 600; color: #55604b; }
+.terreno-nota.trava { color: #fffbe8; }
+
+.terreno-producao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+
+  .ponto { box-shadow: 0 0 0 1px rgb(31 42 23 / 25%); }
+  .mais { color: #55604b; font-weight: 700; }
+}
+
+.trava {
+  justify-self: start;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  background: rgb(31 42 23 / 72%);
+}
+
+.ponto {
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  margin-right: 0.3em;
+  border-radius: 50%;
+  background: var(--cor, #c9b48a);
+}
+
+@media (min-width: 760px) {
+  app-mini-terreno { display: none; }
+}

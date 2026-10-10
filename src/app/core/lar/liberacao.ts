@@ -6,7 +6,9 @@
 //   liberada), a cultura escolhida com menos lotes até ali ganha o próximo (revezamento), para cada
 //   cultura marcada ter lote assim que possível; as coringas entram no revezamento como uma cultura que
 //   serve desde o RV 1; lote sem cultura fica por último;
-// - o resto, e os empates, na ordem de leitura do mapa (de cima para baixo, da esquerda para a direita).
+// - o resto, e os empates, pelos terrenos que abrem antes e, dentro do terreno, na ordem de leitura (de
+//   cima para baixo, da esquerda para a direita);
+// - nenhum espaço libera antes do seu terreno.
 // Com `rvAtual`, os espaços que o jogador já tem são escolhidos primeiro, revezando entre as culturas
 // úteis nesse nível; só depois cada um recebe o seu RV. Depende das culturas dos lotes. TS puro.
 import type { DadosConstrucao, Produto } from './modelos-lar';
@@ -14,6 +16,7 @@ import type { ItemMapa, PlantaLar } from './planta';
 import { sobrepoe } from './geometria';
 import { coberturasDosAmbientes, tamanhoDoGrupo } from './rearranjo';
 import { familia } from './sugestao';
+import { terreno } from './terrenos';
 
 type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
 
@@ -21,7 +24,8 @@ type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
 export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAtual?: number): Map<ItemConstrucao, number> {
   const porChave = new Map(dados.construcoes.map((c) => [c.chave, c]));
   const saida = new Map<ItemConstrucao, number>();
-  const leitura = (a: ItemConstrucao, b: ItemConstrucao) => a.area.y - b.area.y || a.area.x - b.area.x;
+  const rvDoTerreno = (i: ItemConstrucao) => terreno(i.terreno).rv;
+  const leitura = (a: ItemConstrucao, b: ItemConstrucao) => rvDoTerreno(a) - rvDoTerreno(b) || a.area.y - b.area.y || a.area.x - b.area.x;
   const todos = planta.itens.filter((i): i is ItemConstrucao => i.tipo === 'construcao').sort(leitura);
   const ehAmbiente = (i: ItemConstrucao) => i.construcao in dados.regras.construcoes;
   const contagem = new Map<string, number>();
@@ -32,7 +36,7 @@ export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAt
       const k = (contagem.get(i.construcao) ?? 0) + 1;
       contagem.set(i.construcao, k);
       const indice = c.quantidadePorRv.findIndex((q) => q >= k);
-      if (indice >= 0) saida.set(i, indice + 1);
+      if (indice >= 0) saida.set(i, Math.max(indice + 1, rvDoTerreno(i)));
     }
   };
   // Grupos maiores primeiro: o par Forno de Calor + Resfriador só funciona com os dois.
@@ -47,12 +51,12 @@ export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAt
   const lote = (i: ItemConstrucao) => i.construcao === 'farmland' || i.construcao === 'woodland';
   atribuir(todos.filter((i) => !ehAmbiente(i) && !lote(i)));
 
-  // A partir de que RV o lote serve: ambiente do bloco (se ele depende de um) e cultura liberada.
+  // A partir de que RV o lote serve: terreno aberto, ambiente (se ele depende de um) e cultura liberada.
   const serveDesde = (i: ItemConstrucao) => {
-    // Coringa serve desde o começo: a semente de evento é plantada quando aparecer.
-    if (i.coringa) return 0;
+    // Coringa serve assim que o terreno abre: a semente de evento é plantada quando aparecer.
+    if (i.coringa) return rvDoTerreno(i);
     const rvCultura = i.cultura ? (rvDoProduto(i.cultura, dados) ?? Infinity) : Infinity;
-    return Math.max(i.condicao ? rvDosAmbientes(i) : 0, rvCultura);
+    return Math.max(rvDoTerreno(i), i.condicao ? rvDosAmbientes(i) : 0, rvCultura);
   };
   const grupo = (i: ItemConstrucao) => (i.coringa ? 'coringa' : i.cultura ? familia(i.cultura.chave) : '');
   for (const chave of ['farmland', 'woodland']) {
@@ -62,10 +66,18 @@ export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAt
     type Lote = (typeof doTipo)[number];
     const porCultura = new Map<string, number>();
     const vez = (r: Lote) => porCultura.get(grupo(r.i)) ?? 0;
-    /** Tira de `fila` o próximo lote: entre os que servem no RV, a cultura com menos lotes até ali. */
+    /**
+     * Tira de `fila` o próximo lote: entre os que servem no RV, a cultura com menos lotes até ali; se
+     * nenhum serve, um de terreno já aberto (o que serve antes); se nem isso, o do terreno que abre antes.
+     */
     const proximo = (fila: Lote[], rv: number) => {
       const uteis = fila.filter((r) => r.desde <= rv);
-      const escolhido = uteis.length ? uteis.reduce((a, b) => (vez(b) < vez(a) ? b : a)) : fila.reduce((a, b) => (b.desde < a.desde ? b : a));
+      const abertos = fila.filter((r) => rvDoTerreno(r.i) <= rv);
+      const escolhido = uteis.length
+        ? uteis.reduce((a, b) => (vez(b) < vez(a) ? b : a))
+        : abertos.length
+          ? abertos.reduce((a, b) => (b.desde < a.desde ? b : a))
+          : fila.reduce((a, b) => (rvDoTerreno(b.i) < rvDoTerreno(a.i) ? b : a));
       porCultura.set(grupo(escolhido.i), vez(escolhido) + 1);
       fila.splice(fila.indexOf(escolhido), 1);
       return escolhido;
@@ -84,7 +96,10 @@ export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAt
     c.quantidadePorRv.forEach((qtd, indice) => {
       const rv = indice + 1;
       const fila = rv <= rvAgora ? agora : restantes;
-      for (let novos = qtd - anterior; novos > 0 && fila.length; novos--) saida.set(proximo(fila, rv).i, rv);
+      for (let novos = qtd - anterior; novos > 0 && fila.length; novos--) {
+        const { i } = proximo(fila, rv);
+        saida.set(i, Math.max(rv, rvDoTerreno(i)));
+      }
       anterior = Math.max(anterior, qtd);
     });
   }

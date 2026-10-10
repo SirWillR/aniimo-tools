@@ -4,11 +4,11 @@
     "commit": "26e6b6f0df756015317e4515bb67b4458a5d1636",
     "licenca": "MIT",
     "autor": "aebii",
-    "extraidoEm": "2026-09-29T11:50:01.287Z",
-    "nota": "Dados de construção do Lar do aniimax (data/*.csv e web/facility-config.js). Tamanhos marcados como estimados vêm de scripts/tamanhos-estimados.ts. Quantidades do RV 20 de Fazenda, Bosque e Mina corrigidas com o que o usuário viu no jogo (CORRECOES_USUARIO)."
+    "extraidoEm": "2026-10-10T21:28:03.194Z",
+    "nota": "Dados de construção do Lar do aniimax (data/*.csv e web/facility-config.js). Tamanhos marcados como estimados vêm de scripts/tamanhos-estimados.ts. Quantidade de cada instalação por RV: Aniidex (aniidex.com/pt/homeland), que cobre todos os RVs; o aniimax extrapolava acima do RV 11. Quantidades do RV 20 de Fazenda, Bosque e Mina conferidas com o que o usuário viu no jogo (CORRECOES_USUARIO)."
   },
   "rvMaximo": 20,
-  "rvVerificado": 11,
+  "rvVerificado": 20,
   "aniimoPorRv": [
     null,
     8,
@@ -549,13 +549,13 @@
         2,
         2,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4
       ],
       "nivelPorRv": [
         0,
@@ -603,13 +603,13 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -660,10 +660,10 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -713,11 +713,11 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -769,9 +769,9 @@
         1,
         1,
         1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -876,10 +876,10 @@
         2,
         2,
         2,
-        2,
-        2,
-        2,
-        2
+        3,
+        3,
+        3,
+        3
       ],
       "nivelPorRv": [
         0,
@@ -926,14 +926,14 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
       ],
       "nivelPorRv": [
         0,
@@ -980,14 +980,14 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3
       ],
       "nivelPorRv": [
         0,
@@ -1304,14 +1304,14 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -1358,14 +1358,14 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -1414,12 +1414,12 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -1468,12 +1468,12 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -1521,13 +1521,13 @@
         1,
         1,
         1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "nivelPorRv": [
         0,
@@ -1683,13 +1683,13 @@
         2,
         2,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4
       ],
       "nivelPorRv": [
         0,
@@ -1737,13 +1737,13 @@
         2,
         2,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4
       ],
       "nivelPorRv": [
         0,

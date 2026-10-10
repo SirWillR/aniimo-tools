@@ -13,7 +13,7 @@ TypeScript strict, SCSS, Vitest via `ng test`. Textos da UI e do código em port
 - O aviso "Node.js version v20.19.0 detected" no início de todo shell vem do `ng completion` do
   `~/.bashrc` do usuário. É inofensivo; não é o projeto.
 - Comandos: `npm start`, `npm test` (`ng test --watch=false` para rodar uma vez), `npm run build`,
-  `npm run data`, `npm run data:lar`.
+  `npm run data`, `npm run data:lar`, `npm run data:enfeites`.
 
 ## Decisões do usuário (não reabrir sem perguntar)
 
@@ -22,6 +22,13 @@ TypeScript strict, SCSS, Vitest via `ng test`. Textos da UI e do código em port
   **Exceção aprovada (2026-09-26):** a construção do Lar (instalações, produtos, ambientes) usa o
   aniimax (github.com/ae-bii/aniimax, MIT, © aebii), num commit fixo. Só essa parte; os Aniimo
   continuam vindo só da wiki. Crédito ao aniimax obrigatório na UI.
+  **Exceção aprovada (2026-10-10):** os fatos dos terrenos do Lar (quantos são, tamanho, RV e preço)
+  vêm do planejador do Aniidex (aniidex.com/pt/homeland), que é "todos os direitos reservados": só
+  esses fatos, nada de código, arte ou outros dados. Crédito ao Aniidex na UI. **Ampliada no mesmo
+  dia:** também o nome, a categoria, o RV em que a loja libera, o preço e a habitabilidade dos itens
+  decorativos escolhidos à mão (`scripts/enfeites-escolhidos.ts`), uma página por item. Nada de
+  ícones nem de descrições. **E a quantidade de cada instalação por RV** (`capByRv`), a pedido do
+  usuário ("ache uma fonte confiável"): o aniimax extrapolava acima do RV 11 e errava.
 - Nomes das 13 aptidões e as traduções PT (tabela abaixo) foram aprovados.
 - Solver: HiGHS (`highs`, MIT). `glpk.js` descartado por ser GPL-3.0; `javascript-lp-solver` por
   problemas numéricos em ILP.
@@ -113,16 +120,58 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
 - Tamanhos: todos vistos no jogo pelo usuário (lista de 2026-09-29) em `scripts/tamanhos-estimados.ts`
   (`MEDIDOS`; `ESTIMADOS` vazio). Construções fora do aniimax: Chocadeira e Unidade de
   Armazenamento, 2×2.
-- Quantidades por RV conferidas no jogo só até RV 11 (`rvVerificado`); acima disso são extrapoladas,
-  exceto as do RV 20 de Fazenda (40), Bosque (20) e Mina (10), vistas no jogo pelo usuário
-  (`CORRECOES_USUARIO` no script; o aniimax dizia 42 e 21).
+- Quantidades por RV: **Aniidex** (`limitesDoAniidex` no script lê `capByRv` de
+  aniidex.com/pt/homeland; cache em `scripts/.cache/aniidex/homeland.html`), desde 2026-10-10. O usuário
+  viu no jogo, no RV 14, 3 Poços, 3 Fornos com Chaminé e 3 Bancadas de Marcenaria, e o aniimax dizia 2.
+  O Aniidex bate com isso, com o aniimax em todos os RVs até o 12 (os que ele conferiu) e com as
+  correções do usuário no RV 20 (Fazenda 40, Bosque 20, Mina 10; `CORRECOES_USUARIO` continua no script
+  como conferência). No RV 20 mudou: Poço, Bancada e Forno com Chaminé 4; 2 de cada moradia (menos o
+  Moinho de Vento Floral), Tear, Mesa Fonolfatória, Saltibarril, Fogão de Brasa e Pote de Conservas; 3
+  Fornos de Calor, Resfriadores e Lâmpadas Solares. `rvVerificado` agora é o RV máximo. Jogo de Dança
+  Lapidador e Fabricante de Aniicápsula não existem lá e ficam com o aniimax. O limite do Aniidex vale
+  desde o RV 1; a quantidade só conta a partir do RV em que a instalação libera (`nivelPorRv`, do
+  aniimax). Não usados (para referência, o Aniidex também tem): área exata de cada instalação
+  (ex.: Forno com Chaminé 5,5×5,5; os tamanhos do usuário são esses arredondados para cima), RV de
+  cada nível, e a quantidade de Unidades de Armazenamento por RV (1 no RV 1 até 8 no RV 20).
+- **Ambientes na planta** (`AMBIENTES_NA_PLANTA` em `planta.ts`): a planta usa no máximo 2 Fornos de
+  Calor, 1 Resfriador e 1 Lâmpada Solar (o par mais dois avulsos), que já dão as cinco condições; os
+  outros que o jogo permite ocupariam meio terreno cada sem render mais (com os 9, sobrava 1 terreno
+  de jardim e a planta levava 1,4 s). A página avisa disso em "Como ler".
 - **Decisão do usuário:** a planta é sempre a base completa do RV 20; o jogador monta a planta final
   e vai construindo nos espaços reservados enquanto sobe. O seletor "Seu nível" (`LarStore.rvAtual`)
   não muda a planta: só destaca o que já libera e apaga o resto. `liberacao.ts` diz em que RV cada
   espaço libera: ambientes primeiro (o par antes dos avulsos); Fazendas/Bosques a cada RV vão para
-  lotes que já servem (ambiente construído e cultura liberada), revezando entre as culturas escolhidas
-  (**pedido do usuário:** cultura marcada precisa ter lote já no nível atual, não no RV 19); depois
-  ordem de leitura. Muda com a escolha de culturas; a posição dos lotes não. O motor (`plantaDoLar`) continua aceitando qualquer RV.
+  lotes que já servem (terreno aberto, ambiente construído e cultura liberada), revezando entre as
+  culturas escolhidas (**pedido do usuário:** cultura marcada precisa ter lote já no nível atual, não
+  no RV 19); depois terrenos que abrem antes e ordem de leitura. Nenhum espaço libera antes do seu
+  terreno. Muda com a escolha de culturas; a posição dos lotes não. O motor (`plantaDoLar`) continua
+  aceitando qualquer RV.
+- **Decisão do usuário (2026-10-10): planta por terrenos**, inspirada no Aniidex. `terrenos.ts`: 16
+  terrenos de 20×15 tiles num tabuleiro 4×4 contíguo (80×60), o terreno *n* libera no RV *n*; a posição
+  de cada um no tabuleiro veio de uma captura de tela do Lar do usuário. `planta.ts`: cada terreno
+  ganha um tema (`TipoBloco`: cultivo, oficina, recursos, moradias, ninhal) e um `Bloco` que ocupa o
+  terreno inteiro; `distribuir` percorre os RV 1→20 e o que libera no RV *n* só vai para terrenos
+  ≤ *n* (o tema enche o seu terreno e só então abre o de número mais baixo ainda sem tema). **Decisão do
+  usuário: base final que cresce** (nunca é preciso mudar algo de lugar); há teste de que, em todo RV,
+  o que o jogador pode ter fica em terrenos já abertos. Se faltar terreno, a folga entre construções
+  cai de 2 para 1 e 0; se os lotes não couberem, o cultivo abre mais um terreno. Com os dados atuais:
+  10 terrenos usados no RV 20 (3 de cultivo, 3 de oficina, 2 de recursos, 1 de moradias, mais o ninhal),
+  o resto fica livre para a decoração. **Aprovado pelo usuário (2026-10-10):** a distribuição dos temas
+  e os 2 tiles de passagem entre máquinas. Trabalho em 4 etapas (plano aprovado): 1 motor por terrenos
+  (feita), 2 cartões e zoom por terreno (feita), 3 decoração automática com controle "eficiente ↔
+  bonito" e terrenos-jardim (feita), 4 editor por terreno (mover construções e enfeites, terreno editado fica
+  fixado).
+- Visualização por terrenos (etapa 2, `features/lar/`): a visão geral é um cartão por terreno
+  (`TabuleiroTerrenos`: miniatura `MiniTerreno`, tema e "Produz por dia"), na posição do tabuleiro do
+  jogo em telas largas e na ordem dos números no celular. Clicar abre o terreno no `MapaLar` (`foco`),
+  com arrastar, zoom (Ctrl + rodinha, pinça, botões) e teclado (setas, +/−, Home); terrenos fechados
+  também abrem, para ver o plano. O terreno aberto fica na URL (`?terreno=7`), então o Voltar do
+  navegador fecha. As peças mostram "Nv. x" (nível no RV atual) ou "RV n" (espaço reservado). O cartão
+  "Selecionado" flutua sobre o mapa (folha que sobe de baixo no celular). "Produz por dia"
+  (`producaoPorTerreno` em `lar-page.ts`): lotes pela cultura sem parar × eficiência, máquinas e coleta
+  pelo "Deve produzir" × 24; a faixa geral mostra os 12 maiores. Os `<symbol>`/`<pattern>` do mapa
+  ficam em `MapaSimbolos`, uma vez por página, e valem para todos os SVG. **Decisão do usuário:** o
+  controle "Girar mapa" foi removido (`rotacao` é descartado do estado salvo).
 - Ambientes: cobrem 9×9 a partir do centro; lote coberto = sobreposição com área > 0 (quina não
   conta); grade de ¼ de tile; temperaturas somam onde Fornalha e Resfriador se sobrepõem.
 - Nomes PT em `src/app/core/lar/nomes-pt.ts`: construções com os **nomes oficiais do jogo** (lista do
@@ -133,9 +182,10 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   informa na página (`LarStore`, chave `aniimo.lar.v1`); fica num bloco "ninhal" cercado.
 - Unidade de armazenamento: também informada pelo usuário: 2×2, é para onde os Aniimo levam o que é
   produzido, e quem carrega usa Transporte (nível desconhecido, conta 1). Quantidade na página
-  (`LarStore.armazens`, padrão 1). **Decisão do usuário:** espalhadas, não juntas. `armazens.ts` escolhe
-  as posições (k-medianas guloso) entre os espaços livres encostados num caminho, preferindo o lado de
-  dentro do anel, para diminuir a distância das construções produtivas ao armazém mais perto.
+  (`LarStore.armazens`, padrão 1). **Decisão do usuário:** espalhadas, não juntas: uma por terreno
+  produtivo antes de repetir, começando pelos que abrem primeiro (`vagaDeArmazem` em `planta.ts`; no
+  cultivo ocupa uma célula da malha perto do meio). O antigo `armazens.ts` (k-medianas na beira dos
+  caminhos) foi removido com a planta única.
 - **Decisão do usuário (2026-10-03): energia fora do app.** Gerador de Estalos e Poste de Energia
   Estalante não entram no mapa nem na página, e nada é calculado com watts; o jogador cuida disso no
   jogo. Não reintroduzir sem ele pedir. (Uma versão com a vila em anel em volta do gerador foi
@@ -144,15 +194,44 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   Gerador e 6 Postes no RV 12; consumo: Mina 90, Poço 60, Secadora Jukebox 60, Máquina de Garra Gurmê
   60, Mesa de Criação 60, Panela de Cozimento 45, Mesa Fonolfatória 45, Bancada de Marcenaria 15, Jogo
   de Dança Lapidador 90, Fabricante de Aniicápsula 90, as demais máquinas 30 W.
-- Oficina (`vilaDeOficinas` em `planta.ts`, **pedido do usuário: lado a lado**): máquinas maiores
-  primeiro em fileiras desencontradas com 2 tiles de passagem, cada uma no seu pátio (`piso` meio tile
-  em volta). Mina e Poço ficam no bloco `recursos`, em grade.
-- Decoração (`decoracao.ts`, só enfeite, RNG com semente): vinhetas por bloco (cultivo: espantalho,
-  feno, bebedouro…; oficina: caixotes, barris, sacos junto aos pátios; minas: carrinho de minério,
-  pedras; moradias: arco florido, casinha de passarinho; ninhal: feno) fora de construções, pátios,
-  trilhas e sub-regiões de cultivo; praças nos espaços livres (fonte perto do centro com estátuas,
-  lago longe dela, piquenique). **Feedback do usuário:** a oficina em fileiras sobre piso de pedra era
-  "sem graça"; por isso hoje é gramado com pátios individuais e densidade baixa de enfeites.
+- Oficina, recursos e moradias (`arrumar` em `planta.ts`, **pedido do usuário: lado a lado**):
+  construções maiores primeiro em fileiras centradas no terreno, com 2 tiles de passagem (desencontradas
+  na oficina); oficina e moradias com um pátio (`piso`, meio tile em volta) cada.
+- Decoração (`decoracao.ts`, só enfeite, RNG com semente). **Pedido do usuário (2026-10-10):** o mapa
+  sem enfeites era "sem graça"; ele quer os itens decorativos do jogo e os terrenos vazios decorados.
+  - Catálogo: `src/assets/data/lar-enfeites.json`, gerado por `scripts/extract-enfeites.ts`
+    (`npm run data:enfeites`; cache em `scripts/.cache/aniidex/`) a partir da curadoria em
+    `scripts/enfeites-escolhidos.ts` (55 itens de exterior, só de loja). Não edite o JSON à mão.
+    **O Aniidex não publica o tamanho em tiles:** `largura`/`altura` são estimativas nossas
+    (`tamanhoEstimado`) até o usuário conferir no jogo; ao conferir, marque `medido: true` na
+    curadoria. A maioria dos 1.033 móveis do jogo é peça de casa (paredes, pisos, sofás) e fica de fora.
+  - Desenhos nossos: `forma` = `<symbol id="ml-{forma}">` em `mapa-simbolos.html` (há teste para nenhum
+    faltar); `cor` quando o desenho é compartilhado (árvores, flores, arbustos).
+  - Terrenos produtivos: vinhetas do tema (`VINHETAS`) nas células livres, com meio tile de respiro
+    das construções; no cultivo usam o que sobra entre os lotes, então mudam com as culturas.
+  - Terrenos sem construção viram `tema: 'jardim'` com `jardim`: praça e jardim, lago e piquenique,
+    pomar e bosque, lazer dos Aniimo (os quatro pedidos pelo usuário). Composição fixa por tipo
+    (`JARDINS`) mais miudezas sorteadas; o de lazer vai para o terreno livre mais perto das moradias e
+    os outros se revezam.
+  - **Pedido do usuário (2026-10-10): os terrenos têm de se conectar**, não parecer ilhas soltas.
+    (a) Ruas: `tracarRuas` põe meio tile de calçada (`CALCADA`, itens `caminho`) na borda de cada
+    terreno em uso; com a do vizinho vira uma rua de 1 tile. Por isso `MARGEM` em `planta.ts` é 1
+    (calçada + pátio) e Minas e moradias usam 1 tile de passagem (`FOLGA_DO_TEMA`; a oficina mantém os 2
+    aprovados). Só chão e cerca podem ficar sobre a calçada. (b) Todo jardim tem caminhos em cruz até a
+    borda, onde encontram a rua. (c) **Jardim grande** (`jardinagem`): o primeiro par de terrenos livres
+    lado a lado se une (`TerrenoDaPlanta.unidoA`), sem calçada no meio, numa composição de 40×15 com
+    enfeites cruzando a divisa. (d) A visão geral da página é um mapa contínuo do tabuleiro
+    (`MapaLar` com `geral`: clicar num terreno o abre), com os cartões por terreno embaixo; as
+    miniaturas dos cartões só aparecem no celular. Com os dados atuais (RV 20): cultivo 1, 6, 7; oficina
+    2, 5, 8, 9, 11; recursos 3, 10; moradias 4, 12; jardins 13+14 (o grande), 15 e 16.
+  - Controle "Decoração" (`LarStore.equilibrio`, `OpcoesPlanta.equilibrio`): Eficiente (sem enfeites,
+    terrenos livres vazios), Equilibrado (padrão), Bonito (mais denso e Cerca de Jardim nos terrenos de
+    cultivo e no ninhal). Nunca move construções (há teste).
+  - Página: clicar num enfeite abre o cartão dele (nome oficial, tamanho estimado, RV, preço,
+    habitabilidade); o terreno aberto lista a "Decoração" com quantidades, custo total e
+    habitabilidade. Enfeite que a loja ainda não libera no RV do jogador aparece apagado.
+  - **Feedback anterior do usuário:** a oficina em fileiras sobre piso de pedra era "sem graça"; por
+    isso é gramado com pátios individuais.
 - "Deve produzir" (`producao.ts`, `producaoPorUnidade`): ao selecionar uma máquina, Mina, Poço ou
   moradia liberada, o cartão mostra a receita daquela unidade (posição na ordem de liberação) no RV
   atual. Dinheiro/Minha seleção: finais de `melhoresParaVender` feitos com as culturas plantadas, em
@@ -165,18 +244,21 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
 ### Culturas escolhidas (`LarStore.culturas`, `OpcoesPlanta.culturas`)
 
 - O jogador escolhe as culturas (famílias: `quick_x`/`premium_x` contam como `x`); `null` = todas.
-- **Área única de cultivo (pedido do usuário):** Fazendas, Bosques e ambientes ficam num só bloco
-  `cultivo` cercado. `comporCultivo` (planta.ts) junta as sub-regiões da base (cada aglomerado de
-  ambiente com sua cobertura 9×9 inteira, e os campos sem ambiente) em fileiras com trilhas de 1 tile
-  (`tipo: 'trilha'`); `Bloco.regioes` guarda as sub-regiões. Nada disso muda com RV nem culturas.
-- **Decisão do usuário:** o que fica fixo na base são os blocos, cercas, pisos, caminhos e construções
-  (inclusive ambientes e armazéns, calculados antes da rearrumação). Fazendas e Bosques podem se mover
-  e trocar de tipo dentro das sub-regiões, com o total fixo (40 e 20 no RV 20). `rearranjo.ts`: malha de
-  2 tiles alinhada à base de cada sub-região (o que coube na base cabe de novo); para cada combinação de
-  modos, 1 lote ativo por cultura escolhida (zona de ambiente já
-  construído no RV do jogador), depois lotes úteis pelo valor até o limite do tipo (total menos a parte
-  das culturas sem ambiente), o resto nos campos sem ambiente (se não couber, enchimento). Nota: culturas
-  com lote ativo, lotes úteis, valor; empate mantém os modos. Se nada couber, a base fica como está.
+- **Terrenos de cultivo:** Fazendas, Bosques e ambientes ficam nos blocos `cultivo`. O primeiro (terreno
+  1) não tem ambiente: é onde se planta antes de ter Fornalha. Cada grupo de ambiente vai para outro
+  terreno de cultivo: o par ocupa o terreno inteiro e as avulsas meio terreno cada, sempre com a
+  cobertura 9×9 inteira dentro do terreno. `Bloco.regioes` guarda a sub-região do terreno onde os lotes
+  se movem (malha de 2 tiles alinhada pelos ambientes). Nada disso muda com RV nem culturas. (A antiga
+  "área única de cultivo" num só bloco cercado com trilhas deixou de existir com os terrenos.)
+- **Decisão do usuário:** o que fica fixo na base são os terrenos, pisos e construções (inclusive
+  ambientes e armazéns, postos antes dos lotes). Fazendas e Bosques podem se mover e trocar de tipo
+  dentro das sub-regiões, com o total fixo (40 e 20 no RV 20). `rearranjo.ts`: malha de 2 tiles a partir
+  do canto de cada sub-região (o que coube na base cabe de novo); a própria base sai dele, com todas as
+  culturas e os modos fixos (`manterModos`). Para cada combinação de modos, 1 lote ativo por cultura
+  escolhida (terreno aberto e zona de ambiente já construído no RV do jogador), depois lotes úteis pelo
+  valor até o limite do tipo (total menos a parte das culturas sem ambiente), o resto nos campos sem
+  ambiente, primeiro nos terrenos que abrem antes. Nota: culturas com lote ativo, lotes úteis, valor;
+  empate mantém os modos. Se nada couber, a base fica como está.
 - Resultado (testado RV 1–20, todas marcadas): toda cultura liberada tem lote liberado no nível. Nos
   RV 9–11 há 4 temperaturas pedidas e só 1 Fornalha + 1 Resfriador (3 zonas); **pedido do usuário:**
   a que sobra vai para o lote ativo de temperatura mais próxima, tirado de quem tem lote sobrando
@@ -220,8 +302,8 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   aniimax) e nas Fazendas as de dinheiro. Fora de "Minha seleção" o seletor fica travado mostrando as
   culturas do foco; a seleção do jogador nunca é apagada. Não considera a
   quantidade de lotes.
-- Layout (pedido do usuário): mapa com uma coluna ao lado (Selecionado, que alterna com Como ler, e
-  Culturas no mapa); "O que vender" abaixo do mapa, em largura total, com as listas "Com o que você
+- Layout (pedido do usuário): quadro dos terrenos com uma coluna ao lado (Como ler e Culturas no
+  mapa); "O que vender" abaixo do mapa, em largura total, com as listas "Com o que você
   planta" e "Plantando mais" lado a lado. No celular tudo empilha. Todos os produtos têm nome PT (`nomes-pt.spec.ts` garante).
 - **Decisão do usuário:** a página é só o mapa (sem tabela nem equipe de Aniimo; ambas removidas).
 

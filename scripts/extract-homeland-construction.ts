@@ -6,10 +6,17 @@
 //
 // Fonte: github.com/ae-bii/aniimax (MIT, © aebii), num commit fixo. Exceção aprovada pelo usuário à
 // regra "só wiki", válida só para a construção do Lar. Para atualizar, troque COMMIT e confira os avisos.
+//
+// Quantidade de cada instalação por RV: Aniidex (aniidex.com/pt/homeland, `capByRv`), a pedido do
+// usuário (2026-10-10). As do aniimax eram extrapoladas acima do RV 11 e estavam erradas (ex.: no RV 14
+// o jogo permite 3 Poços, 3 Fornos com Chaminé e 3 Bancadas de Marcenaria, e o aniimax dizia 2). O
+// Aniidex bate com tudo o que o usuário viu no jogo e com o aniimax nos RVs que este conferiu. Só esse
+// número vem de lá; o site é "todos os direitos reservados".
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { unflatten } from 'devalue';
 import type { Ambiente, CategoriaConstrucao, Construcao, DadosConstrucao, EtapaCultivo, Produto } from '../src/app/core/lar/modelos-lar.ts';
 import { ESTIMADOS, MEDIDOS } from './tamanhos-estimados.ts';
 
@@ -24,8 +31,22 @@ const OUT = join(ROOT, 'src', 'assets', 'data', 'lar-construcao.json');
 const FRESH = process.argv.includes('--fresh');
 
 const RV_MAXIMO = 20;
-// facility-config.js: contagens confirmadas no jogo até RV 11 (RV 12 para Heat Furnace e Simmering Pot).
-const RV_VERIFICADO = 11;
+// Até que RV o aniimax conferiu as contagens no jogo (RV 12 para Heat Furnace e Simmering Pot). Acima
+// disso as dele são extrapoladas; por isso as quantidades vêm do Aniidex, que cobre todos os RVs.
+const RV_CONFERIDO_NO_ANIIMAX = 11;
+const RV_VERIFICADO = RV_MAXIMO;
+
+const ANIIDEX = 'https://aniidex.com/pt/homeland/';
+const CACHE_ANIIDEX = join(ROOT, 'scripts', '.cache', 'aniidex', 'homeland.html');
+/** Nossa chave → id da instalação no Aniidex. As que faltam aqui não existem lá e ficam com o aniimax. */
+const ID_ANIIDEX: Readonly<Record<string, string>> = {
+  'farmland': '1010000', 'woodland': '1010001', 'mine': '1010002', 'nimbus-bed': '1010003', 'dewy-house': '1010004',
+  'starfall-hammock': '1010005', 'tidewhisper-sandcastle': '1010006', 'floral-windmill': '1010007', 'well': '1010008',
+  'carousel-mill': '1020000', 'crafting-table': '1020001', 'jukebox-dryer': '1020002', 'claw-game-cooker': '1020003',
+  'joy-wheel-loom': '1020004', 'phonolfactory-table': '1020005', 'bouncy-brew-keg': '1020006', 'simmering-pot': '1020007',
+  'blazing-stove': '1020008', 'woodworking-bench': '1020009', 'chimney-kiln': '1020010', 'pickling-jar': '1020011',
+  'heat-furnace': '1040003', 'cooling-unit': '1040004', 'sunlamp': '1040005',
+};
 
 // Quantidades vistas no jogo pelo usuário, que substituem as do aniimax (RV → quantidade). Os RVs
 // abaixo ficam limitados a esse valor, para a quantidade nunca diminuir ao subir de nível.
@@ -90,6 +111,28 @@ async function baixar(caminho: string): Promise<string> {
   }
 }
 
+/** Quantidade máxima de cada instalação por RV (`capByRv`), lida do estado embutido na página do Aniidex. */
+async function limitesDoAniidex(): Promise<Map<string, { nome: string; porRv: number[] }>> {
+  let html: string;
+  if (!FRESH && existsSync(CACHE_ANIIDEX)) html = await readFile(CACHE_ANIIDEX, 'utf8');
+  else {
+    const res = await fetch(ANIIDEX, { headers: { 'user-agent': UA } });
+    if (!res.ok) throw new Error(`${ANIIDEX}: ${res.status}`);
+    html = await res.text();
+    rede++;
+    await mkdir(dirname(CACHE_ANIIDEX), { recursive: true });
+    await writeFile(CACHE_ANIIDEX, html);
+  }
+  const m = html.match(/id="__NUXT_DATA__"[^>]*>(.*?)<\/script>/s);
+  if (!m) throw new Error(`${ANIIDEX}: página sem __NUXT_DATA__`);
+  const id = (x: unknown) => x;
+  const revivers = Object.fromEntries(['ShallowReactive', 'Reactive', 'Ref', 'ShallowRef', 'EmptyRef', 'EmptyShallowRef', 'NuxtError'].map((k) => [k, id]));
+  const dados = unflatten(JSON.parse(m[1]!), revivers).data;
+  const instalacoes = dados['homeland-hub']?.facts?.facilities ?? {};
+  const nomes = dados['site-text-pt-homeland']?.facilities ?? {};
+  return new Map(Object.entries(instalacoes).map(([k, v]: [string, any]) => [k, { nome: String(nomes[k] ?? k), porRv: v.capByRv as number[] }]));
+}
+
 /** CSV simples do aniimax: separado por vírgula, sem aspas; campos vazios viram ''. */
 function csv(texto: string): Record<string, string>[] {
   const [cabecalho, ...linhas] = texto.split(/\r?\n/).filter((l) => l.trim());
@@ -132,6 +175,7 @@ const aptidao = (nome: string | undefined, onde: string) => {
 };
 
 // ---- construções ----
+const limites = await limitesDoAniidex();
 const construcoes: Construcao[] = config.FACILITIES.map((f) => {
   const onde = `facility-config ${f.name}`;
   if (!f.counts?.length) erros.push(`${onde}: sem counts`);
@@ -143,10 +187,24 @@ const construcoes: Construcao[] = config.FACILITIES.map((f) => {
   const liberacoes = Object.entries(f.unlocks ?? {}).map(([nivel, rv]) => [Number(nivel), rv] as const);
   const nivelPorRv = Array.from({ length: RV_MAXIMO }, (_, i) =>
     Math.max(0, ...liberacoes.filter(([, rv]) => rv <= i + 1).map(([nivel]) => nivel)));
-  const quantidadePorRv = porRv(f.counts ?? [0]).map((n, i) => (nivelPorRv[i] ? n : 0));
+  const doAniimax = porRv(f.counts ?? [0]).map((n, i) => (nivelPorRv[i] ? n : 0));
+  // A quantidade por RV vem do Aniidex (o aniimax extrapola acima do RV que conferiu). O limite de lá
+  // vale desde o RV 1; só conta a partir do RV em que a instalação libera.
+  const limite = limites.get(ID_ANIIDEX[f.slug] ?? '');
+  if (!ID_ANIIDEX[f.slug]) avisos.push(`${f.slug}: não existe no Aniidex; quantidades do aniimax`);
+  else if (limite?.porRv.length !== RV_MAXIMO) erros.push(`${onde}: Aniidex sem capByRv de ${RV_MAXIMO} RVs para ${ID_ANIIDEX[f.slug]}`);
+  const quantidadePorRv = limite?.porRv.length === RV_MAXIMO ? limite.porRv.map((n, i) => (nivelPorRv[i] ? n : 0)) : doAniimax;
+  const diferentes = quantidadePorRv.flatMap((n, i) => (n === doAniimax[i] ? [] : [i + 1]));
+  if (diferentes.length) {
+    const conferidos = diferentes.filter((rv) => rv <= RV_CONFERIDO_NO_ANIIMAX);
+    avisos.push(
+      `${f.slug} (${limite?.nome}): Aniidex difere do aniimax nos RV ${diferentes.join(', ')}; no RV ${RV_MAXIMO}: ${doAniimax.at(-1)} → ${quantidadePorRv.at(-1)}` +
+        (conferidos.length ? ` — ATENÇÃO: o aniimax dizia ter conferido no jogo os RV ${conferidos.join(', ')}` : ''),
+    );
+  }
   for (const [rv, qtd] of Object.entries(CORRECOES_USUARIO[f.slug] ?? {})) {
     const i = Number(rv) - 1;
-    if (quantidadePorRv[i] !== qtd) avisos.push(`${f.slug} RV ${rv}: aniimax ${quantidadePorRv[i]}, corrigido para ${qtd} (visto no jogo)`);
+    if (quantidadePorRv[i] !== qtd) avisos.push(`${f.slug} RV ${rv}: a fonte diz ${quantidadePorRv[i]}, corrigido para ${qtd} (visto no jogo)`);
     quantidadePorRv[i] = qtd;
     for (let j = 0; j < i; j++) quantidadePorRv[j] = Math.min(quantidadePorRv[j]!, qtd);
   }
@@ -262,7 +320,7 @@ const saida: DadosConstrucao = {
     licenca: 'MIT',
     autor: 'aebii',
     extraidoEm: new Date().toISOString(),
-    nota: 'Dados de construção do Lar do aniimax (data/*.csv e web/facility-config.js). Tamanhos marcados como estimados vêm de scripts/tamanhos-estimados.ts. Quantidades do RV 20 de Fazenda, Bosque e Mina corrigidas com o que o usuário viu no jogo (CORRECOES_USUARIO).',
+    nota: 'Dados de construção do Lar do aniimax (data/*.csv e web/facility-config.js). Tamanhos marcados como estimados vêm de scripts/tamanhos-estimados.ts. Quantidade de cada instalação por RV: Aniidex (aniidex.com/pt/homeland), que cobre todos os RVs; o aniimax extrapolava acima do RV 11. Quantidades do RV 20 de Fazenda, Bosque e Mina conferidas com o que o usuário viu no jogo (CORRECOES_USUARIO).',
   },
   rvMaximo: RV_MAXIMO,
   rvVerificado: RV_VERIFICADO,

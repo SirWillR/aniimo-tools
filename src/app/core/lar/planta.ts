@@ -1,39 +1,33 @@
-// Compõe a planta do Lar para um RV: uma área única de cultivo (Fazendas, Bosques e ambientes, em
-// sub-regiões separadas por trilhas), oficina de máquinas, recursos e moradias de Aniimo, organizados em
-// blocos com caminhos entre eles. Determinístico: o mesmo RV e os mesmos dados dão sempre a mesma
-// planta. TS puro.
+// Compõe a planta do Lar para um RV, distribuída nos terrenos do jogo (16 terrenos de 20×15 tiles, um
+// por nível): cada terreno ganha um tema (cultivo, oficina, recursos, moradias, ninhal) e o que libera
+// no RV n só vai para terrenos que já existem nesse nível. Assim a base final cresce sem que o jogador
+// tenha de mudar nada de lugar. Determinístico: o mesmo RV e os mesmos dados dão sempre a mesma planta.
+// TS puro.
 import { montarAmbientes } from './ambientes';
-import { posicionarArmazens } from './armazens';
-import { decorar, tracarCaminhos } from './decoracao';
-import { TAMANHO_LOTE } from './empacotamento';
+import { type Equilibrio, type TipoJardim, decorar } from './decoracao';
+import { type ConstrucaoAmbiente, TAMANHO_LOTE, melhorMalha } from './empacotamento';
 import { type Retangulo, cobertura, expandir, quadrado, sobrepoe, transladar, uniao } from './geometria';
-import { type Inventario, type ItemInventario, inventario } from './inventario';
+import { type Inventario, inventario } from './inventario';
 import { rearranjar } from './rearranjo';
 import { rvDoProduto } from './liberacao';
-import type { Ambiente, DadosConstrucao, Produto, RegrasAmbiente } from './modelos-lar';
+import type { Ambiente, Construcao, DadosConstrucao, Enfeite, Produto, RegrasAmbiente } from './modelos-lar';
 import { type Sugestoes, type TipoLote, culturasPara, familia, repartir, sugestoes } from './sugestao';
+import { ALTURA_TABULEIRO, ALTURA_TERRENO, LARGURA_TABULEIRO, LARGURA_TERRENO, TERRENOS, type Terreno, areaDoTerreno, terreno } from './terrenos';
 
-/** Margem em volta de cada bloco (onde fica a cerca), largura dos caminhos e borda do mapa, em tiles. */
+/**
+ * Faixa livre na borda de cada terreno, em tiles: meio tile de calçada (a rua que liga os terrenos, ver
+ * decoracao.ts) mais meio tile para o pátio de uma construção.
+ */
 export const MARGEM = 1;
-export const CAMINHO = 2;
-export const BORDA = 3;
-/** Largura das trilhas entre as sub-regiões da área de cultivo, em tiles. */
-export const TRILHA = 1;
 
-export type FormaDecoracao =
-  | 'arvore' | 'arbusto' | 'flores' | 'pedra' | 'poste' | 'banco' | 'canteiro'
-  // cultivo
-  | 'espantalho' | 'feno' | 'bebedouro' | 'carrinho-mao'
-  // oficina
-  | 'caixote' | 'barril' | 'sacos' | 'vaso' | 'lanterna'
-  // minas e moradias
-  | 'carrinho-minerio' | 'pedras-minerio' | 'arco-florido' | 'casinha-passaro'
-  // praças e jardins
-  | 'fonte' | 'lago' | 'piquenique' | 'estatua';
+/**
+ * Passagem máxima entre as construções de cada tema, em tiles. A oficina fica com os 2 tiles aprovados
+ * pelo usuário; Minas e moradias (5×5) só cabem três por fileira com 1.
+ */
+const FOLGA_DO_TEMA: Readonly<Record<TipoBloco, number>> = { cultivo: 2, oficina: 2, recursos: 1, moradias: 1, ninhal: 1 };
 
 export type ItemMapa =
   | { tipo: 'caminho'; area: Retangulo }
-  /** Trilha fixa dentro da área de cultivo, entre as sub-regiões. */
   | { tipo: 'trilha'; area: Retangulo }
   | { tipo: 'piso'; area: Retangulo }
   | { tipo: 'cerca'; area: Retangulo; portao: Retangulo | null }
@@ -47,7 +41,9 @@ export type ItemMapa =
       /** Condição de cultivo do lote (Fazenda/Bosque) ou modo da construção de ambiente. */
       condicao: Ambiente | null;
       cultura: Produto | null;
+      /** Índice em {@link PlantaLar.blocos} e número do terreno onde a construção fica. */
       bloco: number;
+      terreno: number;
       /** Fazenda coringa: sem cultura fixa, reservada para sementes de evento. */
       coringa?: true;
       /**
@@ -56,7 +52,20 @@ export type ItemMapa =
        */
       eficiencia?: number;
     }
-  | { tipo: 'decoracao'; area: Retangulo; forma: FormaDecoracao; variante: number };
+  | {
+      tipo: 'decoracao';
+      area: Retangulo;
+      /** Nosso desenho (`<symbol id="ml-...">`), a variante de cor (0 a 3) e a cor fixa, se o item tiver. */
+      forma: string;
+      variante: number;
+      cor?: string;
+      /** Id do item no catálogo de enfeites, o terreno onde fica e o RV em que a loja o libera. */
+      enfeite: string;
+      terreno: number;
+      rv: number;
+      /** Girado 90° (a área já vem com largura e altura trocadas). */
+      giro?: 90;
+    };
 
 export type TipoBloco = 'cultivo' | 'oficina' | 'recursos' | 'moradias' | 'ninhal';
 
@@ -69,8 +78,8 @@ export const CHOCADEIRA = { chave: 'chocadeira', tamanho: 2 } as const;
 
 /**
  * Unidade de armazenamento: para onde os Aniimo (Transporte) levam o que é produzido. Fora do aniimax e
- * da wiki; informado pelo usuário: 2×2. Ficam espalhadas na beira dos caminhos, perto das construções
- * produtivas (ver armazens.ts). A quantidade por RV não é conhecida, por isso vem de {@link OpcoesPlanta}.
+ * da wiki; informado pelo usuário: 2×2. Ficam espalhadas, uma por terreno produtivo antes de repetir. A
+ * quantidade por RV não é conhecida, por isso vem de {@link OpcoesPlanta}.
  */
 export const ARMAZEM = { chave: 'armazem', tamanho: 2 } as const;
 
@@ -92,18 +101,35 @@ export interface OpcoesPlanta {
   chocadeiras?: number;
   /** Quantas unidades de armazenamento (padrão 0). */
   armazens?: number;
+  /**
+   * Catálogo de itens decorativos e o quanto decorar (padrão `equilibrado`). Sem catálogo, ou em
+   * `eficiente`, a planta sai sem enfeites e os terrenos livres ficam vazios. Não muda as construções.
+   */
+  enfeites?: readonly Enfeite[];
+  equilibrio?: Equilibrio;
 }
 
+/** A parte temática de um terreno. Cada terreno com tema tem um bloco, que ocupa o terreno inteiro. */
 export interface Bloco {
   tipo: TipoBloco;
-  /** Área do bloco já com a margem (a cerca fica na borda dela). */
   area: Retangulo;
   cercado: boolean;
+  /** Número do terreno. */
+  terreno: number;
   /**
-   * Só no bloco `cultivo`: as sub-regiões (cada aglomerado de ambiente e os campos sem ambiente),
-   * separadas por trilhas. Os lotes se movem dentro delas; elas não mudam com RV nem com culturas.
+   * Só nos blocos `cultivo`: a sub-região onde os lotes se movem (uma malha de 2 tiles dentro do
+   * terreno). Não muda com RV nem com culturas.
    */
   regioes?: Retangulo[];
+}
+
+export interface TerrenoDaPlanta extends Terreno {
+  area: Retangulo;
+  /** `jardim` = terreno só decorativo; null = sem nada planejado. */
+  tema: TipoBloco | 'jardim' | null;
+  /** O tipo do jardim, quando o tema é `jardim`, e o terreno vizinho com que ele forma um jardim grande. */
+  jardim?: TipoJardim;
+  unidoA?: number;
 }
 
 export interface PlantaLar {
@@ -111,93 +137,311 @@ export interface PlantaLar {
   verificado: boolean;
   largura: number;
   altura: number;
+  /** Os 16 terrenos do tabuleiro; os de `rv` maior que o do jogador ainda estão fechados. */
+  terrenos: TerrenoDaPlanta[];
   blocos: Bloco[];
   itens: ItemMapa[];
 }
 
 type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
-interface BlocoLocal {
-  tipo: TipoBloco;
-  itens: ItemMapa[];
-  cercado: boolean;
-  regioes?: Retangulo[];
+
+interface Unidade {
+  chave: string;
+  lado: number;
+  nivel: number;
+  estimado: boolean;
+  tema: TipoBloco;
+  /** RV em que esta unidade libera (a k-ésima da sua construção). */
+  rv: number;
 }
 
-/** Espalha unidades numa grade com `folga` entre elas, `colunas` por linha. */
-function grade(unidades: readonly { chave: string; lado: number; nivel: number; estimado: boolean }[], colunas: number, folga: number, cultura?: (chave: string) => Produto | null): ItemConstrucao[] {
-  const itens: ItemConstrucao[] = [];
-  let x = 0;
-  let y = 0;
-  let alturaLinha = 0;
-  unidades.forEach((u, i) => {
-    if (i && i % colunas === 0) {
-      x = 0;
-      y += alturaLinha + folga;
-      alturaLinha = 0;
-    }
-    itens.push({ tipo: 'construcao', area: quadrado(x, y, u.lado), construcao: u.chave, nivel: u.nivel, estimado: u.estimado, condicao: null, cultura: cultura?.(u.chave) ?? null, bloco: -1 });
-    x += u.lado + folga;
-    alturaLinha = Math.max(alturaLinha, u.lado);
-  });
-  return itens;
+/** Construções de ambiente que ficam juntas: o par Fornalha + Resfriador, ou uma avulsa. */
+interface GrupoAmbiente {
+  unidades: Unidade[];
+  rv: number;
 }
 
-const unidadesDe = (itens: readonly ItemInventario[]) =>
-  itens.flatMap((it) =>
-    Array.from({ length: it.quantidade }, () => ({ chave: it.construcao.chave, lado: it.construcao.tamanho, nivel: it.nivel, estimado: it.construcao.tamanhoEstimado })),
+interface Vaga {
+  terreno: Terreno;
+  tema: TipoBloco;
+  unidades: Unidade[];
+  /** Só no cultivo: os grupos de ambiente do terreno e quantas metades (de duas) eles ocupam. */
+  grupos: GrupoAmbiente[];
+  metades: number;
+}
+
+const eLote = (chave: string): chave is TipoLote => chave === 'farmland' || chave === 'woodland';
+
+/**
+ * Quantas construções de ambiente a planta usa, no máximo. O jogo permite mais (3 de cada no RV 20), mas
+ * um par Forno de Calor + Resfriador, mais um Forno de Calor e uma Lâmpada Solar avulsos, já dão as
+ * cinco condições de cultivo para todas as Fazendas e Bosques; cada ambiente a mais ocuparia meio
+ * terreno sem render mais nada.
+ */
+export const AMBIENTES_NA_PLANTA: Readonly<Record<string, number>> = { 'heat-furnace': 2, 'cooling-unit': 1, 'sunlamp': 1 };
+
+/** O inventário do RV com os ambientes limitados ao que a planta usa. */
+function inventarioDaPlanta(dados: DadosConstrucao, rv: number): Inventario {
+  const inv = inventario(dados, rv);
+  const itens = inv.itens.map((it) => ({ ...it, quantidade: Math.min(it.quantidade, AMBIENTES_NA_PLANTA[it.construcao.chave] ?? Infinity) }));
+  return { ...inv, itens };
+}
+
+function temaDe(c: Construcao, regras: RegrasAmbiente): TipoBloco {
+  if (eLote(c.chave) || regras.construcoes[c.chave]) return 'cultivo';
+  if (c.categoria === 'processamento') return 'oficina';
+  return c.categoria === 'materiais-aniimo' ? 'moradias' : 'recursos';
+}
+
+/** Uma entrada por unidade construída, com o RV em que ela libera. */
+function unidadesDe(inv: Inventario, regras: RegrasAmbiente): Unidade[] {
+  return inv.itens.flatMap((it) =>
+    Array.from({ length: it.quantidade }, (_, k) => ({
+      chave: it.construcao.chave,
+      lado: it.construcao.tamanho,
+      nivel: it.nivel,
+      estimado: it.construcao.tamanhoEstimado,
+      tema: temaDe(it.construcao, regras),
+      rv: it.construcao.quantidadePorRv.findIndex((q) => q >= k + 1) + 1,
+    })),
   );
+}
 
-function montarBlocos(dados: DadosConstrucao, inv: Inventario, opcoes: OpcoesPlanta, sug: Sugestoes): BlocoLocal[] {
-  const regras = dados.regras;
-  const porChave = new Map(inv.itens.map((it) => [it.construcao.chave, it]));
-  const nivel = (chave: string) => porChave.get(chave)?.nivel ?? 0;
-  const disponiveis: Record<TipoLote, number> = {
-    farmland: porChave.get('farmland')?.quantidade ?? 0,
-    woodland: porChave.get('woodland')?.quantidade ?? 0,
-  };
-  const blocos: BlocoLocal[] = [];
+const mover = <T extends ItemMapa>(i: T, dx: number, dy: number): T => ({ ...i, area: transladar(i.area, dx, dy) });
 
-  // As culturas sem ambiente escolhidas ficam com a parte proporcional dos lotes do seu tipo (senão os
-  // ambientes, mais rentáveis, levariam tudo e elas não apareceriam).
-  const reserva: Record<TipoLote, number> = { farmland: 0, woodland: 0 };
-  for (const tipo of ['farmland', 'woodland'] as const) {
-    const familias = new Set([...sug.keys()].filter((k) => k.startsWith(`${tipo}|`)).flatMap((k) => sug.get(k)!.map((p) => familia(p.chave))));
-    const neutras = culturasPara(sug, tipo, null).length;
-    if (neutras && familias.size) reserva[tipo] = Math.round((disponiveis[tipo] * neutras) / familias.size);
+/** Um pátio de lajotas (piso) meio tile em volta de cada construção, em vez de um piso único no terreno. */
+function comPatios(itens: readonly ItemMapa[]): ItemMapa[] {
+  const patios: ItemMapa[] = itens.filter((i) => i.tipo === 'construcao').map((i) => ({ tipo: 'piso', area: expandir(i.area, 0.5) }));
+  return [...patios, ...itens];
+}
+
+/**
+ * Arruma as unidades de um tema dentro de um terreno: maiores primeiro, lado a lado em fileiras
+ * centradas, com `folga` tiles de passagem. Oficina e moradias ganham pátios; na oficina, com folga
+ * para isso, as fileiras ficam desencontradas (pedido do usuário). Devolve null se não couber. A rede
+ * elétrica (Gerador de Estalos e Postes) fica por conta do jogador: não entra no mapa.
+ */
+function arrumar(tema: TipoBloco, unidades: readonly Unidade[], folgaGeral: number): ItemMapa[] | null {
+  const folga = Math.min(folgaGeral, FOLGA_DO_TEMA[tema]);
+  const largura = LARGURA_TERRENO - 2 * MARGEM;
+  const altura = ALTURA_TERRENO - 2 * MARGEM;
+  const ordem = [...unidades].sort((a, b) => b.lado - a.lado || a.chave.localeCompare(b.chave));
+  const fileiras: { unidades: Unidade[]; largura: number; altura: number }[] = [];
+  for (const u of ordem) {
+    const f = fileiras.at(-1);
+    if (f && f.largura + folga + u.lado <= largura) {
+      f.unidades.push(u);
+      f.largura += folga + u.lado;
+    } else fileiras.push({ unidades: [u], largura: u.lado, altura: u.lado });
   }
-  const ambientados = { farmland: disponiveis.farmland - reserva.farmland, woodland: disponiveis.woodland - reserva.woodland };
-  const { aglomerados, restantes: sobras } = montarAmbientes(inv.itens, ambientados, sug, regras);
-  const restantes = { farmland: sobras.farmland + reserva.farmland, woodland: sobras.woodland + reserva.woodland };
-  const subareas: ItemMapa[][] = [];
-  for (const ag of aglomerados) {
-    const itens: ItemMapa[] = [];
-    for (const a of ag.ambientes) {
-      itens.push({ tipo: 'cobertura', area: cobertura(a.area, regras.raioCobertura), modo: a.modo, construcao: a.chave });
-      itens.push({ tipo: 'construcao', area: a.area, construcao: a.chave, nivel: nivel(a.chave), estimado: false, condicao: a.modo, cultura: null, bloco: -1 });
+  const total = fileiras.reduce((s, f) => s + f.altura, 0) + folga * (fileiras.length - 1);
+  if (total > altura || fileiras.some((f) => f.largura > largura)) return null;
+
+  const desencontrar = tema === 'oficina' && folga >= 2;
+  const itens: ItemConstrucao[] = [];
+  // Centrado no terreno; as posições caem em meio tile (a grade do jogo é de ¼ de tile).
+  let y = MARGEM + (altura - total) / 2;
+  fileiras.forEach((f, i) => {
+    const sobra = largura - f.largura;
+    // Fileiras ímpares deslocadas, quando há sobra para isso.
+    const desvio = desencontrar && sobra >= 2 * folga ? (i % 2 ? 1 : -1) * Math.floor(folga / 2) : 0;
+    let x = MARGEM + sobra / 2 + desvio;
+    for (const u of f.unidades) {
+      itens.push({ tipo: 'construcao', area: quadrado(x, y, u.lado), construcao: u.chave, nivel: u.nivel, estimado: u.estimado, condicao: null, cultura: null, bloco: -1, terreno: 0 });
+      x += u.lado + folga;
     }
-    for (const l of ag.lotes)
-      itens.push({ tipo: 'construcao', area: l.area, construcao: l.tipo, nivel: nivel(l.tipo), estimado: false, condicao: l.condicao, cultura: l.cultura ?? null, bloco: -1 });
-    subareas.push(itens);
+    y += f.altura + folga;
+  });
+  return tema === 'oficina' || tema === 'moradias' ? comPatios(itens) : itens;
+}
+
+/** Células da malha de 2 tiles que as Fazendas e os Bosques de um RV ocupam (o Bosque vale 4). */
+function celulasDeCultivo(dados: DadosConstrucao, rv: number): number {
+  const qtd = (chave: string) => dados.construcoes.find((c) => c.chave === chave)?.quantidadePorRv[rv - 1] ?? 0;
+  return qtd('farmland') + 4 * qtd('woodland');
+}
+
+/**
+ * Distribui o que cada RV libera pelos terrenos que já existem nesse RV. Cada tema enche o seu terreno
+ * e só então abre outro (o de número mais baixo ainda sem tema). No cultivo, o primeiro terreno fica sem
+ * ambiente (é onde se planta antes de ter Fornalha); cada grupo de ambiente vai para outro terreno de
+ * cultivo, o par ocupando o terreno inteiro e as avulsas meio terreno cada. Devolve null se algum RV
+ * ficar sem terreno para o que libera.
+ */
+function distribuir(dados: DadosConstrucao, inv: Inventario, chocadeiras: number, folga: number, capacidade: number): Vaga[] | null {
+  const regras = dados.regras;
+  const abertos = TERRENOS.filter((t) => t.rv <= inv.rv);
+  const vagas: Vaga[] = [];
+  const abrir = (tema: TipoBloco, rv: number): Vaga | undefined => {
+    const t = abertos.find((x) => x.rv <= rv && !vagas.some((v) => v.terreno === x));
+    if (!t) return undefined;
+    const vaga: Vaga = { terreno: t, tema, unidades: [], grupos: [], metades: 0 };
+    vagas.push(vaga);
+    return vaga;
+  };
+
+  const unidades = unidadesDe(inv, regras);
+  const ambientes = unidades.filter((u) => regras.construcoes[u.chave]);
+  const fornalha = ambientes.find((u) => u.chave === 'heat-furnace');
+  const resfriador = ambientes.find((u) => u.chave === 'cooling-unit');
+  const par = fornalha && resfriador ? [fornalha, resfriador] : [];
+  const grupos: GrupoAmbiente[] = [
+    ...(par.length ? [{ unidades: par, rv: Math.max(...par.map((u) => u.rv)) }] : []),
+    ...ambientes.filter((u) => !par.includes(u)).map((u) => ({ unidades: [u], rv: u.rv })),
+  ];
+  const ordemDosTemas: readonly TipoBloco[] = ['oficina', 'recursos', 'moradias'];
+
+  for (let rv = 1; rv <= inv.rv; rv++) {
+    const cultivos = () => vagas.filter((v) => v.tema === 'cultivo');
+    for (const g of grupos.filter((x) => x.rv === rv)) {
+      const cabe = (v: Vaga) => 2 - v.metades >= g.unidades.length;
+      const vaga = cultivos().slice(1).find(cabe) ?? (cultivos().length ? abrir('cultivo', rv) : undefined) ?? cultivos().find(cabe) ?? abrir('cultivo', rv);
+      if (!vaga) return null;
+      vaga.grupos.push(g);
+      vaga.metades += g.unidades.length;
+    }
+    while (celulasDeCultivo(dados, rv) > capacidade * cultivos().length) if (!abrir('cultivo', rv)) return null;
+
+    const novas = unidades
+      .filter((u) => u.rv === rv && u.tema !== 'cultivo')
+      .sort((a, b) => ordemDosTemas.indexOf(a.tema) - ordemDosTemas.indexOf(b.tema) || b.lado - a.lado || a.chave.localeCompare(b.chave));
+    for (const u of novas) {
+      const cabe = (v: Vaga) => v.tema === u.tema && arrumar(u.tema, [...v.unidades, u], folga) !== null;
+      const vaga = vagas.find(cabe) ?? abrir(u.tema, rv);
+      if (!vaga || !cabe(vaga)) return null;
+      vaga.unidades.push(u);
+    }
   }
 
-  // Lotes sem ambiente (a cultura é repartida depois, em repartirCulturas).
-  const lote = (tipo: TipoLote, n: number) =>
-    Array.from({ length: n }, () => ({ chave: tipo, lado: TAMANHO_LOTE[tipo], nivel: nivel(tipo), estimado: false }));
-  if (restantes.farmland > 0) subareas.push(grade(lote('farmland', restantes.farmland), Math.min(6, Math.ceil(Math.sqrt(restantes.farmland * 2))), 0));
-  if (restantes.woodland > 0) subareas.push(grade(lote('woodland', restantes.woodland), Math.min(4, Math.ceil(Math.sqrt(restantes.woodland))), 0));
-  if (subareas.length) blocos.push({ tipo: 'cultivo', cercado: true, ...comporCultivo(subareas) });
+  // Chocadeiras: a quantidade por RV não é conhecida; ficam num terreno ainda sem tema.
+  for (let k = 0; k < chocadeiras; k++) {
+    const u: Unidade = { chave: CHOCADEIRA.chave, lado: CHOCADEIRA.tamanho, nivel: 1, estimado: false, tema: 'ninhal', rv: 1 };
+    const cabe = (v: Vaga) => v.tema === 'ninhal' && arrumar('ninhal', [...v.unidades, u], folga) !== null;
+    const vaga = vagas.find(cabe) ?? abrir('ninhal', inv.rv);
+    if (!vaga || !cabe(vaga)) return null;
+    vaga.unidades.push(u);
+  }
+  return vagas.sort((a, b) => a.terreno.n - b.terreno.n);
+}
 
-  const categoria = (c: string) => inv.itens.filter((it) => it.construcao.categoria === c && !regras.construcoes[it.construcao.chave]);
-  const colunas = (n: number) => Math.max(1, Math.ceil(Math.sqrt(n * 1.5)));
-  const oficina = unidadesDe(categoria('processamento'));
-  if (oficina.length) blocos.push({ tipo: 'oficina', itens: vilaDeOficinas(oficina), cercado: false });
-  const recursos = unidadesDe(categoria('materiais').filter((it) => it.construcao.chave !== 'farmland' && it.construcao.chave !== 'woodland'));
-  if (recursos.length) blocos.push({ tipo: 'recursos', itens: grade(recursos, colunas(recursos.length), 2), cercado: false });
-  const moradias = unidadesDe(categoria('materiais-aniimo'));
-  if (moradias.length) blocos.push({ tipo: 'moradias', itens: comPatios(grade(moradias, colunas(moradias.length), 2)), cercado: false });
-  const chocadeiras = Array.from({ length: opcoes.chocadeiras ?? 0 }, () => ({ chave: CHOCADEIRA.chave, lado: CHOCADEIRA.tamanho, nivel: 1, estimado: false }));
-  if (chocadeiras.length) blocos.push({ tipo: 'ninhal', itens: grade(chocadeiras, Math.min(4, chocadeiras.length), 1), cercado: true });
-  return blocos;
+const meio = (v: number) => Math.round(v * 2) / 2;
+
+/** Posiciona os ambientes de um terreno de cultivo, com as coberturas inteiras dentro dele. */
+function ambientesDoTerreno(vaga: Vaga, area: Retangulo, parBase: readonly ConstrucaoAmbiente[], regras: RegrasAmbiente): ConstrucaoAmbiente[] {
+  const saida: ConstrucaoAmbiente[] = [];
+  let metade = 0;
+  for (const g of vaga.grupos) {
+    if (g.unidades.length === 2) {
+      // O par vem com a distância e os modos escolhidos na montagem da base; fica centrado no terreno.
+      const coberto = uniao(parBase.map((a) => cobertura(a.area, regras.raioCobertura)));
+      const dx = area.x + meio((area.largura - coberto.largura) / 2) - coberto.x;
+      const dy = area.y + meio((area.altura - coberto.altura) / 2) - coberto.y;
+      saida.push(...parBase.map((a) => ({ ...a, area: transladar(a.area, dx, dy) })));
+      metade = 2;
+    } else {
+      const u = g.unidades[0]!;
+      const cx = area.x + (metade ? 14.5 : 5.5);
+      saida.push({ chave: u.chave, area: quadrado(cx - u.lado / 2, area.y + 7.5 - u.lado / 2, u.lado), modo: regras.construcoes[u.chave]!.modos[0]! });
+      metade++;
+    }
+  }
+  return saida;
+}
+
+/**
+ * Sub-região onde os lotes de um terreno de cultivo se movem: a malha de 2 tiles começa no canto dela,
+ * a pelo menos meio tile da borda do terreno, alinhada para as zonas dos ambientes renderem mais.
+ */
+function regiaoDeCultivo(area: Retangulo, ambientes: readonly ConstrucaoAmbiente[], sug: Sugestoes, regras: RegrasAmbiente): Retangulo {
+  const { ox, oy } = ambientes.length ? melhorMalha(ambientes, sug, regras) : { ox: 1, oy: 0.5 };
+  const alinhar = (inicio: number, desloc: number) => [0.5, 1, 1.5, 2].map((d) => inicio + d).find((v) => Math.abs((((v - desloc) % 2) + 2) % 2) < 1e-9)!;
+  const x = alinhar(area.x, ox);
+  const y = alinhar(area.y, oy);
+  const caber = (fim: number, inicio: number) => Math.floor((fim - 0.5 - inicio) / 2) * 2;
+  return { x, y, largura: caber(area.x + area.largura, x), altura: caber(area.y + area.altura, y) };
+}
+
+/** Espaço 2×2 para um armazém no terreno do bloco: na malha do cultivo, ou num canto livre dos outros temas. */
+function vagaDeArmazem(bloco: Bloco, itens: readonly ItemMapa[]): Retangulo | undefined {
+  const lado = ARMAZEM.tamanho;
+  const doTerreno = itens.filter((i) => (i.tipo === 'construcao' || i.tipo === 'piso') && sobrepoe(i.area, bloco.area));
+  const ocupado = doTerreno.map((i) => (i.tipo === 'construcao' && i.construcao === ARMAZEM.chave ? expandir(i.area, 1) : i.area));
+  const regiao = bloco.regioes?.[0];
+  const dentro = regiao ?? expandir(bloco.area, -1);
+  const passo = regiao ? 2 : 1;
+  // Perto do meio do que o terreno produz (no cultivo, o meio da sub-região).
+  const alvos = doTerreno.filter((i) => i.tipo === 'construcao').map((i) => i.area);
+  const centro = regiao || !alvos.length ? dentro : uniao(alvos);
+  const cx = centro.x + centro.largura / 2;
+  const cy = centro.y + centro.altura / 2;
+  let melhor: { area: Retangulo; distancia: number } | undefined;
+  for (let y = dentro.y; y + lado <= dentro.y + dentro.altura + 1e-9; y += passo)
+    for (let x = dentro.x; x + lado <= dentro.x + dentro.largura + 1e-9; x += passo) {
+      const area = quadrado(x, y, lado);
+      if (ocupado.some((o) => sobrepoe(o, area))) continue;
+      const distancia = Math.abs(x + lado / 2 - cx) + Math.abs(y + lado / 2 - cy);
+      if (!melhor || distancia < melhor.distancia - 1e-9) melhor = { area, distancia };
+    }
+  return melhor?.area;
+}
+
+/** Monta blocos e itens a partir da distribuição. Devolve null se os lotes não couberem nos terrenos de cultivo. */
+function montar(dados: DadosConstrucao, inv: Inventario, vagas: readonly Vaga[], folga: number, armazens: number): { blocos: Bloco[]; itens: ItemMapa[] } | null {
+  const regras = dados.regras;
+  const sug = sugestoes(inv.produtos);
+  const qtd = (chave: string) => inv.itens.find((it) => it.construcao.chave === chave)?.quantidade ?? 0;
+  const nivel = (chave: string) => inv.itens.find((it) => it.construcao.chave === chave)?.nivel ?? 0;
+  const lotes: Record<TipoLote, number> = { farmland: qtd('farmland'), woodland: qtd('woodland') };
+  // Distância e modos do par Fornalha + Resfriador, como sempre (Morno + Congelante, com Frio no meio).
+  const parBase = montarAmbientes(inv.itens, lotes, sug, regras).aglomerados.find((a) => a.ambientes.length === 2)?.ambientes ?? [];
+
+  const blocos: Bloco[] = [];
+  const itens: ItemMapa[] = [];
+  vagas.forEach((vaga, indice) => {
+    const area = areaDoTerreno(vaga.terreno);
+    const bloco: Bloco = { tipo: vaga.tema, area, cercado: vaga.tema === 'cultivo' || vaga.tema === 'ninhal', terreno: vaga.terreno.n };
+    blocos.push(bloco);
+    const construcao = (chave: string, r: Retangulo, condicao: Ambiente | null): ItemConstrucao => ({
+      tipo: 'construcao', area: r, construcao: chave, nivel: nivel(chave), estimado: false, condicao, cultura: null, bloco: indice, terreno: vaga.terreno.n,
+    });
+    if (vaga.tema === 'cultivo') {
+      const ambientes = ambientesDoTerreno(vaga, area, parBase, regras);
+      for (const a of ambientes) {
+        itens.push({ tipo: 'cobertura', area: cobertura(a.area, regras.raioCobertura), modo: a.modo, construcao: a.chave });
+        itens.push(construcao(a.chave, a.area, a.modo));
+      }
+      bloco.regioes = [regiaoDeCultivo(area, ambientes, sug, regras)];
+      return;
+    }
+    for (const i of arrumar(vaga.tema, vaga.unidades, folga)!) {
+      const movido = mover(i, area.x, area.y);
+      if (movido.tipo === 'construcao') Object.assign(movido, { bloco: indice, terreno: vaga.terreno.n });
+      itens.push(movido);
+    }
+  });
+
+  // Armazéns espalhados: um por terreno produtivo antes de repetir, começando pelos que abrem primeiro.
+  // São construções: ficam onde estão quando o jogador troca as culturas.
+  const produtivos = blocos.map((b, indice) => ({ b, indice })).filter((x) => x.b.tipo !== 'ninhal');
+  for (let k = 0; k < armazens && produtivos.length; k++)
+    for (let tentativa = 0; tentativa < produtivos.length; tentativa++) {
+      const { b, indice } = produtivos[(k + tentativa) % produtivos.length]!;
+      const area = vagaDeArmazem(b, itens);
+      if (!area) continue;
+      itens.push({ tipo: 'construcao', area, construcao: ARMAZEM.chave, nivel: 1, estimado: false, condicao: null, cultura: null, bloco: indice, terreno: b.terreno });
+      break;
+    }
+
+  // Fazendas e Bosques: a posição de cada um sai do rearranjo, com todas as culturas e os modos da base.
+  const primeiro = blocos.findIndex((b) => b.tipo === 'cultivo');
+  if (primeiro >= 0) {
+    const canto = blocos[primeiro]!.regioes![0]!;
+    for (const tipo of ['woodland', 'farmland'] as const)
+      for (let k = 0; k < lotes[tipo]; k++)
+        itens.push({ tipo: 'construcao', area: quadrado(canto.x, canto.y, TAMANHO_LOTE[tipo]), construcao: tipo, nivel: nivel(tipo), estimado: false, condicao: null, cultura: null, bloco: primeiro, terreno: blocos[primeiro]!.terreno });
+    if (!rearranjar({ itens, blocos }, dados, sug, { manterModos: true }).coube) return null;
+  }
+  return { blocos, itens };
 }
 
 /**
@@ -265,9 +509,10 @@ function acomodarForaDoAmbiente(itens: readonly ItemMapa[], sug: Sugestoes, ativ
 /**
  * Marca as Fazendas coringa sem tirar lote de nenhuma cultura escolhida: saem primeiro das sobras dos
  * lotes sem ambiente, depois de zonas sem cultura escolhida (ficariam vazios), depois das sobras dos
- * grupos com mais lotes que culturas. Em cada faixa, na ordem de blocos e de leitura.
+ * grupos com mais lotes que culturas. Em cada faixa, primeiro os terrenos já abertos no nível do jogador
+ * (`rv`; a semente de evento é para plantar agora), depois na ordem de blocos e de leitura.
  */
-function marcarCoringas(itens: readonly ItemMapa[], quantidade: number, sug: Sugestoes, ativos: ReadonlySet<ItemConstrucao>): void {
+function marcarCoringas(itens: readonly ItemMapa[], quantidade: number, sug: Sugestoes, ativos: ReadonlySet<ItemConstrucao>, rv: number): void {
   const fazendas = itens.filter((i): i is ItemConstrucao => i.tipo === 'construcao' && i.construcao === 'farmland');
   for (const f of fazendas) delete f.coringa;
   const chave = (f: ItemConstrucao) => f.condicao ?? '';
@@ -281,12 +526,13 @@ function marcarCoringas(itens: readonly ItemMapa[], quantidade: number, sug: Sug
     return f.condicao === null ? 0 : 2;
   };
   const leitura = (a: ItemConstrucao, b: ItemConstrucao) => a.bloco - b.bloco || a.area.y - b.area.y || a.area.x - b.area.x;
+  const fechado = (f: ItemConstrucao) => Number(terreno(f.terreno).rv > rv);
   for (let n = 0; n < quantidade; n++) {
     const candidatas = fazendas.filter((f) => !f.coringa);
     if (!candidatas.length) break;
     // Entre as sobras, as inativas (que ainda não produzem) antes das ativas.
     const escolhida = candidatas.reduce((a, b) => {
-      const d = faixa(a) - faixa(b) || sobra(b) - sobra(a) || Number(ativos.has(a)) - Number(ativos.has(b)) || leitura(a, b);
+      const d = faixa(a) - faixa(b) || fechado(a) - fechado(b) || sobra(b) - sobra(a) || Number(ativos.has(a)) - Number(ativos.has(b)) || leitura(a, b);
       return d <= 0 ? a : b;
     });
     escolhida.coringa = true;
@@ -294,114 +540,10 @@ function marcarCoringas(itens: readonly ItemMapa[], quantidade: number, sug: Sug
   }
 }
 
-const areaDe = (itens: readonly ItemMapa[]) => uniao(itens.map((i) => i.area));
-
-const mover = <T extends ItemMapa>(i: T, dx: number, dy: number): T => ({ ...i, area: transladar(i.area, dx, dy) });
-
-/** Um pátio de lajotas (piso) meio tile em volta de cada construção, em vez de um piso único no bloco. */
-function comPatios(itens: readonly ItemMapa[]): ItemMapa[] {
-  const patios: ItemMapa[] = itens.filter((i) => i.tipo === 'construcao').map((i) => ({ tipo: 'piso', area: expandir(i.area, 0.5) }));
-  return [...patios, ...itens];
-}
-
-type Unidade = { chave: string; lado: number; nivel: number; estimado: boolean };
-
-/**
- * Oficina em forma de vila: máquinas maiores primeiro, lado a lado em fileiras desencontradas (as
- * fileiras ímpares começam deslocadas) com 2 tiles de passagem entre elas, cada uma no seu pátio. A rede
- * elétrica (Gerador de Estalos e Postes) fica por conta do jogador (decisão do usuário): não entra no mapa.
- */
-function vilaDeOficinas(unidades: readonly Unidade[]): ItemMapa[] {
-  const FOLGA = 2;
-  const ordem = [...unidades].sort((a, b) => b.lado - a.lado || a.chave.localeCompare(b.chave));
-  const areaTotal = ordem.reduce((s, u) => s + (u.lado + FOLGA) ** 2, 0);
-  const larguraAlvo = Math.max(ordem[0]!.lado, Math.ceil(Math.sqrt(areaTotal) * 1.35));
-  const maquinas: ItemConstrucao[] = [];
-  let x = 0;
-  let y = 0;
-  let alturaFila = 0;
-  let fila = 0;
-  for (const u of ordem) {
-    if (x > 0 && x + u.lado > larguraAlvo) {
-      y += alturaFila + FOLGA;
-      fila++;
-      x = fila % 2 ? FOLGA : 0;
-      alturaFila = 0;
-    }
-    maquinas.push({ tipo: 'construcao', area: quadrado(x, y, u.lado), construcao: u.chave, nivel: u.nivel, estimado: u.estimado, condicao: null, cultura: null, bloco: -1 });
-    x += u.lado + FOLGA;
-    alturaFila = Math.max(alturaFila, u.lado);
-  }
-  return comPatios(maquinas);
-}
-
-/**
- * Junta as sub-regiões de cultivo num único bloco: fileiras (maiores primeiro) com trilhas de
- * {@link TRILHA} tile entre elas. Cada sub-região ocupa o retângulo inteiro que a contém (as coberturas
- * 9×9 inclusive), então duas sub-regiões nunca se tocam e as coberturas de uma não alcançam a outra.
- */
-function comporCultivo(subareas: readonly ItemMapa[][]): { itens: ItemMapa[]; regioes: Retangulo[] } {
-  const partes = subareas
-    .map((itens) => {
-      const a = areaDe(itens);
-      const dx = -Math.floor(a.x);
-      const dy = -Math.floor(a.y);
-      const movidos = itens.map((i) => mover(i, dx, dy));
-      const b = areaDe(movidos);
-      return { itens: movidos, largura: Math.ceil(b.x + b.largura), altura: Math.ceil(b.y + b.altura) };
-    })
-    .sort((a, b) => b.altura - a.altura || b.largura - a.largura);
-  const areaTotal = partes.reduce((s, p) => s + (p.largura + TRILHA) * (p.altura + TRILHA), 0);
-  const larguraAlvo = Math.max(...partes.map((p) => p.largura), Math.ceil(Math.sqrt(areaTotal) * 1.25));
-  const fileiras: { partes: typeof partes; altura: number; largura: number }[] = [];
-  for (const p of partes) {
-    const f = fileiras.at(-1);
-    if (f && f.largura + TRILHA + p.largura <= larguraAlvo) {
-      f.partes.push(p);
-      f.largura += TRILHA + p.largura;
-      f.altura = Math.max(f.altura, p.altura);
-    } else fileiras.push({ partes: [p], altura: p.altura, largura: p.largura });
-  }
-  const largura = Math.max(...fileiras.map((f) => f.largura));
-  const itens: ItemMapa[] = [];
-  const regioes: Retangulo[] = [];
-  let y = 0;
-  fileiras.forEach((f, i) => {
-    if (i) {
-      itens.push({ tipo: 'trilha', area: { x: 0, y, largura, altura: TRILHA } });
-      y += TRILHA;
-    }
-    let x = 0;
-    f.partes.forEach((p, j) => {
-      if (j) {
-        itens.push({ tipo: 'trilha', area: { x, y, largura: TRILHA, altura: f.altura } });
-        x += TRILHA;
-      }
-      regioes.push({ x, y, largura: p.largura, altura: p.altura });
-      for (const it of p.itens) itens.push(mover(it, x, y));
-      x += p.largura;
-    });
-    y += f.altura;
-  });
-  return { itens, regioes };
-}
-
-/** Move o bloco para começar em (MARGEM, MARGEM), arredondando para tile inteiro, e mede o tamanho. */
-function normalizar(b: BlocoLocal) {
-  const a = areaDe(b.itens);
-  const dx = MARGEM - Math.floor(a.x);
-  const dy = MARGEM - Math.floor(a.y);
-  const itens = b.itens.map((i) => mover(i, dx, dy));
-  const regioes = b.regioes?.map((r) => transladar(r, dx, dy));
-  const conteudo = areaDe(itens);
-  return {
-    ...b,
-    itens,
-    ...(regioes ? { regioes } : {}),
-    largura: Math.ceil(conteudo.x + conteudo.largura) + MARGEM,
-    altura: Math.ceil(conteudo.y + conteudo.altura) + MARGEM,
-  };
-}
+/** Passagem entre as construções de um terreno, da mais folgada à mais apertada, em tiles. */
+const FOLGAS = [2, 1, 0];
+/** Células de lote por terreno de cultivo antes de abrir outro (a malha tem de 48 a 63). */
+const CAPACIDADES = [44, 36, 28];
 
 /** Monta a planta completa de um RV. */
 export function plantaDoLar(dados: DadosConstrucao, rv: number, opcoes: OpcoesPlanta = {}): PlantaLar {
@@ -409,88 +551,49 @@ export function plantaDoLar(dados: DadosConstrucao, rv: number, opcoes: OpcoesPl
     const n = opcoes[campo] ?? 0;
     if (!Number.isInteger(n) || n < 0) throw new RangeError(`${campo} inválido: ${n}`);
   }
-  const inv = inventario(dados, rv);
+  const inv = inventarioDaPlanta(dados, rv);
+
   // A disposição usa sempre todas as culturas: assim ela não muda quando o jogador troca a escolha.
-  const locais = montarBlocos(dados, inv, opcoes, sugestoes(inv.produtos))
-    .map(normalizar)
-    // Ordem estável: maiores primeiro, para as fileiras ficarem equilibradas.
-    .sort((a, b) => b.altura - a.altura || b.largura - a.largura);
-
-  // Empacota em fileiras (prateleiras) com caminhos entre os blocos.
-  const areaTotal = locais.reduce((s, b) => s + (b.largura + CAMINHO) * (b.altura + CAMINHO), 0);
-  const larguraAlvo = Math.max(...locais.map((b) => b.largura), Math.ceil(Math.sqrt(areaTotal) * 1.3), 1);
-  const fileiras: { blocos: typeof locais; altura: number; largura: number }[] = [];
-  for (const b of locais) {
-    const f = fileiras.at(-1);
-    if (f && f.largura + CAMINHO + b.largura <= larguraAlvo) {
-      f.blocos.push(b);
-      f.largura += CAMINHO + b.largura;
-      f.altura = Math.max(f.altura, b.altura);
-    } else fileiras.push({ blocos: [b], altura: b.altura, largura: b.largura });
-  }
-  const larguraConteudo = Math.max(0, ...fileiras.map((f) => f.largura));
-
-  const inicio = BORDA + CAMINHO;
-  const blocos: Bloco[] = [];
-  const itens: ItemMapa[] = [];
-  let y = inicio;
-  for (const f of fileiras) {
-    // Centraliza a fileira na largura do conteúdo.
-    let x = inicio + Math.floor((larguraConteudo - f.largura) / 2);
-    for (const b of f.blocos) {
-      const indice = blocos.length;
-      blocos.push({
-        tipo: b.tipo,
-        area: { x, y, largura: b.largura, altura: b.altura },
-        cercado: b.cercado,
-        ...(b.regioes ? { regioes: b.regioes.map((r) => transladar(r, x, y)) } : {}),
-      });
-      for (const i of b.itens) {
-        const movido = mover(i, x, y);
-        if (movido.tipo === 'construcao') movido.bloco = indice;
-        itens.push(movido);
+  // Tenta com folga; se faltar terreno em algum RV, aperta. Se os lotes não couberem, abre mais cultivo.
+  let base: { vagas: Vaga[]; blocos: Bloco[]; itens: ItemMapa[] } | undefined;
+  for (const folga of FOLGAS) {
+    for (const capacidade of CAPACIDADES) {
+      const vagas = distribuir(dados, inv, opcoes.chocadeiras ?? 0, folga, capacidade);
+      if (!vagas) break;
+      const montada = montar(dados, inv, vagas, folga, opcoes.armazens ?? 0);
+      if (montada) {
+        base = { vagas, ...montada };
+        break;
       }
-      x += b.largura + CAMINHO;
     }
-    y += f.altura + CAMINHO;
+    if (base) break;
   }
-  const largura = inicio + larguraConteudo + CAMINHO + BORDA;
-  const altura = y + BORDA;
+  if (!base) throw new Error(`A planta do RV ${rv} não coube nos terrenos`);
+  const { vagas, blocos, itens } = base;
 
-  const porFileira = fileiras.map((f) => f.blocos.length);
-
-  // Armazéns espalhados, perto das construções que produzem (não das chocadeiras nem dos ambientes).
-  // Calculados com a base, antes de rearrumar os lotes: são construções e não mudam com as culturas.
-  const produtivas = itens.filter(
-    (i): i is ItemConstrucao => i.tipo === 'construcao' && i.construcao !== CHOCADEIRA.chave && !dados.regras.construcoes[i.construcao],
-  );
-  const armazens = posicionarArmazens(
-    opcoes.armazens ?? 0,
-    ARMAZEM.tamanho,
-    { largura, altura },
-    blocos.map((b) => b.area),
-    tracarCaminhos({ largura, altura, blocos, fileiras: porFileira }),
-    produtivas.map((i) => ({ x: i.area.x + i.area.largura / 2, y: i.area.y + i.area.altura / 2 })),
-    { x: BORDA, y: BORDA, largura: largura - 2 * BORDA, altura: altura - 2 * BORDA },
-  );
-  for (const area of armazens)
-    itens.push({ tipo: 'construcao', area, construcao: ARMAZEM.chave, nivel: 1, estimado: false, condicao: null, cultura: null, bloco: -1 });
-
-  // A escolha do jogador rearruma os lotes dentro dos blocos, os modos dos ambientes e as culturas.
-  const lote = (p: Produto) => p.construcao === 'farmland' || p.construcao === 'woodland';
+  // A escolha do jogador rearruma os lotes dentro dos terrenos de cultivo, os modos dos ambientes e as culturas.
+  const lote = (p: Produto) => eLote(p.construcao);
   const rvCulturas = opcoes.rvCulturas;
   const escolha = sugestoes(
     rvCulturas === undefined ? inv.produtos : inv.produtos.filter((p) => !lote(p) || (rvDoProduto(p, dados) ?? Infinity) <= rvCulturas),
     opcoes.culturas ? new Set(opcoes.culturas) : undefined,
   );
-  const lotesDaPlanta = itens.filter((i): i is ItemConstrucao => i.tipo === 'construcao' && (i.construcao === 'farmland' || i.construcao === 'woodland'));
+  const lotesDaPlanta = itens.filter((i): i is ItemConstrucao => i.tipo === 'construcao' && eLote(i.construcao));
   const { ativos } =
-    opcoes.culturas || rvCulturas !== undefined ? rearranjar({ itens, blocos }, dados, escolha, rvCulturas) : { ativos: new Set(lotesDaPlanta) };
-  marcarCoringas(itens, opcoes.coringas ?? 0, escolha, ativos);
+    opcoes.culturas || rvCulturas !== undefined
+      ? rearranjar({ itens, blocos }, dados, escolha, rvCulturas === undefined ? {} : { rv: rvCulturas })
+      : { ativos: new Set(lotesDaPlanta) };
+  marcarCoringas(itens, opcoes.coringas ?? 0, escolha, ativos, rvCulturas ?? rv);
   repartirCulturas(itens, escolha, ativos);
   acomodarForaDoAmbiente(itens, escolha, ativos, dados.regras);
 
-  const extras = decorar({ largura, altura, blocos, fileiras: porFileira, itens, semente: rv });
-  return { rv, verificado: inv.verificado, largura, altura, blocos, itens: [...extras, ...itens] };
+  const terrenos: TerrenoDaPlanta[] = TERRENOS.map((t) => ({ ...t, area: areaDoTerreno(t), tema: vagas.find((v) => v.terreno === t)?.tema ?? null }));
+  // Por último, a decoração: usa só o espaço que sobrou e transforma os terrenos livres em jardins.
+  const decoracao = decorar({ terrenos, blocos, itens, enfeites: opcoes.enfeites ?? [], equilibrio: opcoes.equilibrio ?? 'equilibrado', rv, semente: rv });
+  for (const jardim of decoracao.jardins)
+    for (const n of jardim.terrenos) {
+      const unidoA = jardim.terrenos.find((o) => o !== n);
+      Object.assign(terrenos[n - 1]!, { tema: 'jardim', jardim: jardim.tipo, ...(unidoA ? { unidoA } : {}) });
+    }
+  return { rv, verificado: inv.verificado, largura: LARGURA_TABULEIRO, altura: ALTURA_TABULEIRO, terrenos, blocos, itens: [...decoracao.ruas, ...decoracao.itens, ...itens] };
 }
-

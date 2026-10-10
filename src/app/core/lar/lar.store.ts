@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
 import { gravar, ler } from '../data/armazenamento';
+import { EQUILIBRIOS, type Equilibrio } from './decoracao';
 import { FOCOS, type Foco } from './foco';
 
 export const CHAVE_LAR = 'aniimo.lar.v1';
@@ -17,11 +18,11 @@ interface EstadoLar {
   culturas: string[] | null;
   /** Foco do plantio: a seleção do jogador, ou culturas escolhidas para dinheiro ou para subir de nível. */
   foco: Foco;
-  /** Giro do mapa, em graus (0 a 359). Só visual. */
-  rotacao: number;
+  /** Quanto decorar: sem enfeites, o meio-termo, ou o mais enfeitado. */
+  equilibrio: Equilibrio;
 }
 
-const INICIAL: EstadoLar = { chocadeiras: 0, armazens: 1, rvAtual: 20, coringas: 0, culturas: null, foco: 'selecao', rotacao: 0 };
+const INICIAL: EstadoLar = { chocadeiras: 0, armazens: 1, rvAtual: 20, coringas: 0, culturas: null, foco: 'selecao', equilibrio: 'equilibrado' };
 export const MAX_CHOCADEIRAS = 20;
 export const MAX_ARMAZENS = 12;
 /** Teto do campo; o motor ainda limita ao número de Fazendas da base. */
@@ -38,16 +39,16 @@ const ehEstado = (v: unknown): v is Partial<EstadoLar> => {
     (e.coringas === undefined || (Number.isInteger(e.coringas) && e.coringas >= 0 && e.coringas <= MAX_CORINGAS)) &&
     (e.culturas === undefined || e.culturas === null || (Array.isArray(e.culturas) && e.culturas.every((c) => typeof c === 'string'))) &&
     (e.foco === undefined || FOCOS.includes(e.foco)) &&
-    (e.rotacao === undefined || (Number.isInteger(e.rotacao) && e.rotacao >= 0 && e.rotacao < 360))
+    (e.equilibrio === undefined || EQUILIBRIOS.includes(e.equilibrio))
   );
 };
 
 /**
  * Completa estados antigos; o toggle `paraVender` (versão anterior) vira o foco "dinheiro"; os campos
- * de energia (`geradores`, `postes`), que saíram da página, são descartados.
+ * de energia (`geradores`, `postes`) e o giro do mapa (`rotacao`), que saíram da página, são descartados.
  */
-function migrar(lido: Partial<EstadoLar> & { paraVender?: unknown; geradores?: unknown; postes?: unknown }): EstadoLar {
-  const { paraVender, geradores: _g, postes: _p, ...resto } = lido;
+function migrar(lido: Partial<EstadoLar> & { paraVender?: unknown; geradores?: unknown; postes?: unknown; rotacao?: unknown }): EstadoLar {
+  const { paraVender, geradores: _g, postes: _p, rotacao: _r, ...resto } = lido;
   return { ...INICIAL, ...(paraVender === true && !resto.foco ? { foco: 'dinheiro' as const } : {}), ...resto };
 }
 
@@ -62,7 +63,7 @@ export class LarStore {
   readonly coringas = computed(() => this.estado().coringas);
   readonly culturas = computed(() => this.estado().culturas);
   readonly foco = computed(() => this.estado().foco);
-  readonly rotacao = computed(() => this.estado().rotacao);
+  readonly equilibrio = computed(() => this.estado().equilibrio);
 
   constructor() {
     effect(() => gravar(CHAVE_LAR, this.estado()));
@@ -97,9 +98,7 @@ export class LarStore {
     this.estado.update((e) => ({ ...e, foco }));
   }
 
-  /** Aceita qualquer ângulo e normaliza para 0–359. */
-  definirRotacao(graus: number): void {
-    const valor = ((Math.round(graus) % 360) + 360) % 360;
-    this.estado.update((e) => ({ ...e, rotacao: Number.isFinite(valor) ? valor : 0 }));
+  definirEquilibrio(equilibrio: Equilibrio): void {
+    this.estado.update((e) => ({ ...e, equilibrio }));
   }
 }

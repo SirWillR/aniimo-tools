@@ -1,24 +1,52 @@
-// Camada visual da planta: caminhos, cercas e jardinagem, com vinhetas temáticas por bloco (cultivo,
-// oficina, minas, moradias, ninhal) e praças nos espaços livres (fonte, lago, piquenique, estátuas). Só
-// enfeite; nunca ocupa espaço de construção, pátio, trilha nem sub-região de cultivo (os lotes se movem
-// dentro delas). Aleatória mas determinística (RNG com semente). TS puro.
-import { type Retangulo, expandir, sobrepoe } from './geometria';
-import type { Bloco, FormaDecoracao, ItemMapa } from './planta';
+// Decoração da planta por terrenos, com itens reais do jogo (catálogo em lar-enfeites.json). Só enfeite:
+// nunca ocupa espaço de construção nem de pátio, e não muda a posição de nada. Três partes:
+// - ruas: meio tile de calçada na borda de cada terreno, que junto com a do vizinho forma uma rua de um
+//   tile ligando todos os terrenos (pedido do usuário: os terrenos não podem parecer ilhas soltas);
+// - terrenos produtivos: vinhetas do tema no espaço que sobra (feno e girassóis no cultivo, lenha e
+//   vasos junto às máquinas, carrinhos e pedras nas minas, flores e ninhos nas moradias);
+// - terrenos sem construção: viram jardins. Dois terrenos livres lado a lado se unem num jardim grande,
+//   sem rua no meio (pedido do usuário); os demais ficam com um dos quatro tipos (praça, lago, pomar,
+//   lazer dos Aniimo). Os caminhos de cada jardim vão até a borda, onde encontram a rua.
+// O controle "Eficiente ↔ Bonito" muda a densidade. Aleatória mas determinística (RNG com semente).
+// TS puro.
+import { type Retangulo, contem, expandir, sobrepoe, uniao } from './geometria';
+import type { Enfeite, UsoEnfeite } from './modelos-lar';
+import type { Bloco, ItemMapa, TerrenoDaPlanta, TipoBloco } from './planta';
 
-// Repetidas de planta.ts para evitar import circular de valores.
-const MARGEM = 1;
-const CAMINHO = 2;
-const BORDA = 3;
-/** Distância entre postes de luz ao longo dos caminhos, em tiles. */
-const PASSO_POSTE = 6;
+export type Equilibrio = 'eficiente' | 'equilibrado' | 'bonito';
+export const EQUILIBRIOS: readonly Equilibrio[] = ['eficiente', 'equilibrado', 'bonito'];
+
+/** Tipos de terreno decorativo. `jardinagem` é o jardim grande, que ocupa dois terrenos vizinhos. */
+export type TipoJardim = 'praca' | 'lago' | 'pomar' | 'lazer' | 'jardinagem';
+
+/** Largura da calçada na borda de cada terreno, em tiles (duas calçadas vizinhas fazem a rua). */
+export const CALCADA = 0.5;
+
+type Decoracao = Extract<ItemMapa, { tipo: 'decoracao' }>;
+type Rua = Extract<ItemMapa, { tipo: 'caminho' }>;
 
 export interface EntradaDecoracao {
-  largura: number;
-  altura: number;
+  terrenos: readonly TerrenoDaPlanta[];
   blocos: readonly Bloco[];
-  fileiras: readonly number[];
   itens: readonly ItemMapa[];
+  enfeites: readonly Enfeite[];
+  equilibrio: Equilibrio;
+  /** Só terrenos que abrem até este RV entram (ruas e jardins). */
+  rv: number;
   semente: number;
+}
+
+/** Um jardim: o tipo e os terrenos que ele ocupa (um, ou dois vizinhos no jardim grande). */
+export interface Jardim {
+  tipo: TipoJardim;
+  terrenos: number[];
+}
+
+export interface ResultadoDecoracao {
+  itens: Decoracao[];
+  /** Calçadas na borda dos terrenos em uso. Existem mesmo sem enfeites. */
+  ruas: Rua[];
+  jardins: Jardim[];
 }
 
 /** mulberry32: pequeno, rápido e suficiente para enfeites. */
@@ -33,207 +61,408 @@ function rng(semente: number) {
   };
 }
 
-/** Grade de ocupação em tiles inteiros. */
-class Ocupacao {
-  private readonly celulas: Uint8Array;
-  constructor(readonly largura: number, readonly altura: number) {
-    this.celulas = new Uint8Array(largura * altura);
+/** Densidade das vinhetas e do preenchimento dos jardins em cada posição do controle. */
+const DENSIDADE: Readonly<Record<Equilibrio, number>> = { eficiente: 0, equilibrado: 0.6, bonito: 1.15 };
+
+/** Peças de chão (podem passar por cima da calçada, para o caminho do jardim chegar à rua) e a cerca, que fica na borda. */
+const SOBRE_A_CALCADA = new Set(['cascalho-chao', 'laje', 'cerca-jardim']);
+
+/** Chance de cada enfeite numa célula livre de um terreno produtivo; `junto` = só encostado numa construção. */
+const VINHETAS: Readonly<Record<TipoBloco, readonly { slug: string; chance: number; junto?: boolean }[]>> = {
+  cultivo: [
+    { slug: 'hayrick', chance: 0.05 },
+    { slug: 'hay-cart', chance: 0.015 },
+    { slug: 'wheelbarrow', chance: 0.02 },
+    { slug: 'sunflower', chance: 0.07 },
+    { slug: 'lavender', chance: 0.05 },
+    { slug: 'round-shrubs', chance: 0.04 },
+  ],
+  oficina: [
+    { slug: 'stacked-wood-pile', chance: 0.07, junto: true },
+    { slug: 'terracotta-vase', chance: 0.06, junto: true },
+    { slug: 'wooden-signpost', chance: 0.02, junto: true },
+    { slug: 'oak', chance: 0.03 },
+    { slug: 'pink-tulip', chance: 0.06 },
+    { slug: 'round-shrubs', chance: 0.05 },
+  ],
+  recursos: [
+    { slug: 'empty-cart', chance: 0.04, junto: true },
+    { slug: 'starine-pile-medium', chance: 0.07, junto: true },
+    { slug: 'glowstone-lamp-i', chance: 0.03, junto: true },
+    { slug: 'pine-tree', chance: 0.03 },
+    { slug: 'rock---repose', chance: 0.05 },
+    { slug: 'round-shrubs', chance: 0.04 },
+  ],
+  moradias: [
+    { slug: 'floral-arch', chance: 0.02 },
+    { slug: 'wisteria', chance: 0.03 },
+    { slug: 'woven-grass-nest', chance: 0.03 },
+    { slug: 'endless-summer', chance: 0.08 },
+    { slug: 'pink-tulip', chance: 0.08 },
+    { slug: 'flowering-shrubs', chance: 0.06 },
+    { slug: 'terracotta-vase', chance: 0.03 },
+  ],
+  ninhal: [
+    { slug: 'hayrick', chance: 0.08 },
+    { slug: 'woven-grass-nest', chance: 0.06 },
+    { slug: 'daisy', chance: 0.1 },
+  ],
+};
+
+/** Miudezas que preenchem o gramado de cada tipo de jardim. */
+const PREENCHIMENTO: Readonly<Record<TipoJardim, readonly { slug: string; chance: number }[]>> = {
+  praca: [
+    { slug: 'pink-tulip', chance: 0.05 },
+    { slug: 'endless-summer', chance: 0.04 },
+    { slug: 'flowering-shrubs', chance: 0.04 },
+    { slug: 'round-shrubs', chance: 0.03 },
+  ],
+  lago: [
+    { slug: 'lavender', chance: 0.05 },
+    { slug: 'daisy', chance: 0.05 },
+    { slug: 'rock---repose', chance: 0.02 },
+    { slug: 'round-shrubs', chance: 0.04 },
+  ],
+  pomar: [
+    { slug: 'daisy', chance: 0.05 },
+    { slug: 'sunflower', chance: 0.03 },
+    { slug: 'moss-covered-stump', chance: 0.02 },
+    { slug: 'mushroom-light', chance: 0.015 },
+  ],
+  lazer: [
+    { slug: 'pink-tulip', chance: 0.05 },
+    { slug: 'balloon', chance: 0.015 },
+    { slug: 'round-shrubs', chance: 0.04 },
+    { slug: 'mushroom-light', chance: 0.015 },
+  ],
+  jardinagem: [
+    { slug: 'daisy', chance: 0.04 },
+    { slug: 'lavender', chance: 0.03 },
+    { slug: 'flowering-shrubs', chance: 0.03 },
+    { slug: 'round-shrubs', chance: 0.03 },
+  ],
+};
+
+/**
+ * Uma área sendo decorada (um terreno, ou os dois de um jardim grande): põe enfeites onde couber, em
+ * coordenadas locais (0,0 = canto da área).
+ */
+class Canteiro {
+  readonly itens: Decoracao[] = [];
+  private readonly ocupado: Retangulo[];
+  readonly area: Retangulo;
+
+  constructor(
+    private readonly terrenos: readonly TerrenoDaPlanta[],
+    private readonly porSlug: ReadonlyMap<string, Enfeite>,
+    readonly aleatorio: () => number,
+    /** Construções e pátios (com meio tile de respiro em volta das construções). */
+    private readonly estrutura: readonly Retangulo[],
+    /** Calçadas: só chão e cerca podem ficar em cima. */
+    private readonly calcadas: readonly Retangulo[],
+  ) {
+    this.area = uniao(terrenos.map((t) => t.area));
+    this.ocupado = [...estrutura];
   }
-  marcar(r: Retangulo) {
-    for (let y = Math.max(0, Math.floor(r.y)); y < Math.min(this.altura, Math.ceil(r.y + r.altura)); y++)
-      for (let x = Math.max(0, Math.floor(r.x)); x < Math.min(this.largura, Math.ceil(r.x + r.largura)); x++)
-        this.celulas[y * this.largura + x] = 1;
+
+  private global(x: number, y: number, largura: number, altura: number): Retangulo {
+    return { x: this.area.x + x, y: this.area.y + y, largura, altura };
   }
-  livre(x: number, y: number, l = 1, a = 1) {
-    if (x < 0 || y < 0 || x + l > this.largura || y + a > this.altura) return false;
-    for (let j = y; j < y + a; j++) for (let i = x; i < x + l; i++) if (this.celulas[j * this.largura + i]) return false;
+
+  private cabe(e: Enfeite, r: Retangulo): boolean {
+    if (!contem(this.area, r) || this.ocupado.some((o) => sobrepoe(o, r))) return false;
+    return SOBRE_A_CALCADA.has(e.forma) || !this.calcadas.some((c) => sobrepoe(c, r));
+  }
+
+  /** Encostado numa construção ou pátio (a até um tile). */
+  private junto(r: Retangulo): boolean {
+    const perto = expandir(r, 1);
+    return this.estrutura.some((o) => sobrepoe(o, perto));
+  }
+
+  /** Põe o enfeite se ele existir no catálogo e couber. `giro` 90 troca largura e altura. */
+  por(slug: string, x: number, y: number, giro: 0 | 90 = 0, soJunto = false): boolean {
+    const e = this.porSlug.get(slug);
+    if (!e) return false;
+    const [largura, altura] = giro ? [e.altura, e.largura] : [e.largura, e.altura];
+    const area = this.global(x, y, largura, altura);
+    if (!this.cabe(e, area) || (soJunto && !this.junto(area))) return false;
+    this.ocupado.push(area);
+    // O enfeite é do terreno onde está o seu centro (no jardim grande, pode cruzar a divisa).
+    const cx = area.x + largura / 2;
+    const cy = area.y + altura / 2;
+    const dono = this.terrenos.find((t) => cx >= t.area.x && cx <= t.area.x + t.area.largura && cy >= t.area.y && cy <= t.area.y + t.area.altura)!;
+    this.itens.push({
+      tipo: 'decoracao',
+      area,
+      forma: e.forma,
+      variante: Math.floor(this.aleatorio() * 4),
+      enfeite: e.id,
+      terreno: dono.n,
+      rv: e.rv,
+      ...(e.cor ? { cor: e.cor } : {}),
+      ...(giro ? { giro } : {}),
+    });
     return true;
   }
-}
 
-/** Caminhos da planta: um anel interno, uma faixa abaixo de cada fileira e corredores entre blocos. */
-export function tracarCaminhos(e: Pick<EntradaDecoracao, 'largura' | 'altura' | 'blocos' | 'fileiras'>): Retangulo[] {
-  const x0 = BORDA;
-  const x1 = e.largura - BORDA;
-  const y0 = BORDA;
-  const y1 = e.altura - BORDA;
-  const caminhos: Retangulo[] = [
-    { x: x0, y: y0, largura: x1 - x0, altura: CAMINHO },
-    { x: x0, y: y1 - CAMINHO, largura: x1 - x0, altura: CAMINHO },
-    { x: x0, y: y0, largura: CAMINHO, altura: y1 - y0 },
-    { x: x1 - CAMINHO, y: y0, largura: CAMINHO, altura: y1 - y0 },
-  ];
-  let i = 0;
-  for (const n of e.fileiras) {
-    const fila = e.blocos.slice(i, i + n);
-    i += n;
-    const topo = fila[0]!.area.y;
-    const alturaFila = Math.max(...fila.map((b) => b.area.altura));
-    // Faixa horizontal abaixo da fileira (a de cima é a anterior ou o anel).
-    caminhos.push({ x: x0, y: topo + alturaFila, largura: x1 - x0, altura: CAMINHO });
-    for (const [a, b] of fila.slice(0, -1).map((b, k) => [b, fila[k + 1]!] as const))
-      caminhos.push({ x: a.area.x + a.area.largura, y: topo, largura: b.area.x - (a.area.x + a.area.largura), altura: alturaFila });
-  }
-  return caminhos;
-}
-
-export function decorar(e: EntradaDecoracao): ItemMapa[] {
-  const aleatorio = rng(e.semente * 7919 + 17);
-  const saida: ItemMapa[] = [];
-  const ocupado = new Ocupacao(e.largura, e.altura);
-  for (const b of e.blocos) ocupado.marcar(b.area);
-  // Construções fora dos blocos (unidades de armazenamento) também não recebem enfeite.
-  for (const it of e.itens) if (it.tipo === 'construcao') ocupado.marcar(it.area);
-
-  const caminhos = tracarCaminhos(e);
-  for (const c of caminhos) {
-    saida.push({ tipo: 'caminho', area: c });
-    ocupado.marcar(c);
+  /** Mesmo enfeite nas posições espelhadas na horizontal (e, com `vertical`, nos quatro cantos). */
+  espelhar(slug: string, x: number, y: number, vertical = false): void {
+    const e = this.porSlug.get(slug);
+    if (!e) return;
+    const xs = [x, this.area.largura - x - e.largura];
+    const ys = vertical ? [y, this.area.altura - y - e.altura] : [y];
+    for (const py of ys) for (const px of xs) this.por(slug, px, py);
   }
 
-  // ---- cercas ----
-  for (const b of e.blocos) {
-    if (!b.cercado) continue;
-    const cerca = expandir(b.area, -MARGEM / 2);
-    // Portão no lado de cima, que sempre dá para um caminho.
-    const meio = Math.round(cerca.x + cerca.largura / 2);
-    saida.push({ tipo: 'cerca', area: cerca, portao: { x: meio - 1, y: cerca.y - MARGEM / 2, largura: 2, altura: MARGEM } });
-  }
-
-  const enfeite = (forma: FormaDecoracao, x: number, y: number, l = 1, a = 1) => {
-    const area = { x, y, largura: l, altura: a };
-    saida.push({ tipo: 'decoracao', area, forma, variante: Math.floor(aleatorio() * 4) });
-    ocupado.marcar(area);
-  };
-
-  // ---- postes ao longo das faixas horizontais, do lado de baixo ----
-  for (const c of caminhos.filter((c) => c.largura > c.altura))
-    for (let x = c.x + 2; x < c.x + c.largura - 1; x += PASSO_POSTE) {
-      const y = c.y + c.altura;
-      if (ocupado.livre(x, y)) enfeite('poste', x, y);
-    }
-
-  // ---- dentro dos blocos: vinhetas do tema de cada um ----
-  // `estrutura` marca o que é funcional (construções, pátios, trilhas e sub-regiões de cultivo); os
-  // enfeites só vão no resto da área interna de cada bloco (a cerca fica na margem).
-  const estrutura = new Ocupacao(e.largura, e.altura);
-  for (const it of e.itens) if (it.tipo === 'construcao' || it.tipo === 'piso' || it.tipo === 'trilha') estrutura.marcar(it.area);
-  for (const b of e.blocos) for (const r of b.regioes ?? []) estrutura.marcar(r);
-  const encostado = (x: number, y: number, l: number, a: number) =>
-    !estrutura.livre(x - 1, y, 1, a) || !estrutura.livre(x + l, y, 1, a) || !estrutura.livre(x, y - 1, l, 1) || !estrutura.livre(x, y + a, l, 1);
-  for (const b of e.blocos) {
-    const dentro = expandir(b.area, -MARGEM);
-    const pecas: ItemMapa[] = [];
-    const por = (forma: FormaDecoracao, x: number, y: number, l = 1, a = 1) => {
-      const area = { x, y, largura: l, altura: a };
-      pecas.push({ tipo: 'decoracao', area, forma, variante: Math.floor(aleatorio() * 4) });
-      estrutura.marcar(area);
-    };
-    const cabe = (x: number, y: number, l = 1, a = 1) =>
-      x >= dentro.x && y >= dentro.y && x + l <= dentro.x + dentro.largura && y + a <= dentro.y + dentro.altura && estrutura.livre(x, y, l, a);
-    for (let y = Math.ceil(dentro.y); y < dentro.y + dentro.altura; y++)
-      for (let x = Math.ceil(dentro.x); x < dentro.x + dentro.largura; x++) {
-        if (!cabe(x, y)) continue;
-        const r = aleatorio();
-        const junto = encostado(x, y, 1, 1);
-        switch (b.tipo) {
-          case 'cultivo':
-            if (r < 0.025) por('espantalho', x, y);
-            else if (r < 0.06) por('feno', x, y);
-            else if (r < 0.075 && cabe(x, y, 2, 1)) por('bebedouro', x, y, 2, 1);
-            else if (r < 0.085) por('carrinho-mao', x, y);
-            else if (r < 0.16) por('flores', x, y);
-            else if (r < 0.2) por('arbusto', x, y);
-            break;
-          case 'oficina':
-            if (junto && r < 0.06) por('caixote', x, y);
-            else if (junto && r < 0.1) por('barril', x, y);
-            else if (junto && r < 0.13) por('sacos', x, y);
-            else if (junto && r < 0.18) por('vaso', x, y);
-            else if (junto && r < 0.2) por('lanterna', x, y);
-            else if (!junto && r < 0.08 && cabe(x, y, 2, 2)) por('arvore', x, y, 2, 2);
-            else if (!junto && r < 0.2) por('flores', x, y);
-            else if (!junto && r < 0.26 && cabe(x, y, 2, 1)) por('banco', x, y, 2, 1);
-            break;
-          case 'recursos':
-            if (junto && r < 0.04 && cabe(x, y, 2, 1)) por('carrinho-minerio', x, y, 2, 1);
-            else if (junto && r < 0.1) por('pedras-minerio', x, y);
-            else if (junto && r < 0.13) por('lanterna', x, y);
-            else if (r < 0.1) por('pedra', x, y);
-            else if (r < 0.18) por('arbusto', x, y);
-            break;
-          case 'moradias':
-            if (r < 0.08 && cabe(x, y, 2, 1)) por('arco-florido', x, y, 2, 1);
-            else if (r < 0.14) por('casinha-passaro', x, y);
-            else if (r < 0.38) por('flores', x, y);
-            else if (r < 0.43 && cabe(x, y, 2, 1)) por('banco', x, y, 2, 1);
-            else if (r < 0.52) por('arbusto', x, y);
-            break;
-          case 'ninhal':
-            if (r < 0.22) por('feno', x, y);
-            else if (r < 0.4) por('flores', x, y);
-            break;
+  /** Espalha miudezas pelas células livres: cada célula sorteia, na ordem, os enfeites da lista. */
+  espalhar(lista: readonly { slug: string; chance: number; junto?: boolean }[], densidade: number): void {
+    const { largura, altura } = this.area;
+    for (let y = 0; y < altura; y++)
+      for (let x = 0; x < largura; x++) {
+        const r = this.aleatorio();
+        let acumulado = 0;
+        for (const v of lista) {
+          acumulado += v.chance * densidade;
+          if (r >= acumulado) continue;
+          this.por(v.slug, x, y, 0, v.junto);
+          break;
         }
       }
-    saida.push(...pecas);
   }
 
-  // ---- praças nos espaços livres: fonte perto do centro, lago longe dela, piquenique e estátuas ----
-  const naBordaDoMapa = (x: number, y: number, l: number, a: number) =>
-    x < BORDA || y < BORDA || x + l > e.largura - BORDA || y + a > e.altura - BORDA;
-  const vaga = (l: number, a: number, nota: (x: number, y: number) => number) => {
-    let melhor: { x: number; y: number; n: number } | undefined;
-    for (let y = 0; y + a <= e.altura; y++)
-      for (let x = 0; x + l <= e.largura; x++) {
-        if (naBordaDoMapa(x, y, l, a) || !ocupado.livre(x - 1, y - 1, l + 2, a + 2)) continue;
-        const n = nota(x, y);
-        if (!melhor || n < melhor.n) melhor = { x, y, n };
-      }
-    return melhor;
-  };
-  const cx = e.largura / 2;
-  const cy = e.altura / 2;
-  const fonte = vaga(3, 3, (x, y) => Math.hypot(x + 1.5 - cx, y + 1.5 - cy));
-  if (fonte) {
-    enfeite('fonte', fonte.x, fonte.y, 3, 3);
-    for (const [dx, dy] of [[-1, 1], [3, 1]] as const) if (ocupado.livre(fonte.x + dx, fonte.y + dy)) enfeite('estatua', fonte.x + dx, fonte.y + dy);
+  /** Uma faixa de chão (peças de `slug`) de (x, y) até cobrir `largura` × `altura`. */
+  chao(slug: string, x: number, y: number, largura: number, altura: number): void {
+    const e = this.porSlug.get(slug);
+    if (!e) return;
+    for (let py = y; py + e.altura <= y + altura + 1e-9; py += e.altura)
+      for (let px = x; px + e.largura <= x + largura + 1e-9; px += e.largura) this.por(slug, px, py);
   }
-  const lago = vaga(4, 3, (x, y) => (fonte ? -Math.hypot(x - fonte.x, y - fonte.y) : 0));
-  if (lago) {
-    enfeite('lago', lago.x, lago.y, 4, 3);
-    const piquenique = vaga(2, 2, (x, y) => Math.hypot(x - lago.x, y - lago.y));
-    if (piquenique) enfeite('piquenique', piquenique.x, piquenique.y, 2, 2);
-  }
+}
 
-  // ---- jardim: árvores na borda; canteiros e bancos só na beira dos caminhos; gramado com moitas ----
-  const trilha = new Ocupacao(e.largura, e.altura);
-  for (const c of caminhos) trilha.marcar(c);
-  const beiraDoCaminho = (x: number, y: number, l: number) =>
-    [...Array(l).keys()].some((k) => !trilha.livre(x + k, y - 1) || !trilha.livre(x + k, y + 1));
-  const naBorda = (x: number, y: number) => x < BORDA || y < BORDA || x >= e.largura - BORDA || y >= e.altura - BORDA;
-  for (let y = 0; y < e.altura; y++)
-    for (let x = 0; x < e.largura; x++) {
-      if (!ocupado.livre(x, y)) continue;
-      const r = aleatorio();
-      if (naBorda(x, y)) {
-        if (r < 0.7 && ocupado.livre(x, y, 2, 2)) enfeite('arvore', x, y, 2, 2);
-        else if (r < 0.85) enfeite('arbusto', x, y);
-        continue;
-      }
-      if (beiraDoCaminho(x, y, 2) && ocupado.livre(x, y, 2, 1)) {
-        if (r < 0.3) enfeite('canteiro', x, y, 2, 1);
-        else if (r < 0.36) enfeite('banco', x, y, 2, 1);
-        continue;
-      }
-      if (r < 0.07 && ocupado.livre(x, y, 2, 2)) enfeite('arvore', x, y, 2, 2);
-      else if (r < 0.17) enfeite('flores', x, y);
-      else if (r < 0.25) enfeite('arbusto', x, y);
-      else if (r < 0.27) enfeite('pedra', x, y);
+// ---- composições dos jardins (terreno de 20×15; o jardim grande tem 40×15) ----
+// Todo jardim tem um caminho que cruza o terreno de lado a lado e outro de cima a baixo, até a rua.
+
+const JARDINS: Readonly<Record<TipoJardim, (c: Canteiro) => void>> = {
+  /** Praça de laje com a fonte no meio, estátuas, bancos e postes; canteiros em volta e árvores floridas nos cantos. */
+  praca(c) {
+    c.por('spinning-fountain', 9, 6.5);
+    c.chao('flagstone-pavement', 6, 3.5, 8, 8);
+    c.chao('flagstone-pavement', 0, 6.5, 6, 2);
+    c.chao('flagstone-pavement', 14, 6.5, 6, 2);
+    c.chao('flagstone-pavement', 9, 1.5, 2, 2);
+    c.chao('flagstone-pavement', 9, 11.5, 2, 2);
+    c.espelhar('stone-carved-figure', 5, 3, true);
+    c.espelhar('retro-streetlamp', 5, 5.5, true);
+    c.espelhar('solid-wood-low-stool', 4, 5, true);
+    c.espelhar('golden-trumpet-tree', 0.5, 0.5, true);
+    c.espelhar('wisteria', 3, 0.5, true);
+    c.espelhar('floral-arch', 1, 5.5);
+    c.espelhar('floral-arch', 1, 8.5);
+    c.espelhar('box-hedge', 6, 2.5, true);
+    for (let x = 6; x < 9; x++) c.espelhar(x % 2 ? 'red-rose' : 'endless-summer', x, 1.5, true);
+  },
+  /** Lago largo com roda-d'água numa ponta e ponte na outra; do lado da ponte, acampamento com mesa, sombrinha e fogueira. */
+  lago(c) {
+    c.por('wooden-waterwheel', 0.5, 6.5);
+    c.por('curved-pond', 2.5, 6);
+    c.por('curved-pond', 6.5, 6);
+    c.por('stone-bridge', 10.5, 6.5);
+    c.chao('gravel-path', 13.5, 6.5, 6.5, 2);
+    c.chao('gravel-path', 13.5, 0.5, 2, 6);
+    c.chao('gravel-path', 13.5, 8.5, 2, 6.5);
+    c.por('camping-canopy', 16, 2);
+    c.por('bonfire', 11.5, 4);
+    c.por('solid-wood-low-stool', 10.5, 4);
+    c.por('solid-wood-low-stool', 12.5, 5);
+    c.por('grassland-dining-table', 16, 9.5);
+    c.por('sun-umbrella', 17.5, 12);
+    c.por('glowstone-lamp-i', 10, 5.5);
+    c.por('glowstone-lamp-i', 10, 9);
+    for (const y of [0.5, 12.5]) {
+      c.por('willow', 0.5, y);
+      c.por('oak', 4, y);
+      c.por('pine-tree', 7.5, y);
+      c.por('pine-tree', 10.5, y);
     }
-  return saida;
+    c.por('oak', 15.5, 12);
+  },
+  /** Pomar em fileiras com um gazebo na clareira do meio; portão e treliças na entrada. */
+  pomar(c) {
+    c.por('gazebo', 8, 5.5);
+    c.chao('gravel-path', 0, 6.5, 8, 2);
+    c.chao('gravel-path', 12, 6.5, 8, 2);
+    c.chao('gravel-path', 9, 1.5, 2, 4);
+    c.chao('gravel-path', 9, 9.5, 2, 4);
+    c.espelhar('garden-gate', 0.5, 5.5);
+    c.espelhar('puffby-flower-trellis', 3, 5.5);
+    c.espelhar('puffby-flower-trellis', 3, 8.5);
+    const arvores = ['cherry-tree', 'apple-tree', 'maple-tree'];
+    [0.5, 4, 7].forEach((x, i) => {
+      c.espelhar(arvores[i]!, x, 0.5, true);
+      c.espelhar(arvores[(i + 1) % 3]!, x, 3, true);
+    });
+    c.espelhar('mushroom-light', 7, 5.5, true);
+  },
+  /** Parquinho dos Aniimo: escalada, balanços e tocas em volta de um cruzamento de cascalho. */
+  lazer(c) {
+    c.chao('gravel-path', 0, 6.5, 20, 2);
+    c.chao('gravel-path', 9, 0.5, 2, 6);
+    c.chao('gravel-path', 9, 8.5, 2, 6);
+    c.por('aniimo-climbing-frame', 4, 2.5);
+    c.por('playful-adventure-den', 13, 2.5);
+    c.por('pawprint-swing', 5, 10);
+    c.por('pawprint-swing', 13.5, 10);
+    c.espelhar('cozy-bear-den', 1, 10.5);
+    c.por('sun-umbrella', 1.5, 3);
+    c.por('pond', 16.5, 3);
+    c.por('bonfire', 7.5, 11.5);
+    c.espelhar('garden-gate', 0.5, 5.5);
+    c.espelhar('coconut-tree', 0.5, 0.5, true);
+    c.espelhar('balloon', 8, 5.5, true);
+    c.espelhar('mushroom-light', 3, 5.5, true);
+  },
+  /**
+   * Jardim grande em dois terrenos (40×15): alameda de cascalho de ponta a ponta com arcos floridos, gazebo
+   * no meio, canteiros de flores com cerca viva, lagos e fontes, e árvores floridas nas bordas.
+   */
+  jardinagem(c) {
+    c.por('gazebo', 18, 5.5);
+    c.chao('gravel-path', 0, 6.5, 40, 2);
+    c.chao('gravel-path', 19, 1.5, 2, 4);
+    c.chao('gravel-path', 19, 9.5, 2, 4);
+    c.espelhar('garden-gate', 0.5, 5.5);
+    for (const x of [4, 8, 12]) {
+      c.espelhar('floral-arch', x, 5.5);
+      c.espelhar('floral-arch', x, 8.5);
+    }
+    // Canteiros: 4×2 flores de uma espécie, com cerca viva do lado de fora.
+    const flores = ['red-rose', 'endless-summer', 'pink-tulip', 'sunflower'];
+    [4, 9].forEach((bx, i) => {
+      for (let dx = 0; dx < 4; dx++)
+        for (let dy = 0; dy < 2; dy++) {
+          c.espelhar(flores[i]!, bx + dx, 3 + dy);
+          c.espelhar(flores[i + 2]!, bx + dx, 10 + dy);
+        }
+      for (const dx of [0, 2]) c.espelhar('box-hedge', bx + dx, 2, true);
+    });
+    c.espelhar('curved-pond', 14, 2.5);
+    c.espelhar('spinning-fountain', 15, 10);
+    c.espelhar('stone-carved-figure', 14, 10.5);
+    c.espelhar('solid-wood-low-stool', 17, 10.5);
+    c.espelhar('retro-streetlamp', 17, 5.5, true);
+    c.espelhar('retro-streetlamp', 2.5, 5.5, true);
+    c.espelhar('cherry-tree', 0.5, 0.5, true);
+    c.espelhar('wisteria', 1, 3);
+    c.espelhar('wisteria', 1, 10);
+    c.espelhar('golden-trumpet-tree', 6.5, 0.5);
+    c.espelhar('golden-trumpet-tree', 6.5, 12.5);
+    c.espelhar('cherry-tree', 15.5, 12.5);
+  },
+};
+
+const ORDEM_DOS_JARDINS: readonly TipoJardim[] = ['praca', 'lago', 'pomar'];
+
+/**
+ * Jardins dos terrenos livres. O primeiro par de terrenos livres lado a lado vira o jardim grande; dos
+ * que sobram, o de lazer é o mais perto das moradias e os outros se revezam entre praça, lago e pomar.
+ */
+function escolherJardins(e: EntradaDecoracao): Jardim[] {
+  const livres = e.terrenos.filter((t) => !t.tema && t.rv <= e.rv);
+  const jardins: Jardim[] = [];
+  const par = livres
+    .map((a) => [a, livres.find((b) => b.linha === a.linha && b.coluna === a.coluna + 1)] as const)
+    .find((p): p is readonly [TerrenoDaPlanta, TerrenoDaPlanta] => !!p[1]);
+  if (par) jardins.push({ tipo: 'jardinagem', terrenos: [par[0].n, par[1].n] });
+  const avulsos = livres.filter((t) => !par?.includes(t));
+  if (!avulsos.length) return jardins;
+  const moradias = e.terrenos.find((t) => t.tema === 'moradias');
+  const distancia = (t: TerrenoDaPlanta) => (moradias ? Math.abs(t.coluna - moradias.coluna) + Math.abs(t.linha - moradias.linha) : 0);
+  const lazer = avulsos.reduce((a, b) => (distancia(b) < distancia(a) ? b : a));
+  jardins.push({ tipo: 'lazer', terrenos: [lazer.n] });
+  avulsos.filter((t) => t !== lazer).forEach((t, i) => jardins.push({ tipo: ORDEM_DOS_JARDINS[i % ORDEM_DOS_JARDINS.length]!, terrenos: [t.n] }));
+  return jardins;
+}
+
+/** Calçadas na borda de cada terreno em uso; os dois terrenos de um jardim grande não têm calçada entre si. */
+function tracarRuas(terrenos: readonly TerrenoDaPlanta[], jardins: readonly Jardim[], emUso: (t: TerrenoDaPlanta) => boolean): Rua[] {
+  const ruas: Rua[] = [];
+  for (const t of terrenos.filter(emUso)) {
+    const { x, y, largura, altura } = t.area;
+    const grupo = jardins.find((j) => j.terrenos.includes(t.n))?.terrenos ?? [];
+    const unido = (coluna: number) => terrenos.some((o) => o !== t && grupo.includes(o.n) && o.linha === t.linha && o.coluna === coluna);
+    ruas.push({ tipo: 'caminho', area: { x, y, largura, altura: CALCADA } }, { tipo: 'caminho', area: { x, y: y + altura - CALCADA, largura, altura: CALCADA } });
+    if (!unido(t.coluna - 1)) ruas.push({ tipo: 'caminho', area: { x, y, largura: CALCADA, altura } });
+    if (!unido(t.coluna + 1)) ruas.push({ tipo: 'caminho', area: { x: x + largura - CALCADA, y, largura: CALCADA, altura } });
+  }
+  return ruas;
+}
+
+/** Cerca de jardim no contorno do terreno (só em "Bonito", nos terrenos cercados), com um vão de portão em cima. */
+function cercar(c: Canteiro): void {
+  const { largura, altura } = c.area;
+  for (let x = 0; x + 2 <= largura; x += 2) {
+    if (Math.abs(x + 1 - largura / 2) > 1.5) c.por('garden-fence', x, 0);
+    c.por('garden-fence', x, altura - 0.5);
+  }
+  for (let y = 0.5; y + 2 <= altura - 0.5; y += 2) {
+    c.por('garden-fence', 0, y, 90);
+    c.por('garden-fence', largura - 0.5, y, 90);
+  }
+}
+
+export function decorar(e: EntradaDecoracao): ResultadoDecoracao {
+  const densidade = DENSIDADE[e.equilibrio];
+  const decorando = densidade > 0 && e.enfeites.length > 0;
+  const jardins = decorando ? escolherJardins(e) : [];
+  const noJardim = new Set(jardins.flatMap((j) => j.terrenos));
+  const ruas = tracarRuas(e.terrenos, jardins, (t) => t.rv <= e.rv && (!!t.tema || noJardim.has(t.n)));
+  if (!decorando) return { itens: [], ruas, jardins };
+
+  const porSlug = new Map(e.enfeites.map((x) => [x.slug, x]));
+  const calcadas = ruas.map((r) => r.area);
+  const itens: Decoracao[] = [];
+  const semente = (n: number) => rng(e.semente * 7919 + n * 131 + 17);
+
+  for (const jardim of jardins) {
+    const c = new Canteiro(e.terrenos.filter((t) => jardim.terrenos.includes(t.n)), porSlug, semente(jardim.terrenos[0]!), [], calcadas);
+    JARDINS[jardim.tipo](c);
+    c.espalhar(PREENCHIMENTO[jardim.tipo], densidade);
+    itens.push(...c.itens);
+  }
+
+  for (const terreno of e.terrenos) {
+    const bloco = e.blocos.find((b) => b.terreno === terreno.n);
+    if (!bloco) continue;
+    const aleatorio = semente(terreno.n);
+    const doTerreno = e.itens.filter((i) => (i.tipo === 'construcao' || i.tipo === 'piso') && sobrepoe(i.area, terreno.area));
+    // Meio tile de respiro em volta das construções; os pátios já são esse respiro.
+    const estrutura = doTerreno.map((i) => (i.tipo === 'construcao' ? expandir(i.area, 0.5) : i.area));
+    // A cerca fica na borda, onde o respiro das construções não deixaria: ela só evita as construções em si.
+    const cerca = new Canteiro([terreno], porSlug, aleatorio, doTerreno.filter((i) => i.tipo === 'construcao').map((i) => i.area), calcadas);
+    if (e.equilibrio === 'bonito' && bloco.cercado) cercar(cerca);
+    const c = new Canteiro([terreno], porSlug, aleatorio, [...estrutura, ...cerca.itens.map((i) => i.area)], calcadas);
+    // Um poste em cada canto, na beira da rua.
+    c.espelhar('retro-streetlamp', CALCADA, CALCADA, true);
+    c.espalhar(VINHETAS[bloco.tipo], densidade);
+    itens.push(...cerca.itens, ...c.itens);
+  }
+  return { itens, ruas, jardins };
 }
 
 /** Verdadeiro se alguma decoração invade uma área funcional (usado nos testes). */
 export function decoracaoInvade(itens: readonly ItemMapa[], areas: readonly Retangulo[]): boolean {
   return itens.some((i) => i.tipo === 'decoracao' && areas.some((a) => sobrepoe(a, i.area)));
+}
+
+/** Os usos que o motor de decoração conhece (para conferir o catálogo). */
+export const USOS: readonly UsoEnfeite[] = ['praca', 'lago', 'pomar', 'lazer', 'cultivo', 'oficina', 'recursos', 'moradias', 'ninhal'];
+
+/** Todo slug que o motor usa (composições, vinhetas, preenchimento, postes e cerca), para conferir com o catálogo. */
+export function slugsUsados(): Set<string> {
+  const usados = new Set<string>(['garden-fence', 'retro-streetlamp']);
+  for (const lista of [...Object.values(VINHETAS), ...Object.values(PREENCHIMENTO)]) for (const v of lista) usados.add(v.slug);
+  const espiao = { por: (s: string) => (usados.add(s), true), espelhar: (s: string) => usados.add(s), chao: (s: string) => usados.add(s) };
+  for (const compor of Object.values(JARDINS)) compor(espiao as unknown as Canteiro);
+  return usados;
 }

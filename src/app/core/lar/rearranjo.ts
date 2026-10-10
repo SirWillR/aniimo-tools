@@ -1,15 +1,15 @@
-// Rearruma as Fazendas e os Bosques para a escolha de culturas, dentro da área única de cultivo. O que é
-// fixo na base são os blocos (cercas, pisos, caminhos e as trilhas e sub-regiões do cultivo) e as
-// construções (inclusive as de ambiente e os armazéns); a posição e o tipo de cada lote podem mudar
-// dentro das sub-regiões (decisão do usuário), e o total de Fazendas e de Bosques é o mesmo.
+// Rearruma as Fazendas e os Bosques para a escolha de culturas, dentro dos terrenos de cultivo. O que é
+// fixo na base são os terrenos, as sub-regiões de cultivo e as construções (inclusive as de ambiente e
+// os armazéns); a posição e o tipo de cada lote podem mudar dentro das sub-regiões (decisão do
+// usuário), e o total de Fazendas e de Bosques é o mesmo.
 //
-// Para cada combinação de modos dos ambientes, os lotes são reposicionados numa malha de 2 tiles
-// alinhada à base de cada sub-região (então tudo que coube na base cabe de novo):
-// 1. um lote "ativo" para cada cultura escolhida (em zona de ambiente já construído no nível do jogador,
-//    ou sem ambiente), começando pelos grupos com menos opções;
+// Para cada combinação de modos dos ambientes, os lotes são reposicionados numa malha de 2 tiles que
+// começa no canto de cada sub-região (então tudo que coube na base cabe de novo):
+// 1. um lote "ativo" para cada cultura escolhida (em terreno já aberto no nível do jogador e em zona de
+//    ambiente já construído, ou sem ambiente), começando pelos grupos com menos opções;
 // 2. mais lotes úteis de ambiente, pelo valor por célula, até o limite de cada tipo (o total menos a parte
 //    das culturas sem ambiente, calculada como na base e nunca menor que uma por cultura);
-// 3. o resto em qualquer espaço livre, sem ambiente primeiro.
+// 3. o resto em qualquer espaço livre, sem ambiente primeiro e nos terrenos que abrem antes.
 // Vence a combinação em que mais culturas escolhidas têm lote ativo; depois mais lotes úteis; depois
 // valor. Empate mantém os modos atuais. Se não couber tudo, a base fica como está. TS puro.
 import { combinacoes } from './ambientes';
@@ -19,6 +19,7 @@ import { moedasPorHora } from './inventario';
 import type { Ambiente, DadosConstrucao } from './modelos-lar';
 import type { ItemMapa, PlantaLar } from './planta';
 import { type Sugestoes, type TipoLote, culturasPara } from './sugestao';
+import { terreno } from './terrenos';
 
 type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
 type Cobertura = Extract<ItemMapa, { tipo: 'cobertura' }>;
@@ -33,16 +34,18 @@ interface Posicao {
   tipo: TipoLote;
   area: Retangulo;
   condicao: Ambiente | null;
-  /** Todos os ambientes que cobrem o lote já estão construídos no nível do jogador. */
+  /** O terreno está aberto e todos os ambientes que cobrem o lote já estão construídos no nível do jogador. */
   ativo: boolean;
   distancia: number;
+  /** RV em que o terreno da sub-região abre. */
+  rvTerreno: number;
 }
 
 interface Regiao {
   area: Retangulo;
-  /** Deslocamento da malha, igual ao dos lotes da base nesta sub-região. */
-  ox: number;
-  oy: number;
+  /** Índice do bloco (terreno de cultivo) da sub-região e o RV em que ele abre. */
+  bloco: number;
+  rvTerreno: number;
   ocupado: Retangulo[];
   ambientes: ItemConstrucao[];
 }
@@ -50,13 +53,21 @@ interface Regiao {
 export interface ResultadoRearranjo {
   /** Lotes que já produzem no nível do jogador (zona de ambiente construído, ou sem ambiente). */
   ativos: Set<ItemConstrucao>;
+  /** false quando os lotes não couberam nas sub-regiões e a planta ficou como estava. */
+  coube: boolean;
+}
+
+export interface OpcoesRearranjo {
+  /** Nível do jogador: terrenos fechados e ambientes ainda não construídos não contam como zona ativa. */
+  rv?: number;
+  /** Mantém o modo atual de cada ambiente (montagem da base). */
+  manterModos?: boolean;
 }
 
 const eLote = (i: ItemMapa): i is ItemConstrucao => i.tipo === 'construcao' && (i.construcao === 'farmland' || i.construcao === 'woodland');
 const melhorNota = (a: readonly number[], b: readonly number[] | undefined) =>
   !b || a[0]! > b[0]! || (a[0] === b[0] && (a[1]! > b[1]! || (a[1] === b[1] && a[2]! > b[2]! + 1e-9)));
 const centro = (r: Retangulo) => `${r.x + r.largura / 2},${r.y + r.altura / 2}`;
-const resto = (v: number) => ((v % PASSO) + PASSO) % PASSO;
 
 /** A cobertura de cada construção de ambiente (mesmo centro). */
 export function coberturasDosAmbientes(itens: readonly ItemMapa[], ambientes: readonly ItemConstrucao[]): Map<ItemConstrucao, Cobertura> {
@@ -91,32 +102,29 @@ function construidos(
 
 /**
  * Reposiciona os lotes e escolhe os modos. Altera os itens da planta no lugar (tipo, área e condição dos
- * lotes; modo dos ambientes e das coberturas). `rv` é o nível do jogador: ambientes ainda não construídos
- * não contam como zona ativa; sem ele, todos contam.
+ * lotes; modo dos ambientes e das coberturas). Sem `rv`, todos os terrenos e ambientes contam.
  */
-export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: DadosConstrucao, sug: Sugestoes, rv?: number): ResultadoRearranjo {
+export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: DadosConstrucao, sug: Sugestoes, opcoes: OpcoesRearranjo = {}): ResultadoRearranjo {
+  const { rv } = opcoes;
   const regras = dados.regras;
   const itens = planta.itens;
   const lotes = itens.filter(eLote);
   const ambientes = itens.filter((i): i is ItemConstrucao => i.tipo === 'construcao' && i.construcao in regras.construcoes);
-  const semMudanca = () => ({ ativos: new Set(lotes) });
-  const indiceCultivo = planta.blocos.findIndex((b) => b.tipo === 'cultivo');
-  const areasDasRegioes = planta.blocos[indiceCultivo]?.regioes;
-  if (!areasDasRegioes?.length) return semMudanca();
+  const semMudanca = (coube: boolean) => ({ ativos: new Set(lotes), coube });
+  const areasDasRegioes = planta.blocos.flatMap((b, bloco) => (b.regioes ?? []).map((area) => ({ area, bloco, rvTerreno: terreno(b.terreno).rv })));
+  if (!areasDasRegioes.length) return semMudanca(!lotes.length);
 
   const coberturaDe = coberturasDosAmbientes(itens, ambientes);
   const prontos = construidos(ambientes, coberturaDe, dados, rv);
-  const regioes: Regiao[] = areasDasRegioes.map((area) => {
-    const base = lotes.find((l) => contem(area, l.area));
-    const doBloco = ambientes.filter((a) => contem(area, a.area));
-    return {
-      area,
-      ox: base ? resto(base.area.x - area.x) : 0,
-      oy: base ? resto(base.area.y - area.y) : 0,
-      ocupado: doBloco.map((a) => a.area),
-      ambientes: doBloco,
-    };
-  });
+  // A malha começa no canto da sub-região; o que não é lote (ambientes, armazéns) ocupa as suas células.
+  const fixas = itens.filter((i): i is ItemConstrucao => i.tipo === 'construcao' && !eLote(i));
+  const regioes: Regiao[] = areasDasRegioes.map(({ area, bloco, rvTerreno }) => ({
+    area,
+    bloco,
+    rvTerreno,
+    ocupado: fixas.filter((f) => sobrepoe(area, f.area)).map((f) => f.area),
+    ambientes: ambientes.filter((a) => sobrepoe(area, coberturaDe.get(a)!.area)),
+  }));
 
   const familias = (tipo: TipoLote, condicao: Ambiente | null) => culturasPara(sug, tipo, condicao).length;
   const valor = (tipo: TipoLote, condicao: Ambiente | null) => {
@@ -135,13 +143,14 @@ export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: D
     limite[tipo] = Math.max(0, total[tipo] - Math.max(neutras, Math.round((total[tipo] * neutras) / Math.max(1, todas))));
   }
 
-  const opcoes = ambientes.map((a) => {
+  const modosDe = ambientes.map((a) => {
     const modos = regras.construcoes[a.construcao]!.modos;
+    if (opcoes.manterModos && a.condicao) return [a.condicao];
     return a.condicao ? [a.condicao, ...modos.filter((m) => m !== a.condicao)] : [...modos];
   });
 
   let melhor: { modos: Ambiente[]; posicoes: Posicao[]; nota: [number, number, number] } | undefined;
-  for (const modos of combinacoes(opcoes)) {
+  for (const modos of combinacoes(modosDe)) {
     const modoDe = new Map(ambientes.map((a, i) => [a, modos[i]!]));
     const candidatos = regioes.flatMap((r, i) =>
       malha(
@@ -149,12 +158,13 @@ export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: D
         r,
         r.ambientes.map((a) => ({ area: coberturaDe.get(a)!.area, modo: modoDe.get(a)!, pronto: prontos.has(a) })),
         regras,
+        rv,
       ),
     );
     const r = arrumar(candidatos, familias, valor, total, limite);
     if (r && melhorNota(r.nota, melhor?.nota)) melhor = { ...r, modos };
   }
-  if (!melhor) return semMudanca();
+  if (!melhor) return semMudanca(false);
 
   // Aplica: modos dos ambientes e novas posições e tipos dos lotes (reaproveitando os itens existentes).
   ambientes.forEach((a, i) => {
@@ -173,10 +183,11 @@ export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: D
       item.nivel = nivel(tipo);
       item.area = d.area;
       item.condicao = d.condicao;
-      item.bloco = indiceCultivo;
+      item.bloco = regioes[d.regiao]!.bloco;
+      item.terreno = planta.blocos[item.bloco]!.terreno;
       if (d.ativo) ativos.add(item);
     }
-  return { ativos };
+  return { ativos, coube: true };
 }
 
 /** Posiciona todos os lotes para uma combinação de modos; undefined se não couber tudo. */
@@ -232,7 +243,7 @@ function arrumar(
   for (const tipo of TIPOS) {
     const resto = candidatos
       .filter((p) => p.tipo === tipo)
-      .sort((x, y) => Number(x.condicao !== null) - Number(y.condicao !== null) || x.distancia - y.distancia);
+      .sort((x, y) => Number(x.condicao !== null) - Number(y.condicao !== null) || x.rvTerreno - y.rvTerreno || x.distancia - y.distancia);
     for (const p of resto) {
       if (usados[tipo] >= total[tipo]) break;
       if (livre(p) && (p.condicao === null || emAmbiente[tipo] < total[tipo])) por(p);
@@ -255,14 +266,15 @@ function arrumar(
 }
 
 /** Posições de lote de uma sub-região na malha de 2 tiles alinhada à base. */
-function malha(indice: number, r: Regiao, fontes: readonly (FonteAmbiente & { pronto: boolean })[], regras: DadosConstrucao['regras']): Posicao[] {
+function malha(indice: number, r: Regiao, fontes: readonly (FonteAmbiente & { pronto: boolean })[], regras: DadosConstrucao['regras'], rv: number | undefined): Posicao[] {
+  const aberto = rv === undefined || r.rvTerreno <= rv;
   const cx = r.area.x + r.area.largura / 2;
   const cy = r.area.y + r.area.altura / 2;
   const saida: Posicao[] = [];
   for (const tipo of TIPOS) {
     const lado = TAMANHO_LOTE[tipo];
-    for (let y = r.area.y + r.oy; y + lado <= r.area.y + r.area.altura + 1e-9; y += PASSO)
-      for (let x = r.area.x + r.ox; x + lado <= r.area.x + r.area.largura + 1e-9; x += PASSO) {
+    for (let y = r.area.y; y + lado <= r.area.y + r.area.altura + 1e-9; y += PASSO)
+      for (let x = r.area.x; x + lado <= r.area.x + r.area.largura + 1e-9; x += PASSO) {
         const area = quadrado(x, y, lado);
         if (!contem(r.area, area) || r.ocupado.some((o) => sobrepoe(o, area))) continue;
         const toca = fontes.filter((f) => sobrepoe(area, f.area));
@@ -271,8 +283,9 @@ function malha(indice: number, r: Regiao, fontes: readonly (FonteAmbiente & { pr
           tipo,
           area,
           condicao: condicaoDoLote(area, fontes, regras),
-          ativo: toca.every((f) => f.pronto),
+          ativo: aberto && toca.every((f) => f.pronto),
           distancia: Math.hypot(x + lado / 2 - cx, y + lado / 2 - cy),
+          rvTerreno: r.rvTerreno,
         });
       }
   }

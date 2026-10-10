@@ -1,0 +1,129 @@
+:host { display: block; }
+
+.cartao {
+  padding: 1rem 1.1rem;
+
+  p { margin: 0.5rem 0 0; }
+}
+
+.cartao-sobre {
+  margin: 0 0 0.35rem !important;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.nota { font-size: 0.82rem; color: var(--tinta-suave); }
+
+// Amostra: copa/planta com um fruto no meio, como no mapa.
+.amostra {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 55% 45%, var(--fruto) 0 32%, var(--copa) 34%);
+  box-shadow: inset 0 0 0 1.5px rgb(0 0 0 / 14%);
+}
+
+.vendas-colunas {
+  display: grid;
+  gap: 0 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.cartao-topo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+
+  .cartao-sobre { margin: 0 !important; }
+
+}
+
+.vendas-grupo {
+  margin: 0.9rem 0 0.5rem !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.venda-falta { color: #d98a1f; font-weight: 600; }
+
+.vendas {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: venda;
+
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.4rem 1fr auto;
+    column-gap: 0.4rem;
+    align-items: baseline;
+    padding: 0.2rem 0.3rem;
+    margin: -0.2rem -0.3rem;
+    border-radius: 8px;
+    counter-increment: venda;
+    cursor: help;
+
+    &:hover, &:focus-visible { background: var(--papel-2); }
+    &:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+    &:hover .venda-dica, &:focus .venda-dica { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    &::before {
+      content: counter(venda);
+      grid-row: span 2;
+      font: 800 1rem var(--fonte-titulo);
+      color: var(--acento);
+    }
+  }
+}
+
+.venda-nome { font-weight: 600; }
+.venda-ganho { color: var(--ok); font-weight: 700; }
+.venda-maquina { grid-column: 2 / 4; font-size: 0.82rem; color: var(--tinta-suave); }
+
+// Tooltip das culturas usadas (hover, toque e teclado).
+.venda-dica {
+  position: absolute;
+  z-index: 5;
+  left: 1.4rem;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--linha-forte);
+  border-radius: 10px;
+  background: var(--folha);
+  box-shadow: var(--sombra);
+  font-size: 0.85rem;
+  color: var(--tinta);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) { .venda-dica { transition: none; } }
+
+.venda-dica-titulo {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.venda-culturas { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; }
+.venda-cultura { display: inline-flex; gap: 0.35rem; align-items: center; font-weight: 600; }
+.venda-cultura .amostra { width: 0.95rem; height: 0.95rem; }
+.venda-outros { color: var(--tinta-suave); font-size: 0.8rem; }

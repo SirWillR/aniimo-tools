@@ -1,0 +1,28 @@
+<ul class="tabuleiro">
+  @for (c of cartoes(); track c.n) {
+    <li [style.--coluna]="c.coluna" [style.--linha]="c.linha">
+      <button type="button" class="terreno" [class.fechado]="c.fechado" (click)="abrir.emit(c.n)">
+        <span class="terreno-topo">
+          <strong>Terreno {{ c.n }}</strong>
+          <span class="tema">{{ c.tema }}</span>
+        </span>
+        <app-mini-terreno [planta]="planta()" [n]="c.n" [liberacao]="liberacao()" [rvAtual]="rvAtual()" [construcoes]="construcoes()" />
+        @if (c.fechado) {
+          <span class="terreno-nota trava">Abre no RV {{ c.rv }} · {{ c.preco }} moedas</span>
+        } @else if (c.livre) {
+          <span class="terreno-nota">Livre: nada planejado aqui</span>
+        } @else if (c.noCartao.length) {
+          <span class="terreno-nota">Produz por dia</span>
+          <span class="terreno-producao">
+            @for (l of c.noCartao; track l.chave) {
+              <span class="produto"><span class="ponto" [style.--cor]="l.cor"></span>{{ l.nome }} <b class="num">{{ l.quantidade }}</b></span>
+            }
+            @if (c.aMais) {
+              <span class="produto mais">+{{ c.aMais }}</span>
+            }
+          </span>
+        }
+      </button>
+    </li>
+  }
+</ul>

@@ -2,9 +2,10 @@
 import type { Aptidao } from '../../core/data/models';
 import type { Retangulo } from '../../core/lar/geometria';
 import type { Ambiente, Construcao } from '../../core/lar/modelos-lar';
-import type { Bloco, ItemMapa, PlantaLar } from '../../core/lar/planta';
+import type { ItemMapa, PlantaLar, TipoBloco } from '../../core/lar/planta';
 
 type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
+type ItemDecoracao = Extract<ItemMapa, { tipo: 'decoracao' }>;
 
 /** Cor da aura de cada condição (e do selo na tabela). */
 export const COR_AMBIENTE: Readonly<Record<Ambiente, string>> = {
@@ -114,12 +115,15 @@ export function cerca(area: Retangulo, portao: Retangulo | null): Cerca {
   return { trilhos, postes, pilares };
 }
 
-// ---- chão dos blocos ----
+// ---- chão dos terrenos ----
 
-export type Chao = 'prado' | 'piso' | 'cascalho' | 'palha';
+export type Chao = 'grama' | 'prado' | 'piso' | 'cascalho' | 'palha';
 
-export function chaoDoBloco(b: Bloco): Chao {
-  switch (b.tipo) {
+/** Textura do chão de um terreno pelo tema (sem tema: grama). */
+export function chaoDoTema(tema: TipoBloco | 'jardim' | null): Chao {
+  switch (tema) {
+    case null:
+      return 'grama';
     case 'recursos':
       return 'cascalho';
     case 'ninhal':
@@ -141,4 +145,46 @@ export function camadas(p: PlantaLar) {
     construcoes: de('construcao'),
     decoracao: de('decoracao'),
   };
+}
+
+// ---- enfeites ----
+
+/** Cores dos enfeites sem cor fixa no catálogo, por variante. */
+const VARIANTES: Readonly<Record<string, readonly string[]>> = {
+  arvore: ['#4f8f45', '#5f9e4a', '#3f7f3f', '#d98a3a'],
+  arbusto: ['#5a9a4a', '#4f8a42', '#6aa652', '#3f7a3a'],
+  flores: ['#f28ab2', '#f6d04d', '#fdfbf5', '#b58be0'],
+  pedra: ['#a9a397', '#b8b1a4', '#9c968a', '#c2bcb0'],
+  poste: ['#ffd98a', '#ffd98a', '#ffd98a', '#ffd98a'],
+  vaso: ['#f28ab2', '#f6d04d', '#e8604f', '#b58be0'],
+  'arco-florido': ['#f28ab2', '#f2a3c0', '#fdfbf5', '#e8604f'],
+};
+
+/** Peças de chão: desenhadas antes dos outros enfeites. */
+const CHAO = new Set(['cascalho-chao', 'laje']);
+
+export interface DesenhoEnfeite {
+  item: ItemDecoracao;
+  simbolo: string;
+  /** Retângulo do `<use>` (antes do giro) e o giro em volta do centro, se houver. */
+  x: number;
+  y: number;
+  largura: number;
+  altura: number;
+  giro: string | null;
+  cor: string;
+}
+
+function desenhoDoEnfeite(item: ItemDecoracao): DesenhoEnfeite {
+  const { x, y, largura, altura } = item.area;
+  const cor = item.cor ?? VARIANTES[item.forma]?.[item.variante] ?? '#5a9a4a';
+  if (!item.giro) return { item, simbolo: item.forma, x, y, largura, altura, giro: null, cor };
+  const cx = x + largura / 2;
+  const cy = y + altura / 2;
+  return { item, simbolo: item.forma, x: cx - altura / 2, y: cy - largura / 2, largura: altura, altura: largura, giro: `rotate(90 ${cx} ${cy})`, cor };
+}
+
+/** Enfeites na ordem de desenho: o chão primeiro. */
+export function desenhosDosEnfeites(itens: readonly ItemDecoracao[]): DesenhoEnfeite[] {
+  return [...itens].sort((a, b) => Number(CHAO.has(b.forma)) - Number(CHAO.has(a.forma))).map(desenhoDoEnfeite);
 }

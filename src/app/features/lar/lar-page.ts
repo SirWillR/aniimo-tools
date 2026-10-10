@@ -1,21 +1,27 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import type { Aptidao } from '../../core/data/models';
 import { DadosConstrucaoService } from '../../core/lar/dados-construcao.service';
+import { DadosEnfeitesService } from '../../core/lar/dados-enfeites.service';
+import type { TipoJardim } from '../../core/lar/decoracao';
 import { inventario, moedasPorHora } from '../../core/lar/inventario';
 import { LarStore, MAX_ARMAZENS, MAX_CHOCADEIRAS, MAX_CORINGAS } from '../../core/lar/lar.store';
 import type { Ambiente, Produto } from '../../core/lar/modelos-lar';
 import { AMBIENTE_PT, nomeConstrucao, nomeProduto } from '../../core/lar/nomes-pt';
 import { culturasDoFoco } from '../../core/lar/foco';
 import { liberacaoPorItem, rvDoProduto } from '../../core/lar/liberacao';
-import { plantaDoLar } from '../../core/lar/planta';
+import { type TipoBloco, plantaDoLar } from '../../core/lar/planta';
 import { type Producao, producaoPorUnidade } from '../../core/lar/producao';
 import { familia } from '../../core/lar/sugestao';
 import { type SugestaoVenda, paraVender } from '../../core/lar/vendas';
 import { AptidaoIcone } from '../../shared/aptidao-icone/aptidao-icone';
 import { COR_AMBIENTE, coresDaCultura } from '../../shared/mapa-lar/desenho';
-import { type ItemConstrucao, MapaLar } from '../../shared/mapa-lar/mapa-lar';
+import { type ItemConstrucao, type ItemDecoracao, MapaLar } from '../../shared/mapa-lar/mapa-lar';
+import { MapaSimbolos } from '../../shared/mapa-lar/mapa-simbolos';
+import { type LinhaVenda, OQueVender } from './o-que-vender';
 import { SeletorCulturas } from './seletor-culturas';
+import { type CartaoTerreno, type LinhaProducao, TabuleiroTerrenos } from './tabuleiro-terrenos';
 
 const ETAPA_PT: Readonly<Record<string, string>> = {
   Reclaiming: 'Preparar a terra', Sowing: 'Semear', Reaping: 'Colher', Collecting: 'Coletar', Logging: 'Cortar',
@@ -30,9 +36,30 @@ interface AptidaoNivel {
 
 const ZONAS: readonly Ambiente[] = ['scorching', 'warm', 'adequate', 'cool', 'freeze'];
 
+const TEMA_PT: Readonly<Record<TipoBloco, string>> = {
+  cultivo: 'Cultivo',
+  oficina: 'Oficina',
+  recursos: 'Minas e poços',
+  moradias: 'Moradias de Aniimo',
+  ninhal: 'Chocadeiras',
+};
+
+const JARDIM_PT: Readonly<Record<TipoJardim, string>> = {
+  praca: 'Praça e jardim',
+  lago: 'Lago e piquenique',
+  pomar: 'Pomar e bosque',
+  lazer: 'Lazer dos Aniimo',
+  jardinagem: 'Grande jardim',
+};
+
+/** Quantos produtos cabem no cartão de um terreno antes do "+N". */
+const PRODUTOS_NO_CARTAO = 4;
+/** Quantos produtos a faixa de produção de todos os terrenos mostra. */
+const PRODUTOS_NO_TOTAL = 12;
+
 @Component({
   selector: 'app-lar-page',
-  imports: [MapaLar, AptidaoIcone, SeletorCulturas, NgTemplateOutlet],
+  imports: [MapaLar, MapaSimbolos, TabuleiroTerrenos, OQueVender, AptidaoIcone, SeletorCulturas, NgTemplateOutlet],
   templateUrl: './lar-page.html',
   styleUrl: './lar-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +67,11 @@ const ZONAS: readonly Ambiente[] = ['scorching', 'warm', 'adequate', 'cool', 'fr
 export class LarPage {
   protected readonly dados = inject(DadosConstrucaoService);
   protected readonly lar = inject(LarStore);
+  private readonly catalogo = inject(DadosEnfeitesService);
+  private readonly router = inject(Router);
+
+  /** `?terreno=7` na URL: o terreno aberto. Fica na URL para o botão Voltar do navegador fechar o terreno. */
+  readonly terreno = input<string>();
 
   protected readonly maxChocadeiras = MAX_CHOCADEIRAS;
   protected readonly maxArmazens = MAX_ARMAZENS;
@@ -56,6 +88,19 @@ export class LarPage {
   protected readonly niveis = computed(() => Array.from({ length: this.rv() }, (_, i) => i + 1));
   protected readonly grade = signal(false);
   protected readonly selecionado = signal<ItemConstrucao | null>(null);
+  /** Terreno aberto no mapa ampliado (null = visão geral em cartões). */
+  protected readonly aberto = computed(() => {
+    const n = Number(this.terreno());
+    return Number.isInteger(n) && n >= 1 && n <= (this.planta()?.terrenos.length ?? 0) ? n : null;
+  });
+
+  protected readonly equilibrios = [
+    { valor: 'eficiente' as const, rotulo: 'Eficiente', dica: 'Sem enfeites; os terrenos que sobram ficam vazios' },
+    { valor: 'equilibrado' as const, rotulo: 'Equilibrado', dica: 'Enfeites leves nos terrenos produtivos e jardins nos que sobram' },
+    { valor: 'bonito' as const, rotulo: 'Bonito', dica: 'Mais enfeites e cerca de jardim no cultivo' },
+  ];
+  /** Enfeite clicado no mapa. */
+  protected readonly enfeite = signal<ItemDecoracao | null>(null);
 
   protected readonly focos = [
     { valor: 'selecao' as const, rotulo: 'Minha seleção', dica: 'As culturas que você marcar no painel Culturas' },
@@ -78,6 +123,8 @@ export class LarPage {
           chocadeiras: this.lar.chocadeiras(),
           armazens: this.lar.armazens(),
           coringas: this.lar.coringas(),
+          enfeites: this.catalogo.enfeites(),
+          equilibrio: this.lar.equilibrio(),
           ...(this.culturasEmUso() ? { culturas: this.culturasEmUso()! } : {}),
           // Só o que já dá para plantar no nível escolhido.
           rvCulturas: this.rvAtual(),
@@ -215,7 +262,7 @@ export class LarPage {
     const d = this.dados.dados();
     if (!d) return { agora: [], plantandoMais: [] };
     const nomeDe = (chave: string) => nomeProduto(chave, d.produtos.find((x) => x.chave === chave)?.nomeEn ?? chave);
-    const linha = (s: SugestaoVenda) => ({
+    const linha = (s: SugestaoVenda): LinhaVenda => ({
       chave: s.produto.chave,
       nome: nomeDe(s.produto.chave),
       maquina: this.nome(s.produto.construcao),
@@ -292,6 +339,128 @@ export class LarPage {
     };
   }
 
+  /**
+   * O que cada terreno produz por dia no RV atual: os lotes pela cultura plantada (sem parar e já com a
+   * eficiência fora da temperatura), as máquinas e a coleta pelo "Deve produzir" de cada unidade.
+   */
+  private readonly producaoPorTerreno = computed(() => {
+    const porTerreno = new Map<number, Map<string, number>>();
+    const somar = (n: number, chave: string, porHora: number) => {
+      const t = porTerreno.get(n) ?? new Map<string, number>();
+      t.set(chave, (t.get(chave) ?? 0) + porHora * 24);
+      porTerreno.set(n, t);
+    };
+    for (const i of this.planta()?.itens ?? []) {
+      if (i.tipo !== 'construcao' || !this.liberado(i)) continue;
+      if (i.cultura) {
+        if (i.cultura.tempo) somar(i.terreno, i.cultura.chave, ((i.cultura.rendimento * 3600) / i.cultura.tempo) * (i.eficiencia ?? 1));
+        continue;
+      }
+      const u = this.producao().get(i.construcao)?.[(this.unidadesNoMapa().get(i.construcao) ?? []).indexOf(i)];
+      if (u) somar(i.terreno, u.produto.chave, u.porHora);
+    }
+    return porTerreno;
+  });
+
+  private linhasDeProducao(porChave: ReadonlyMap<string, number>): LinhaProducao[] {
+    const produtos = this.dados.dados()?.produtos ?? [];
+    return [...porChave]
+      .map(([chave, porDia]) => {
+        const produto = produtos.find((x) => x.chave === chave);
+        const lote = produto?.construcao === 'farmland' || produto?.construcao === 'woodland';
+        return {
+          chave,
+          nome: nomeProduto(chave, produto?.nomeEn ?? chave),
+          porDia,
+          quantidade: (porDia >= 100 ? Math.round(porDia) : Math.round(porDia * 10) / 10).toLocaleString('pt-BR'),
+          cor: lote ? coresDaCultura(chave)[1] : null,
+        };
+      })
+      .sort((a, b) => b.porDia - a.porDia || a.nome.localeCompare(b.nome));
+  }
+
+  /** Produção diária somada de todos os terrenos. */
+  protected readonly producaoTotal = computed(() => {
+    const total = new Map<string, number>();
+    for (const t of this.producaoPorTerreno().values()) for (const [chave, q] of t) total.set(chave, (total.get(chave) ?? 0) + q);
+    const linhas = this.linhasDeProducao(total);
+    return { principais: linhas.slice(0, PRODUTOS_NO_TOTAL), aMais: Math.max(0, linhas.length - PRODUTOS_NO_TOTAL) };
+  });
+
+  /** Os 16 terrenos, na ordem do jogo, com o que o cartão de cada um mostra. */
+  protected readonly cartoes = computed<CartaoTerreno[]>(() =>
+    (this.planta()?.terrenos ?? []).map((t) => {
+      const producao = this.linhasDeProducao(this.producaoPorTerreno().get(t.n) ?? new Map());
+      return {
+        n: t.n,
+        rv: t.rv,
+        preco: t.preco.toLocaleString('pt-BR'),
+        coluna: t.coluna + 1,
+        linha: t.linha + 1,
+        tema: t.tema === 'jardim' ? JARDIM_PT[t.jardim!] + (t.unidoA ? ` (com o terreno ${t.unidoA})` : '') : t.tema ? TEMA_PT[t.tema] : 'Livre',
+        livre: !t.tema,
+        fechado: t.rv > this.rvAtual(),
+        producao,
+        noCartao: producao.slice(0, PRODUTOS_NO_CARTAO),
+        aMais: Math.max(0, producao.length - PRODUTOS_NO_CARTAO),
+      };
+    }),
+  );
+
+  protected readonly terrenoAberto = computed(() => this.cartoes().find((c) => c.n === this.aberto()) ?? null);
+
+  private preco(valor: number, moeda: string | null): string {
+    return `${valor.toLocaleString('pt-BR')} ${(moeda && this.catalogo.dados()?.moedas[moeda]) ?? 'moedas'}`;
+  }
+
+  /** Enfeites do terreno aberto, agrupados: a lista de compras da decoração dele. */
+  protected readonly decoracaoDoTerreno = computed(() => {
+    const n = this.aberto();
+    const porId = this.catalogo.porId();
+    const qtd = new Map<string, number>();
+    for (const i of this.planta()?.itens ?? []) if (i.tipo === 'decoracao' && i.terreno === n) qtd.set(i.enfeite, (qtd.get(i.enfeite) ?? 0) + 1);
+    if (!qtd.size) return null;
+    const custo = new Map<string | null, number>();
+    let habitabilidade = 0;
+    const linhas = [...qtd].flatMap(([id, quantidade]) => {
+      const e = porId.get(id);
+      if (!e) return [];
+      if (e.preco) custo.set(e.moeda, (custo.get(e.moeda) ?? 0) + e.preco * quantidade);
+      habitabilidade += e.habitabilidade * quantidade;
+      return [{ id, nome: e.nome, quantidade, futuro: e.rv > this.rvAtual(), rv: e.rv }];
+    });
+    linhas.sort((a, b) => b.quantidade - a.quantidade || a.nome.localeCompare(b.nome));
+    return {
+      linhas,
+      custo: [...custo].map(([moeda, valor]) => this.preco(valor, moeda)).join(' + '),
+      habitabilidade: habitabilidade.toLocaleString('pt-BR'),
+    };
+  });
+
+  /** Cartão do enfeite clicado. */
+  protected readonly detalheEnfeite = computed(() => {
+    const d = this.enfeite();
+    const e = d && this.catalogo.porId().get(d.enfeite);
+    if (!d || !e) return null;
+    return {
+      nome: e.nome,
+      categoria: e.categoria,
+      tamanho: `${e.largura}×${e.altura}`,
+      estimado: e.tamanhoEstimado,
+      rv: e.rv,
+      bloqueado: e.rv > this.rvAtual(),
+      preco: e.preco ? this.preco(e.preco, e.moeda) : null,
+      habitabilidade: e.habitabilidade,
+      noTerreno: (this.planta()?.itens ?? []).filter((i) => i.tipo === 'decoracao' && i.terreno === d.terreno && i.enfeite === d.enfeite).length,
+    };
+  });
+
+  protected abrir(n: number | null): void {
+    this.enfeite.set(null);
+    this.selecionado.set(null);
+    void this.router.navigate([], { queryParams: { terreno: n }, queryParamsHandling: 'merge' });
+  }
+
   protected readonly detalhe = computed(() => {
     const i = this.selecionado();
     if (!i) return null;
@@ -320,10 +489,6 @@ export class LarPage {
 
   protected escolherRvAtual(evento: Event): void {
     this.lar.definirRvAtual(Number((evento.target as HTMLSelectElement).value));
-  }
-
-  protected girar(evento: Event): void {
-    this.lar.definirRotacao(Number((evento.target as HTMLInputElement).value));
   }
 
   protected escolherCoringas(evento: Event): void {

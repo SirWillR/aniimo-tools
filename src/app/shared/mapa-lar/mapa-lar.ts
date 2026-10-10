@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, input, linkedSignal, model, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, input, linkedSignal, model, output, viewChild } from '@angular/core';
 import type { Construcao } from '../../core/lar/modelos-lar';
 import { AMBIENTE_PT, nomeConstrucao, nomeProduto } from '../../core/lar/nomes-pt';
 import type { ItemMapa, PlantaLar } from '../../core/lar/planta';
-import { COR_AMBIENTE, camadas, cerca, chaoDoBloco, desenhoDaConstrucao } from './desenho';
+import { areaDoTerreno, terreno } from '../../core/lar/terrenos';
+import { COR_AMBIENTE, camadas, cerca, chaoDoTema, desenhoDaConstrucao, desenhosDosEnfeites } from './desenho';
 
 export type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
+export type ItemDecoracao = Extract<ItemMapa, { tipo: 'decoracao' }>;
 
 interface Vista {
   x: number;
@@ -13,23 +15,9 @@ interface Vista {
   a: number;
 }
 
-/** Cores das decorações por variante. */
-const VARIANTES: Readonly<Record<string, readonly string[]>> = {
-  arvore: ['#4f8f45', '#5f9e4a', '#3f7f3f', '#d98a3a'],
-  arbusto: ['#5a9a4a', '#4f8a42', '#6aa652', '#3f7a3a'],
-  flores: ['#f28ab2', '#f6d04d', '#fdfbf5', '#b58be0'],
-  canteiro: ['#f28ab2', '#f6d04d', '#e8604f', '#b58be0'],
-  pedra: ['#a9a397', '#b8b1a4', '#9c968a', '#c2bcb0'],
-  poste: ['#ffd98a', '#ffd98a', '#ffd98a', '#ffd98a'],
-  banco: ['#9a6a40', '#8a5a34', '#a8784c', '#8a5a34'],
-  caixote: ['#b98a55', '#a8784c', '#c99a62', '#9a6a40'],
-  barril: ['#8a5a34', '#9a6a40', '#7a4c2d', '#a8784c'],
-  vaso: ['#f28ab2', '#f6d04d', '#e8604f', '#b58be0'],
-  'arco-florido': ['#f28ab2', '#f2a3c0', '#fdfbf5', '#e8604f'],
-  'casinha-passaro': ['#c9503f', '#4f86c6', '#5f9a4a', '#d98a3a'],
-};
-
-const ZOOM_MIN = 0.2;
+const ZOOM_MIN = 0.12;
+/** Com a vista mais larga que isto (em tiles), as peças ficam pequenas demais para o selo de nível. */
+const LARGURA_DOS_SELOS = 46;
 
 @Component({
   selector: 'app-mapa-lar',
@@ -43,60 +31,86 @@ export class MapaLar {
   readonly grade = input(false);
   readonly construcoes = input<ReadonlyMap<string, Construcao>>(new Map());
   readonly selecionado = model<ItemConstrucao | null>(null);
+  /** Enfeite clicado (selecionar uma construção limpa o enfeite, e vice-versa). */
+  readonly enfeite = model<ItemDecoracao | null>(null);
   /** RV em que cada construção libera (ver core/lar/liberacao.ts) e o RV atual do jogador. */
   readonly liberacao = input<ReadonlyMap<ItemConstrucao, number>>(new Map());
   readonly rvAtual = input(20);
-  /** Giro do mapa em graus (sentido horário), em volta do centro. */
-  readonly rotacao = input(0);
+  /** Terreno em que o mapa abre enquadrado (null = tabuleiro inteiro). */
+  readonly foco = input<number | null>(null);
+  /** Visão geral: em vez de selecionar peças, clicar num terreno pede para abri-lo. */
+  readonly geral = input(false);
+  readonly abrirTerreno = output<number>();
 
   private readonly svg = viewChild.required<ElementRef<SVGSVGElement>>('svg');
 
   protected readonly cores = COR_AMBIENTE;
-  /** Centro da planta (eixo do giro). */
-  protected readonly centro = computed(() => ({ x: this.planta().largura / 2, y: this.planta().altura / 2 }));
-  protected readonly transformacao = computed(() => {
-    const { x, y } = this.centro();
-    return `rotate(${this.rotacao()} ${x} ${y})`;
+
+  /** Quadro inteiro (sem zoom): o tabuleiro. Só muda se o tamanho da planta mudar. */
+  protected readonly caixa = computed<Vista>(() => ({ x: 0, y: 0, l: this.planta().largura, a: this.planta().altura }), {
+    equal: (a, b) => a.l === b.l && a.a === b.a,
   });
 
-  /**
-   * Quadro inteiro (sem zoom): mantém a proporção da planta, para a moldura não mudar de tamanho ao
-   * girar, e cresce o bastante para caber o mapa girado inteiro (sobra grama nos cantos).
-   */
-  protected readonly caixa = computed<Vista>(() => {
-    const p = this.planta();
-    const r = (this.rotacao() * Math.PI) / 180;
-    const cos = Math.abs(Math.cos(r));
-    const sen = Math.abs(Math.sin(r));
-    const escala = Math.max((p.largura * cos + p.altura * sen) / p.largura, (p.largura * sen + p.altura * cos) / p.altura);
-    const l = p.largura * escala;
-    const a = p.altura * escala;
-    const { x, y } = this.centro();
-    return { x: x - l / 2, y: y - a / 2, l, a };
+  /** Enquadramento inicial: o terreno em foco com um tile de vizinhança, na proporção do tabuleiro. */
+  private readonly inicial = computed<Vista>(() => {
+    const k = this.caixa();
+    const n = this.foco();
+    if (!n) return k;
+    const area = areaDoTerreno(terreno(n));
+    const l = area.largura + 2;
+    const a = (l * k.a) / k.l;
+    return this.limitar({ x: area.x - 1, y: area.y - (a - area.altura) / 2, l, a });
   });
 
-  protected readonly vista = linkedSignal<Vista>(() => this.caixa());
+  protected readonly vista = linkedSignal<Vista>(() => this.inicial());
   protected readonly viewBox = computed(() => {
     const v = this.vista();
     return `${v.x} ${v.y} ${v.l} ${v.a}`;
   });
   protected readonly ampliado = computed(() => this.vista().l < this.caixa().l - 1e-6);
+  protected readonly comSelos = computed(() => this.vista().l <= LARGURA_DOS_SELOS);
+  protected readonly rotuloDoMapa = computed(() => {
+    const n = this.foco();
+    return (n ? `Terreno ${n} do Lar` : 'Mapa do Lar com os 16 terrenos') + '. Setas movem, + e − dão zoom, Home volta ao enquadramento inicial.';
+  });
 
   protected readonly camadas = computed(() => {
     const p = this.planta();
     const c = camadas(p);
     const nomes = this.construcoes();
     return {
-      chao: p.blocos.map((b) => ({ area: b.area, chao: chaoDoBloco(b) })),
-      caminhos: c.caminhos,
+      terrenos: p.terrenos.map((t) => ({ ...t, chao: chaoDoTema(t.tema), preco: t.preco.toLocaleString('pt-BR') })),
+      ruas: c.caminhos,
       pisos: c.pisos,
-      trilhas: c.trilhas,
       cercas: c.cercas.map((i) => cerca(i.area, i.portao)),
       coberturas: c.coberturas,
-      construcoes: c.construcoes.map((i) => desenhoDaConstrucao(i, nomes.get(i.construcao))),
-      decoracao: c.decoracao.map((d) => ({ ...d, cor: VARIANTES[d.forma]?.[d.variante] ?? '#5a9a4a' })),
+      construcoes: c.construcoes.map((i) => ({
+        ...desenhoDaConstrucao(i, nomes.get(i.construcao)),
+        selo: this.selo(i),
+        fonte: Math.min(0.62, 0.34 + 0.05 * i.area.largura),
+      })),
+      decoracao: desenhosDosEnfeites(c.decoracao),
     };
   });
+
+  /** Terreno que o jogador ainda não tem no RV atual. */
+  protected fechado(t: { rv: number }): boolean {
+    return t.rv > this.rvAtual();
+  }
+
+  /** Enfeite que a loja ainda não libera no RV atual, ou em terreno fechado. */
+  protected apagado(d: ItemDecoracao): boolean {
+    return d.rv > this.rvAtual() || terreno(d.terreno).rv > this.rvAtual();
+  }
+
+  /** Selo da peça: o nível da construção no RV atual, ou o RV em que o espaço libera. Peças de 1 tile ficam sem. */
+  private selo(i: ItemConstrucao): string | null {
+    if (i.area.largura < 2) return null;
+    const rv = this.liberacao().get(i);
+    if (rv && rv > this.rvAtual()) return `RV ${rv}`;
+    const nivel = this.construcoes().get(i.construcao)?.nivelPorRv[this.rvAtual() - 1];
+    return nivel ? `Nv. ${nivel}` : null;
+  }
 
   /** Espaço reservado: faz parte da base final, mas ainda não liberado no RV atual. */
   protected reservado(i: ItemConstrucao): boolean {
@@ -118,7 +132,25 @@ export class MapaLar {
   protected selecionar(i: ItemConstrucao, evento: Event): void {
     evento.stopPropagation();
     if (this.arrastou) return;
+    this.enfeite.set(null);
     this.selecionado.set(this.selecionado() === i ? null : i);
+  }
+
+  protected selecionarEnfeite(d: ItemDecoracao, evento: Event): void {
+    evento.stopPropagation();
+    if (this.arrastou) return;
+    this.selecionado.set(null);
+    this.enfeite.set(this.enfeite() === d ? null : d);
+  }
+
+  protected abrir(n: number, evento: Event): void {
+    evento.stopPropagation();
+    if (!this.arrastou) this.abrirTerreno.emit(n);
+  }
+
+  protected limpar(): void {
+    this.selecionado.set(null);
+    this.enfeite.set(null);
   }
 
   // ---- zoom e arraste ----
@@ -134,7 +166,19 @@ export class MapaLar {
   }
 
   restaurar(): void {
-    this.vista.set(this.caixa());
+    this.vista.set(this.inicial());
+  }
+
+  protected tecla(e: KeyboardEvent): void {
+    const passo = this.vista().l / 8;
+    const desloc = { ArrowLeft: [-passo, 0], ArrowRight: [passo, 0], ArrowUp: [0, -passo], ArrowDown: [0, passo] }[e.key];
+    const v = this.vista();
+    if (desloc) this.vista.set(this.limitar({ ...v, x: v.x + desloc[0]!, y: v.y + desloc[1]! }));
+    else if (e.key === '+' || e.key === '=') this.zoom(1.25);
+    else if (e.key === '-' || e.key === '_') this.zoom(1 / 1.25);
+    else if (e.key === 'Home') this.restaurar();
+    else return;
+    e.preventDefault();
   }
 
   private limitar(v: Vista): Vista {

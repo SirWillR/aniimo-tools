@@ -1,0 +1,65 @@
+@if (vendas().agora.length || vendas().plantandoMais.length) {
+  <div class="cartao folha">
+    <div class="cartao-topo">
+      <p class="cartao-sobre">O que vender</p>
+
+    </div>
+
+    <div class="vendas-colunas">
+    <div>
+    @if (vendas().agora.length) {
+      <p class="vendas-grupo">Com o que você planta</p>
+      <ol class="vendas">
+        @for (v of vendas().agora; track v.chave; let i = $index) {
+          <ng-container *ngTemplateOutlet="itemVenda; context: { $implicit: v, id: 'venda-a' + i }" />
+        }
+      </ol>
+    } @else {
+      <p class="nota">Nada rentável só com as culturas marcadas. Veja abaixo o que plantar.</p>
+    }
+
+    </div>
+    <div>
+    @if (vendas().plantandoMais.length) {
+      <p class="vendas-grupo">Plantando mais</p>
+      <ol class="vendas">
+        @for (v of vendas().plantandoMais; track v.chave; let i = $index) {
+          <ng-container *ngTemplateOutlet="itemVenda; context: { $implicit: v, id: 'venda-b' + i }" />
+        }
+      </ol>
+    }
+    </div>
+    </div>
+    <p class="nota">Ganho por hora de máquina no RV {{ rvAtual() }}, já descontando o valor dos ingredientes.</p>
+  </div>
+}
+
+<ng-template #itemVenda let-v let-id="id">
+  <li tabindex="0" [attr.aria-describedby]="id">
+    <span class="venda-nome">{{ v.nome }}</span>
+    <span class="venda-ganho num">+{{ v.ganho }}/h</span>
+    <span class="venda-maquina">
+      {{ v.maquina }}
+      @if (v.faltam) {
+        <span class="venda-falta">· falta plantar: {{ v.faltam }}</span>
+      }
+    </span>
+    <span class="venda-dica" role="tooltip" [id]="id">
+      <span class="venda-dica-titulo">Culturas usadas</span>
+      @if (v.culturas.length) {
+        <span class="venda-culturas">
+          @for (c of v.culturas; track c.nome) {
+            <span class="venda-cultura">
+              <span class="amostra" [style.--copa]="c.cor[0]" [style.--fruto]="c.cor[1]"></span>{{ c.nome }}
+            </span>
+          }
+        </span>
+      } @else {
+        <span>Nenhuma cultura de Fazenda ou Bosque.</span>
+      }
+      @if (v.outros) {
+        <span class="venda-outros">Também usa: {{ v.outros }}</span>
+      }
+    </span>
+  </li>
+</ng-template>

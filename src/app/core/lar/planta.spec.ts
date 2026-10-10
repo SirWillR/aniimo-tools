@@ -1,16 +1,21 @@
 import json from '../../../assets/data/lar-construcao.json';
-import { decoracaoInvade } from './decoracao';
-import { type FonteAmbiente, cobertura, condicaoDoLote, expandir, quadrado, sobrepoe } from './geometria';
+import { type FonteAmbiente, type Retangulo, cobertura, condicaoDoLote, contem, quadrado, sobrepoe } from './geometria';
 import { inventario } from './inventario';
 import { liberacaoPorItem, rvDoProduto } from './liberacao';
 import { familia } from './sugestao';
 import type { DadosConstrucao } from './modelos-lar';
-import { BORDA, type ItemMapa, plantaDoLar } from './planta';
+import { AMBIENTES_NA_PLANTA, type ItemMapa, type PlantaLar, plantaDoLar } from './planta';
+import { ALTURA_TERRENO, LARGURA_TERRENO, TERRENOS, areaDoTerreno, terreno } from './terrenos';
 
 const dados = json as unknown as DadosConstrucao;
 const regras = dados.regras;
 type Construcao = Extract<ItemMapa, { tipo: 'construcao' }>;
 const construcoes = (itens: readonly ItemMapa[]) => itens.filter((i): i is Construcao => i.tipo === 'construcao');
+/** Quantas unidades de uma construção a planta usa: o que o RV libera, com os ambientes limitados ao que serve. */
+const naPlanta = (chave: string, liberadas: number) => Math.min(liberadas, AMBIENTES_NA_PLANTA[chave] ?? Infinity);
+const eLote = (c: Construcao) => c.construcao === 'farmland' || c.construcao === 'woodland';
+/** A sub-região de cultivo onde o lote está (inteiro). */
+const regiaoDe = (p: PlantaLar, area: Retangulo) => p.blocos.flatMap((b) => b.regioes ?? []).find((r) => contem(r, area));
 
 describe('geometria', () => {
   const fornalha = (modo: 'warm' | 'scorching' = 'scorching'): FonteAmbiente => ({ area: cobertura(quadrado(0, 0, 1), regras.raioCobertura), modo });
@@ -46,14 +51,22 @@ describe('inventario', () => {
     expect(qtd(12, 'heat-furnace')).toBe(2);
   });
 
+  it('acima do RV 13 usa as quantidades do Aniidex, que batem com o jogo (RV 14: 3 Poços, 3 Fornos com Chaminé, 3 Bancadas)', () => {
+    const qtd = (rv: number, chave: string) => inventario(dados, rv).itens.find((i) => i.construcao.chave === chave)?.quantidade ?? 0;
+    expect([qtd(14, 'well'), qtd(14, 'chimney-kiln'), qtd(14, 'woodworking-bench')]).toEqual([3, 3, 3]);
+    expect([qtd(13, 'well'), qtd(13, 'chimney-kiln'), qtd(13, 'woodworking-bench')]).toEqual([2, 2, 2]);
+    expect([qtd(20, 'well'), qtd(20, 'chimney-kiln'), qtd(20, 'woodworking-bench')]).toEqual([4, 4, 4]);
+    expect([qtd(20, 'heat-furnace'), qtd(20, 'cooling-unit'), qtd(20, 'sunlamp')]).toEqual([3, 3, 3]);
+  });
+
   it('no RV 20 usa as quantidades vistas no jogo (40 Fazendas, 20 Bosques, 10 Minas)', () => {
     const qtd = (chave: string) => inventario(dados, 20).itens.find((i) => i.construcao.chave === chave)?.quantidade;
     expect([qtd('farmland'), qtd('woodland'), qtd('mine')]).toEqual([40, 20, 10]);
   });
 
-  it('marca como não verificado acima do RV conferido', () => {
-    expect(inventario(dados, dados.rvVerificado).verificado).toBe(true);
-    expect(inventario(dados, dados.rvVerificado + 1).verificado).toBe(false);
+  it('as quantidades valem para todos os RVs (a fonte cobre até o máximo)', () => {
+    expect(dados.rvVerificado).toBe(dados.rvMaximo);
+    expect(inventario(dados, dados.rvMaximo).verificado).toBe(true);
   });
 
   it('só libera produtos do nível da instalação e sem receitas especiais', () => {
@@ -69,10 +82,10 @@ describe('plantaDoLar', () => {
       const inv = inventario(dados, rv);
       const funcionais = construcoes(planta.itens);
 
-      it('coloca exatamente as construções que o RV libera', () => {
+      it('coloca exatamente as construções que o RV libera (dos ambientes, só os que servem)', () => {
         const contagem = new Map<string, number>();
         for (const c of funcionais) contagem.set(c.construcao, (contagem.get(c.construcao) ?? 0) + 1);
-        expect(Object.fromEntries(contagem)).toEqual(Object.fromEntries(inv.itens.map((i) => [i.construcao.chave, i.quantidade])));
+        expect(Object.fromEntries(contagem)).toEqual(Object.fromEntries(inv.itens.map((i) => [i.construcao.chave, naPlanta(i.construcao.chave, i.quantidade)])));
       });
 
       it('nenhuma construção se sobrepõe a outra e todas ficam dentro do mapa', () => {
@@ -98,19 +111,15 @@ describe('plantaDoLar', () => {
         }
       });
 
-      it('a decoração não invade construções, pátios, trilhas nem sub-regiões de cultivo, nem a cerca', () => {
-        const funcionaisExtras = planta.itens.filter((i) => i.tipo === 'piso' || i.tipo === 'trilha').map((i) => i.area);
-        const regioes = planta.blocos.flatMap((b) => b.regioes ?? []);
-        expect(decoracaoInvade(planta.itens, [...funcionais.map((c) => c.area), ...funcionaisExtras, ...regioes])).toBe(false);
-        // Enfeite dentro de um bloco fica inteiro na área interna (a cerca fica na margem).
-        for (const d of planta.itens.filter((i) => i.tipo === 'decoracao'))
-          for (const b of planta.blocos)
-            if (sobrepoe(b.area, d.area)) {
-              const dentro = expandir(b.area, -1);
-              expect(d.area.x >= dentro.x - 1e-9 && d.area.y >= dentro.y - 1e-9).toBe(true);
-              expect(d.area.x + d.area.largura <= dentro.x + dentro.largura + 1e-9).toBe(true);
-              expect(d.area.y + d.area.altura <= dentro.y + dentro.altura + 1e-9).toBe(true);
-            }
+      it('cada construção e cada cobertura ficam inteiras dentro de um terreno aberto neste RV', () => {
+        for (const c of funcionais) {
+          const t = terreno(c.terreno);
+          expect(t.rv).toBeLessThanOrEqual(rv);
+          expect(contem(areaDoTerreno(t), c.area)).toBe(true);
+          expect(planta.blocos[c.bloco]!.terreno).toBe(c.terreno);
+        }
+        for (const c of planta.itens.filter((i) => i.tipo === 'cobertura'))
+          expect(planta.terrenos.some((t) => contem(t.area, c.area))).toBe(true);
       });
 
       it('é determinística', () => {
@@ -119,7 +128,7 @@ describe('plantaDoLar', () => {
     });
   }
 
-  it('coloca as chocadeiras num ninhal cercado, 2×2 e sem sobrepor nada', () => {
+  it('coloca as chocadeiras num terreno só delas (ninhal), 2×2 e sem sobrepor nada', () => {
     const p = plantaDoLar(dados, 7, { chocadeiras: 5 });
     const chocadeiras = construcoes(p.itens).filter((c) => c.construcao === 'chocadeira');
     expect(chocadeiras).toHaveLength(5);
@@ -135,46 +144,26 @@ describe('plantaDoLar', () => {
   describe('unidades de armazenamento', () => {
     const p = plantaDoLar(dados, 20, { armazens: 4 });
     const armazens = construcoes(p.itens).filter((c) => c.construcao === 'armazem');
-    const caminhos = p.itens.filter((i) => i.tipo === 'caminho').map((i) => i.area);
 
-    it('ficam 2×2, fora dos blocos e dos caminhos, sem sobrepor nada', () => {
+    it('ficam 2×2, dentro de um terreno com tema, sem sobrepor nada', () => {
       expect(armazens).toHaveLength(4);
       for (const a of armazens) {
         expect([a.area.largura, a.area.altura]).toEqual([2, 2]);
-        expect(p.blocos.some((b) => sobrepoe(b.area, a.area))).toBe(false);
-        expect(caminhos.some((c) => sobrepoe(c, a.area))).toBe(false);
+        expect(contem(areaDoTerreno(terreno(a.terreno)), a.area)).toBe(true);
+        expect(p.terrenos[a.terreno - 1]!.tema).not.toBeNull();
         expect(construcoes(p.itens).filter((o) => o !== a && sobrepoe(o.area, a.area))).toEqual([]);
       }
     });
 
-    it('ficam do lado de dentro do anel de caminho, não na borda de árvores', () => {
-      for (const a of armazens) {
-        expect(a.area.x).toBeGreaterThanOrEqual(BORDA);
-        expect(a.area.y).toBeGreaterThanOrEqual(BORDA);
-        expect(a.area.x + a.area.largura).toBeLessThanOrEqual(p.largura - BORDA);
-        expect(a.area.y + a.area.altura).toBeLessThanOrEqual(p.altura - BORDA);
-      }
+    it('ficam espalhados: um por terreno, começando pelos que abrem primeiro', () => {
+      expect(new Set(armazens.map((a) => a.terreno)).size).toBe(4);
+      expect(armazens.some((a) => a.terreno === 1)).toBe(true);
     });
 
-    it('cada um encosta num caminho', () => {
-      for (const a of armazens) expect(caminhos.some((c) => sobrepoe(c, expandir(a.area, 1)))).toBe(true);
-    });
-
-    it('ficam espalhados, não juntos', () => {
-      const c = armazens.map((a) => ({ x: a.area.x + 1, y: a.area.y + 1 }));
-      for (let i = 0; i < c.length; i++)
-        for (let j = i + 1; j < c.length; j++) expect(Math.abs(c[i]!.x - c[j]!.x) + Math.abs(c[i]!.y - c[j]!.y)).toBeGreaterThanOrEqual(8);
-    });
-
-    it('mais armazéns não pioram a distância das construções ao armazém mais perto', () => {
-      const custo = (n: number) => {
-        const q = plantaDoLar(dados, 20, { armazens: n });
-        const arm = construcoes(q.itens).filter((c) => c.construcao === 'armazem').map((a) => a.area);
-        return construcoes(q.itens)
-          .filter((c) => c.construcao !== 'armazem' && c.construcao !== 'chocadeira' && !dados.regras.construcoes[c.construcao])
-          .reduce((s, c) => s + Math.min(...arm.map((a) => Math.abs(a.x - c.area.x) + Math.abs(a.y - c.area.y))), 0);
-      };
-      expect(custo(4)).toBeLessThan(custo(1));
+    it('o máximo de armazéns e de chocadeiras cabe', () => {
+      const q = plantaDoLar(dados, 20, { armazens: 12, chocadeiras: 20 });
+      const conta = (chave: string) => construcoes(q.itens).filter((c) => c.construcao === chave).length;
+      expect([conta('armazem'), conta('chocadeira')]).toEqual([12, 20]);
     });
   });
 
@@ -195,10 +184,10 @@ describe('plantaDoLar', () => {
       expect(semAmbiente.every((l) => l.cultura && familia(l.cultura.chave) === 'wheat')).toBe(true);
     });
 
-    it('trocar as culturas não mexe em blocos, caminhos, cercas nem construções; só os lotes se movem dentro dos blocos', () => {
+    it('trocar as culturas não mexe em terrenos nem construções; só os lotes se movem dentro das sub-regiões', () => {
       const fixos = (culturas?: string[]) =>
         plantaDoLar(dados, 20, { armazens: 3, chocadeiras: 2, ...(culturas ? { culturas } : {}) })
-          .itens.filter((i) => i.tipo === 'caminho' || i.tipo === 'cerca' || (i.tipo === 'construcao' && i.construcao !== 'farmland' && i.construcao !== 'woodland'))
+          .itens.filter((i) => i.tipo === 'piso' || (i.tipo === 'construcao' && !eLote(i)))
           .map((i) => `${i.tipo}:${'construcao' in i ? i.construcao : ''}:${i.area.x},${i.area.y},${i.area.largura}`);
       const lotes = (culturas?: string[]) => {
         const q = plantaDoLar(dados, 20, { ...(culturas ? { culturas } : {}) });
@@ -206,11 +195,7 @@ describe('plantaDoLar', () => {
         for (const c of construcoes(q.itens))
           if (c.construcao === 'farmland' || c.construcao === 'woodland') {
             conta[c.construcao] = (conta[c.construcao] ?? 0) + 1;
-            // Dentro da área interna do seu bloco (a cerca fica na margem).
-            const interna = expandir(q.blocos[c.bloco]!.area, -1);
-            expect(c.area.x >= interna.x - 1e-9 && c.area.y >= interna.y - 1e-9).toBe(true);
-            expect(c.area.x + c.area.largura <= interna.x + interna.largura + 1e-9).toBe(true);
-            expect(c.area.y + c.area.altura <= interna.y + interna.altura + 1e-9).toBe(true);
+            expect(regiaoDe(q, c.area)).toBeDefined();
           }
         return conta;
       };
@@ -267,36 +252,60 @@ describe('plantaDoLar', () => {
     });
   });
 
-  describe('área única de cultivo', () => {
+  describe('terrenos de cultivo', () => {
     const p = plantaDoLar(dados, 20, { culturas: ['rose', 'cranberry', 'wheat', 'cherry_blossom'], rvCulturas: 12 });
     const cultivos = p.blocos.filter((b) => b.tipo === 'cultivo');
-    const cultivo = cultivos[0]!;
 
-    it('é um só bloco, cercado, com todos os lotes e ambientes dentro', () => {
-      expect(cultivos).toHaveLength(1);
-      expect(cultivo.cercado).toBe(true);
-      const dentro = construcoes(p.itens).filter(
-        (c) => c.construcao === 'farmland' || c.construcao === 'woodland' || c.construcao in dados.regras.construcoes,
-      );
+    it('todos os lotes e ambientes ficam em terrenos de cultivo', () => {
+      const dentro = construcoes(p.itens).filter((c) => eLote(c) || c.construcao in dados.regras.construcoes);
       expect(dentro).toHaveLength(40 + 20 + 4);
-      for (const c of dentro) expect(sobrepoe(cultivo.area, c.area)).toBe(true);
+      for (const c of dentro) expect(p.blocos[c.bloco]!.tipo).toBe('cultivo');
     });
 
-    it('cada lote fica inteiro dentro de uma sub-região, e as trilhas ficam entre elas', () => {
-      const regioes = cultivo.regioes!;
-      expect(regioes.length).toBeGreaterThan(1);
-      const lotes = construcoes(p.itens).filter((c) => c.construcao === 'farmland' || c.construcao === 'woodland');
-      for (const l of lotes)
-        expect(regioes.some((r) => l.area.x >= r.x && l.area.y >= r.y && l.area.x + l.area.largura <= r.x + r.largura && l.area.y + l.area.altura <= r.y + r.altura)).toBe(true);
-      const trilhas = p.itens.filter((i) => i.tipo === 'trilha');
-      expect(trilhas.length).toBeGreaterThan(0);
-      for (const t of trilhas) for (const r of regioes) expect(sobrepoe(t.area, r)).toBe(false);
+    it('o primeiro terreno de cultivo não tem ambiente: é onde se planta antes de ter Fornalha', () => {
+      expect(cultivos[0]!.terreno).toBe(1);
+      expect(construcoes(p.itens).filter((c) => c.terreno === 1 && c.construcao in dados.regras.construcoes)).toEqual([]);
     });
 
-    it('trilhas e sub-regiões são as mesmas em qualquer RV e escolha de culturas', () => {
-      const esqueleto = (q: typeof p) => JSON.stringify([q.blocos, q.itens.filter((i) => i.tipo === 'trilha')]);
+    it('cada lote fica inteiro dentro da sub-região do seu terreno', () => {
+      expect(cultivos.length).toBeGreaterThan(1);
+      for (const b of cultivos) expect(b.regioes).toHaveLength(1);
+      for (const l of construcoes(p.itens).filter(eLote)) expect(contem(p.blocos[l.bloco]!.regioes![0]!, l.area)).toBe(true);
+    });
+
+    it('terrenos e sub-regiões são os mesmos em qualquer RV e escolha de culturas', () => {
+      const esqueleto = (q: typeof p) => JSON.stringify([q.terrenos, q.blocos]);
       expect(esqueleto(plantaDoLar(dados, 20, { culturas: ['coconut'], rvCulturas: 20 }))).toBe(esqueleto(p));
       expect(esqueleto(plantaDoLar(dados, 20, { rvCulturas: 5 }))).toBe(esqueleto(p));
+    });
+  });
+
+  describe('terrenos', () => {
+    it('são 16, de 20×15, um por nível, cobrindo o tabuleiro sem se sobrepor', () => {
+      expect(TERRENOS.map((t) => [t.n, t.rv])).toEqual(Array.from({ length: 16 }, (_, i) => [i + 1, i + 1]));
+      const areas = TERRENOS.map(areaDoTerreno);
+      for (let i = 0; i < areas.length; i++) for (let j = i + 1; j < areas.length; j++) expect(sobrepoe(areas[i]!, areas[j]!)).toBe(false);
+      const p = plantaDoLar(dados, 20);
+      expect(p.largura * p.altura).toBe(16 * LARGURA_TERRENO * ALTURA_TERRENO);
+    });
+
+    it('a planta de qualquer RV cabe nos terrenos abertos nesse RV', () => {
+      for (let rv = 1; rv <= 20; rv++) {
+        const p = plantaDoLar(dados, rv);
+        for (const t of p.terrenos) if (t.tema) expect(t.rv).toBeLessThanOrEqual(rv);
+      }
+    });
+
+    it('na base final, o que o jogador pode ter em cada RV fica em terrenos já abertos', () => {
+      const p = plantaDoLar(dados, 20, { rvCulturas: 20 });
+      for (let rv = 1; rv <= 20; rv++) {
+        const lib = liberacaoPorItem(p, dados, rv);
+        for (const c of dados.construcoes) {
+          const liberados = [...lib.keys()].filter((i) => i.construcao === c.chave && lib.get(i)! <= rv);
+          expect(liberados).toHaveLength(naPlanta(c.chave, c.quantidadePorRv[rv - 1]!));
+          for (const i of liberados) expect(terreno(i.terreno).rv).toBeLessThanOrEqual(rv);
+        }
+      }
     });
   });
 
