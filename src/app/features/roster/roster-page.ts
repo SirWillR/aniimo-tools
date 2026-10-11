@@ -14,8 +14,8 @@ import { AniimoPicker, type MudancaQuantidade } from '../../shared/aniimo-picker
         <p class="sobretitulo">Seu roster</p>
         <h1>Meus Aniimo</h1>
         <p class="lede">
-          Marque os Aniimo que você tem e quantos. Com <strong>"Só os meus"</strong> ligado nos requisitos,
-          o otimizador usa apenas estes. Fica salvo neste navegador.
+          Marque os Aniimo que você tem e quantos. Com <strong>"Só os meus"</strong> ligado na equipe,
+          a recomendação usa apenas estes. Fica salvo neste navegador.
         </p>
       </div>
       <div class="placar folha">
@@ -29,7 +29,7 @@ import { AniimoPicker, type MudancaQuantidade } from '../../shared/aniimo-picker
 
     @if (roster.total() && !zona.soMeus()) {
       <p class="dica folha">
-        O modo <strong>"Só os meus"</strong> está desligado: o otimizador está considerando todos os Aniimo.
+        O modo <strong>"Só os meus"</strong> está desligado: a recomendação está considerando todos os Aniimo.
         <button type="button" class="btn discreto" (click)="zona.alternar('soMeus', true)">Ligar agora</button>
       </p>
     }
@@ -47,7 +47,7 @@ import { AniimoPicker, type MudancaQuantidade } from '../../shared/aniimo-picker
     }
 
     <div class="rodape-acao">
-      <a class="btn primario" routerLink="/requisitos">Voltar aos requisitos</a>
+      <a class="btn primario" routerLink="/equipe">Ver a equipe</a>
     </div>
   `,
   styleUrl: './roster-page.scss',

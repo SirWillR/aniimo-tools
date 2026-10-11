@@ -1,6 +1,6 @@
 // Carrega o HiGHS no browser. O highs.wasm é copiado para /wasm pelo angular.json (assets).
 import loadHighs from 'highs';
-import type { IlpBackend } from './solver';
+import type { IlpBackend } from './equipe';
 
 let carregando: Promise<IlpBackend> | undefined;
 

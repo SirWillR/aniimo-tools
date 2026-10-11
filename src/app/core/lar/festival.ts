@@ -2,13 +2,19 @@
 // (nomes, números e datas) do aniimotools.dev/pt-br/systems/homeland/home-season/, escritos à mão
 // (exceção de fonte aprovada pelo usuário em 2026-10-10). TS puro.
 //
-// Grande Banquete: três dos seis pratos são receitas comuns do Lar (têm `chave`); os outros três são do
-// festival e a fonte não dá a receita.
+// Grande Banquete: três dos seis pratos são receitas comuns do Lar; os outros três são do festival.
+//
+// Receitas do festival (`PRODUTOS_DO_FESTIVAL`): das capturas do jogo que o usuário mandou em 2026-10-11
+// (máquina, ingredientes, preço de venda e carga de trabalho, que é o tempo em segundos). Elas entram
+// só nas contas de venda e produção (`comFestival`), nunca na planta: as sementes vivem nas Fazendas
+// coringa.
 //
 // Suposições nossas, que a fonte não confirma: cada semente ocupa uma Fazenda comum e não pede ambiente.
+import type { Aptidao } from '../data/models';
 import { inventario } from './inventario';
 import { rvDoProduto } from './liberacao';
-import type { DadosConstrucao, Produto } from './modelos-lar';
+import type { DadosConstrucao, Ingrediente, Produto } from './modelos-lar';
+import { PRODUTO_PT } from './nomes-pt';
 import { origens } from './vendas';
 
 export interface SementeDoFestival {
@@ -17,8 +23,8 @@ export interface SementeDoFestival {
 
 export interface PratoDoBanquete {
   nome: string;
-  /** Chave do produto em `lar-construcao.json`; null nos pratos do festival, cuja receita a fonte não dá. */
-  chave: string | null;
+  /** Chave do produto: em `lar-construcao.json` ou em `PRODUTOS_DO_FESTIVAL`. */
+  chave: string;
 }
 
 export const FESTIVAL = {
@@ -44,19 +50,90 @@ export const FESTIVAL = {
       { nome: 'Tanghulu', chave: 'tanghulu' },
       { nome: 'Geleia de Maçã com Bordo', chave: 'maple_candy_apple_jam' },
       { nome: 'Biscoitos de Lavanda', chave: 'lavender_cookies' },
-      { nome: 'Conserva Umbralina', chave: null },
-      { nome: 'Caçarola Umbralina', chave: null },
-      { nome: 'Travessa da Colheita', chave: null },
+      { nome: 'Conserva Umbralina', chave: 'umbral_pickle' },
+      { nome: 'Caçarola Umbralina', chave: 'umbral_casserole' },
+      { nome: 'Travessa da Colheita', chave: 'harvest_platter' },
     ] as readonly PratoDoBanquete[],
     /** Outros insumos que o banquete inteiro pede, somados (a fonte só dá o total). */
     outrosInsumos: [
       { nome: 'Sal Marinho', quantidade: 115 },
-      { nome: 'Água Doce Simples', quantidade: 40 },
+      { nome: 'Água Doce', quantidade: 40 },
       { nome: 'Vinagre de Cidra', quantidade: 5 },
-      { nome: 'Açúcar Derretido', quantidade: 5 },
+      { nome: 'Açúcar Cristal', quantidade: 5 },
     ],
   },
 } as const;
+
+/** Chaves (nossas) das duas sementes do festival, na ordem de `FESTIVAL.sementes`. */
+export const SEMENTES_FESTIVAL_CHAVES = ['moon_radish', 'crescent_pepper'] as const;
+
+const produtoDoFestival = (chave: string, construcao: string, extra: Partial<Produto>): Produto => ({
+  chave,
+  nomeEn: PRODUTO_PT[chave] ?? chave,
+  construcao,
+  nivel: 1,
+  modulo: null,
+  ambiente: null,
+  tempo: null,
+  trabalho: null,
+  rendimento: 1,
+  venda: 0,
+  moeda: 'coins',
+  custo: 0,
+  ingredientes: [],
+  aniimo: null,
+  etapas: [],
+  subproduto: null,
+  especial: false,
+  verificado: true,
+  ...extra,
+});
+/** Semente: preço de venda desconhecido (0); comprada com Trigo do Luar, não com moedas. */
+const semente = (chave: string) => produtoDoFestival(chave, 'farmland', { tempo: FESTIVAL.crescimentoMin * 60, rendimento: FESTIVAL.rendimento });
+/** Receita de máquina no nível 1. */
+const receita = (chave: string, construcao: string, aptidao: Aptidao, venda: number, trabalho: number, ingredientes: Ingrediente[]) =>
+  produtoDoFestival(chave, construcao, { venda, trabalho, ingredientes, aniimo: { aptidao, nivel: 1 } });
+
+const [RABANETE, PIMENTA] = SEMENTES_FESTIVAL_CHAVES;
+
+/** As seis receitas do festival: três pratos do banquete, dois intermediários da Travessa e o Molho. */
+export const RECEITAS_DO_FESTIVAL: readonly Produto[] = [
+  receita('umbral_pickle', 'pickling-jar', 'dark', 2290, 203, [
+    { produto: RABANETE, quantidade: 8 },
+    { produto: PIMENTA, quantidade: 8 },
+    { produto: 'cider_vinegar', quantidade: 1 },
+  ]),
+  receita('umbral_casserole', 'blazing-stove', 'fire', 2150, 203, [
+    { produto: RABANETE, quantidade: 8 },
+    { produto: PIMENTA, quantidade: 8 },
+    { produto: 'fresh_water', quantidade: 8 },
+  ]),
+  receita('harvest_platter', 'crafting-table', 'artisanship', 5290, 405, [
+    { produto: 'roasted_crescent_pepper', quantidade: 1 },
+    { produto: 'moon_radish_slices', quantidade: 1 },
+  ]),
+  receita('roasted_crescent_pepper', 'claw-game-cooker', 'fire', 1520, 162, [
+    { produto: PIMENTA, quantidade: 8 },
+    { produto: 'sea_salt', quantidade: 23 },
+  ]),
+  receita('moon_radish_slices', 'blazing-stove', 'fire', 2370, 203, [
+    { produto: RABANETE, quantidade: 8 },
+    { produto: 'rock_candy', quantidade: 1 },
+  ]),
+  receita('umbral_sweet_spicy_sauce', 'simmering-pot', 'fire', 2390, 243, [
+    { produto: RABANETE, quantidade: 8 },
+    { produto: PIMENTA, quantidade: 8 },
+    { produto: 'sea_salt', quantidade: 23 },
+  ]),
+];
+
+export const PRODUTOS_DO_FESTIVAL: readonly Produto[] = [...SEMENTES_FESTIVAL_CHAVES.map(semente), ...RECEITAS_DO_FESTIVAL];
+
+/** Os dados do Lar com os produtos do festival somados, para as contas de venda e produção. */
+export function comFestival(dados: DadosConstrucao): DadosConstrucao {
+  if (dados.produtos.some((p) => p.chave === RABANETE)) return dados;
+  return { ...dados, produtos: [...dados.produtos, ...PRODUTOS_DO_FESTIVAL] };
+}
 
 type Dia = { ano: number; mes: number; dia: number };
 const meiaNoite = (d: Dia, mais = 0) => new Date(d.ano, d.mes - 1, d.dia + mais).getTime();
@@ -96,26 +173,55 @@ export function plantiosNecessarios(trigoPorDia: number, coringas: number): { pl
 
 export interface PratoNoRv {
   prato: PratoDoBanquete;
-  /** A receita nos dados do Lar; null nos pratos do festival. */
+  /** A receita (dos dados do Lar ou do festival); null se faltar nos dados. */
   produto: Produto | null;
-  /** RV em que a receita libera (null: prato do festival, ou sem dado). */
+  /** RV em que dá para fazer: a receita e tudo o que ela pede liberados (null: sem dado). */
   rvLibera: number | null;
   liberado: boolean;
+  /** Receita do festival (pede as sementes dele), e não uma receita comum do Lar. */
+  doFestival: boolean;
   /** Culturas (famílias) de Fazenda e Bosque que a receita usa, descendo pelos ingredientes. */
   culturas: string[];
+  /** Sementes do festival (chaves) que a receita usa, descendo pelos ingredientes. */
+  sementes: string[];
+}
+
+/** RV em que a receita e todos os seus ingredientes (descendo por eles) estão liberados. */
+function rvDaReceita(p: Produto, todos: ReadonlyMap<string, Produto>, dados: DadosConstrucao, visitados = new Set<string>()): number | null {
+  let rv = rvDoProduto(p, dados);
+  for (const i of p.ingredientes) {
+    const x = todos.get(i.produto);
+    if (rv === null) break;
+    if (!x || visitados.has(x.chave)) continue;
+    const r = rvDaReceita(x, todos, dados, new Set([...visitados, p.chave]));
+    rv = r === null ? null : Math.max(rv, r);
+  }
+  return rv;
 }
 
 /** Os pratos do banquete vistos do RV do jogador: quais ele já faz e o que cada um pede plantar. */
 export function pratosDoBanquete(dados: DadosConstrucao, rv: number): PratoNoRv[] {
-  const liberados = new Map(inventario(dados, rv).produtos.map((p) => [p.chave, p]));
-  const todos = new Map(dados.produtos.map((p) => [p.chave, p]));
+  const d = comFestival(dados);
+  const liberados = new Map(inventario(d, rv).produtos.map((p) => [p.chave, p]));
+  const todos = new Map(d.produtos.map((p) => [p.chave, p]));
+  const sementesDoFestival: readonly string[] = SEMENTES_FESTIVAL_CHAVES;
   return FESTIVAL.banquete.pratos.map((prato) => {
-    const produto = prato.chave ? (liberados.get(prato.chave) ?? todos.get(prato.chave) ?? null) : null;
-    if (!produto) return { prato, produto: null, rvLibera: null, liberado: false, culturas: [] };
-    const liberado = liberados.has(produto.chave);
+    const produto = todos.get(prato.chave) ?? null;
+    const doFestival = RECEITAS_DO_FESTIVAL.some((r) => r.chave === prato.chave);
+    if (!produto) return { prato, produto: null, rvLibera: null, liberado: false, doFestival, culturas: [], sementes: [] };
+    const rvLibera = rvDaReceita(produto, todos, d);
+    const liberado = rvLibera !== null && rvLibera <= rv;
     // Prato ainda fechado: as culturas saem de todas as receitas, para o jogador saber o que vai pedir.
-    const culturas = [...origens(produto, liberado ? liberados : todos).culturas].sort();
-    return { prato, produto, rvLibera: rvDoProduto(produto, dados), liberado, culturas };
+    const usadas = [...origens(produto, liberado ? liberados : todos).culturas].sort();
+    return {
+      prato,
+      produto,
+      rvLibera,
+      liberado,
+      doFestival,
+      culturas: usadas.filter((c) => !sementesDoFestival.includes(c)),
+      sementes: usadas.filter((c) => sementesDoFestival.includes(c)),
+    };
   });
 }
 

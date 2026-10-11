@@ -42,6 +42,12 @@ export const AMBIENTE_PT: Readonly<Record<Ambiente, string>> = {
   adequate: 'Adequado',
 };
 
+/** Etapas do cultivo (os nomes vêm em inglês nos dados). */
+export const ETAPA_PT: Readonly<Record<string, string>> = {
+  Reclaiming: 'Preparar a terra', Sowing: 'Semear', Reaping: 'Colher', Collecting: 'Coletar', Logging: 'Cortar',
+  Watering: 'Regar',
+};
+
 /** Produtos de coleta e cultivo (os que aparecem nos lotes do mapa). */
 const CULTIVO_PT: Readonly<Record<string, string>> = {
   wheat: 'Trigo', potato: 'Batata', rice: 'Arroz', soybean: 'Soja', rose: 'Rosa', cotton: 'Algodão',
@@ -109,7 +115,7 @@ const MAQUINAS_PT: Readonly<Record<string, string>> = {
   cranberry_chocolate: 'Chocolate com Cranberry',
   // Pote de Conserva
   soy_sauce: 'Shoyu', salted_cherry_blossom: 'Flor de Cerejeira em Conserva', sweet_rice_drink: 'Bebida Doce de Arroz',
-  cider_vinegar: 'Vinagre de Maçã', sweet_rice_wine: 'Vinho Doce de Arroz', rice_vinegar: 'Vinagre de Arroz', salted_lemon: 'Limão em Conserva',
+  cider_vinegar: 'Vinagre de Cidra', sweet_rice_wine: 'Vinho Doce de Arroz', rice_vinegar: 'Vinagre de Arroz', salted_lemon: 'Limão em Conserva',
   candied_strawberries: 'Morangos Cristalizados', candied_orange_flower: 'Flor de Laranjeira Cristalizada',
   // Tear Roda da Alegria
   cotton_thread: 'Linha de Algodão', woolen_yarn: 'Fio de Lã', cotton_fabric: 'Tecido de Algodão', palm_rope: 'Corda de Palmeira',
@@ -125,7 +131,15 @@ const MAQUINAS_PT: Readonly<Record<string, string>> = {
   wood_block: 'Bloco de Madeira', mineral_sand: 'Areia Mineral',
 };
 
-export const PRODUTO_PT: Readonly<Record<string, string>> = { ...CULTIVO_PT, ...MAQUINAS_PT };
+/** Festival da Lua da Colheita (`festival.ts`): nomes oficiais do jogo, das capturas do usuário. */
+const FESTIVAL_PT: Readonly<Record<string, string>> = {
+  moon_radish: 'Rabanete do Orvalho-lunar', crescent_pepper: 'Pimenta da Lua Crescente',
+  umbral_pickle: 'Conserva Umbralina', umbral_casserole: 'Caçarola Umbralina', harvest_platter: 'Travessa da Colheita',
+  roasted_crescent_pepper: 'Pimenta da Lua Crescente Assada', moon_radish_slices: 'Fatias de Rabanete Orvalho-lunar',
+  umbral_sweet_spicy_sauce: 'Molho Doce e Apimentado do Umbral',
+};
+
+export const PRODUTO_PT: Readonly<Record<string, string>> = { ...CULTIVO_PT, ...MAQUINAS_PT, ...FESTIVAL_PT };
 
 /** Variantes: `quick_x` → "X (rápido)", `premium_x` → "X Premium". */
 export function nomeProduto(chave: string, nomeEn: string): string {

@@ -1,6 +1,7 @@
 import { DestroyRef, Injectable, inject } from '@angular/core';
-import type { AniimoLar, VetorAptidoes } from '../data/models';
-import type { OpcoesSolver, ResultadoSolver } from './solver';
+import type { AniimoLar } from '../data/models';
+import type { EntradaEquipe } from '../lar/entrada-equipe';
+import type { OpcoesEquipe, ResultadoEquipe } from './equipe';
 import type { PedidoSolver, RespostaSolver } from './solver-mensagens';
 
 /** Fachada do solver: roda no Web Worker e, sem suporte a workers, na thread principal. */
@@ -8,18 +9,18 @@ import type { PedidoSolver, RespostaSolver } from './solver-mensagens';
 export class SolverService {
   private worker?: Worker;
   private proximoId = 0;
-  private readonly pendentes = new Map<number, { resolve: (r: ResultadoSolver) => void; reject: (e: Error) => void }>();
+  private readonly pendentes = new Map<number, { resolve: (r: ResultadoEquipe) => void; reject: (e: Error) => void }>();
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.worker?.terminate());
   }
 
-  resolver(aniimos: readonly AniimoLar[], requisitos: VetorAptidoes, opcoes: OpcoesSolver): Promise<ResultadoSolver> {
-    if (typeof Worker === 'undefined') return this.naThreadPrincipal(aniimos, requisitos, opcoes);
-    return this.enviar({ id: ++this.proximoId, aniimos, requisitos, opcoes });
+  montarEquipe(aniimos: readonly AniimoLar[], entrada: EntradaEquipe, opcoes: OpcoesEquipe): Promise<ResultadoEquipe> {
+    if (typeof Worker === 'undefined') return this.naThreadPrincipal(aniimos, entrada, opcoes);
+    return this.enviar({ id: ++this.proximoId, aniimos, entrada, opcoes });
   }
 
-  private enviar(pedido: PedidoSolver): Promise<ResultadoSolver> {
+  private enviar(pedido: PedidoSolver): Promise<ResultadoEquipe> {
     return new Promise((resolve, reject) => {
       this.pendentes.set(pedido.id, { resolve, reject });
       this.obterWorker().postMessage(pedido);
@@ -45,8 +46,8 @@ export class SolverService {
     return this.worker;
   }
 
-  private async naThreadPrincipal(aniimos: readonly AniimoLar[], requisitos: VetorAptidoes, opcoes: OpcoesSolver) {
-    const [{ carregarHighsBrowser }, { otimizar }] = await Promise.all([import('./highs-browser'), import('./solver')]);
-    return otimizar(await carregarHighsBrowser(), aniimos, requisitos, opcoes);
+  private async naThreadPrincipal(aniimos: readonly AniimoLar[], entrada: EntradaEquipe, opcoes: OpcoesEquipe) {
+    const [{ carregarHighsBrowser }, { montarEquipe }] = await Promise.all([import('./highs-browser'), import('./equipe')]);
+    return montarEquipe(await carregarHighsBrowser(), aniimos, entrada, opcoes);
   }
 }

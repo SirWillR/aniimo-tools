@@ -1,8 +1,7 @@
 # Otimizador de Zona de Produção do Aniimo
 
-Informe os "Requisitos Estimados" de uma Zona de Produção do Lar e receba o **menor grupo de Aniimo**
-que atinge todos eles. Cada Aniimo conta 1 em cada aptidão que possui, independente do nível; o nível
-só desempata.
+Monta a planta do Lar e recomenda a **equipe**: o que cada instalação faz e quais Aniimo colocar,
+escolhidos juntos pelo maior ganho dentro do limite de Aniimo do Lar.
 
 Angular 22 (standalone, signals, zoneless), TypeScript strict, SCSS, testes com Vitest.
 
@@ -19,18 +18,19 @@ npm run build    # produção em dist/aniimo/browser
 
 ## Como usar
 
-1. **Requisitos**: preencha a tabela igual à do jogo (ou cole os 13 números de uma vez, na ordem Fogo,
-   Planta, Água, Rocha, Elétrico, Gelo, Vento, Trevas, Luz, Transporte, Artesanato, Lazer, Perfumaria).
-2. **Opções**:
+1. **Lar**: escolha o seu nível (RV), o foco e as culturas. É daí que sai o que cada máquina deve
+   produzir.
+2. **Equipe**: a lista de quem colocar (por espécie, com quantidade) e o que cada instalação faz. A
+   conta fecha o material (máquina sem insumo espera), respeita o nível que cada receita pede e as
+   famílias dos produtos de moradia, usa energia onde compensa e deixa parado o que rende menos.
+   Opções:
+   - *Aniimo a usar*: menos que o limite do Lar, para ver o que se perde com uma equipe menor.
    - *Só os meus*: usa apenas os Aniimo marcados em **Meus Aniimo** (com quantidade).
-   - *Excluir Prismana*.
-   - *Modo complementar*: informe a distribuição atual e/ou os Aniimo já alocados; o app sugere só o que
-     falta. Com a distribuição zerada, ela é calculada a partir dos alocados.
-   - *Cópias por Aniimo* (padrão 1). No modo "só os meus" vale a quantidade do roster.
-3. **Resultado**: os Aniimo sugeridos com aptidões e níveis, e a cobertura por aptidão (atingido/requerido).
-   Se for impossível, mostra o que falta em cada aptidão e a melhor cobertura parcial.
+   - *Excluir Prismana* e *Cópias por Aniimo* (vazio = sem limite).
+   - *Geradores de Estalos* e *watts por gerador*.
+   - *Equipe dos lotes*: automática (1 Aniimo por tarefa para cada 8 lotes) ou fixada por você.
 
-Roster e requisitos ficam salvos no `localStorage` do navegador.
+Roster e opções ficam salvos no `localStorage` do navegador.
 
 ### Construção do Lar (aba **Lar**)
 
@@ -57,7 +57,7 @@ src/assets/data/                    aniimo-home-abilities.json e lar-construcao.
 src/app/core/lar/                   construção do Lar: inventário por RV, geometria, layout, decoração
 src/app/core/data/                  modelos, carregamento dos dados, roster e estado da zona
 src/app/core/solver/                solver puro em TS + Web Worker + carregadores do HiGHS
-src/app/features/requisitos|roster|resultado|lar   páginas (lazy loading)
+src/app/features/equipe|roster|lar  páginas (lazy loading)
 src/app/shared/                     ícones de aptidão, seletor de Aniimo e o mapa ilustrado do Lar
 ```
 
@@ -66,16 +66,21 @@ src/app/shared/                     ícones de aptidão, seletor de Aniimo e o m
 Programação linear inteira com [HiGHS](https://highs.dev) compilado para WebAssembly (pacote
 [`highs`](https://www.npmjs.com/package/highs), MIT), rodando num Web Worker.
 
-- x_i = cópias do Aniimo i (0 ≤ x_i ≤ limite); a_ij = 1 se i tem a aptidão j.
-- **Fase 1**: minimiza Σ x_i sujeito a Σ_i a_ij·x_i ≥ r_j.
-- **Fase 2**: fixa Σ x_i no ótimo da fase 1 e maximiza a soma dos níveis nas aptidões requeridas.
-  Otimização lexicográfica: o desempate nunca troca um Aniimo a mais por níveis maiores.
-- Inviabilidade é detectada sem ILP (sem limite de vagas, o máximo de cada aptidão é usar tudo).
+O modelo (em `src/app/core/solver/equipe.ts`) escolhe ao mesmo tempo a receita de cada máquina, o tempo
+de cada Aniimo em cada receita, o que vai na rede elétrica e quantos Aniimo de cada tipo colocar:
+
+- cada máquina fica com **uma receita** e só trabalha enquanto tem material (balanço por produto);
+- o Aniimo precisa ter a aptidão no nível da receita, trabalha mais rápido acima dele e faz uma coisa
+  de cada vez; alguns produtos só uma família faz;
+- ambientes, armazéns, a equipe dos lotes e o gerador ocupam Aniimo; o total respeita o limite do Lar;
+- objetivo em fases: postos obrigatórios, a meta do foco, moedas por hora e, por fim, a menor equipe
+  que mantém 99,5% das moedas.
+
+Para ficar rápido, roda em duas passadas: um rascunho sem a regra de uma receita por máquina escolhe as
+receitas candidatas, e o plano final decide só entre elas (cerca de 2 s no RV 14; até uns 12 s no RV 20).
 
 Por que HiGHS: `glpk.js` é GPL-3.0; `javascript-lp-solver` tem histórico de problemas numéricos no
-branch-and-bound. O HiGHS é exato e rápido (~30 ms para o exemplo); o custo é o WASM de 3,5 MB, que só
-é baixado ao abrir o resultado. O ótimo do exemplo (18 Aniimo; 20 sem Prismana) foi conferido com um
-segundo solver (YALPS).
+branch-and-bound. O custo é o WASM de 3,5 MB, que só é baixado quando a equipe é calculada.
 
 `highs.mjs` tem um `import("node:module")` usado só no Node; por isso `node:module` está em
 `externalDependencies` no `angular.json`. O `highs.wasm` é copiado para `/wasm` pelos assets.

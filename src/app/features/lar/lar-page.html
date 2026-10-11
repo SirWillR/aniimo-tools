@@ -183,16 +183,27 @@
               @if (d.producao; as pr) {
                 <div class="deve-produzir">
                   <p class="cartao-sobre">Deve produzir</p>
-                  <p class="dp-produto">{{ pr.nome }} <span class="num">· {{ pr.porHora }}/h</span></p>
-                  <p class="cartao-porque">{{ pr.para }}</p>
-                  @if (pr.ingredientes) {
-                    <p class="cartao-porque">Usa {{ pr.ingredientes }}</p>
-                  }
-                  @if (pr.aniimo) {
-                    <p class="dp-aniimo" [title]="'Aniimo com esta aptidão no nível ' + pr.aniimo.nivel + ' ou mais'">
-                      <app-aptidao-icone [aptidao]="pr.aniimo.aptidao" [tamanho]="18" /> nível {{ pr.aniimo.nivel }}+
+                  @if (pr.estado === 'calculando') {
+                    <p class="cartao-porque">Calculando o plano…</p>
+                  } @else if (pr.estado === 'parada') {
+                    <p class="dp-produto">Fica parada</p>
+                    <p class="cartao-porque">No plano da equipe, o material e os Aniimo rendem mais em outras máquinas.</p>
+                  } @else {
+                    <p class="dp-produto">{{ pr.nome }} <span class="num">· {{ pr.porHora }}/h</span></p>
+                    <p class="cartao-porque">
+                      Deixe nesta receita: trabalha {{ pr.ocupacao }}% do tempo@if (pr.ocupacao < 100) { e espera material no resto}.
+                      @if (pr.naRede) { Ligue na rede elétrica (sem Aniimo). }
                     </p>
+                    @if (pr.usa) {
+                      <p class="cartao-porque">Usa {{ pr.usa }}</p>
+                    }
+                    @if (!pr.naRede) {
+                      <p class="dp-aniimo" [title]="'Aniimo com esta aptidão no nível ' + pr.nivel + ' ou mais'">
+                        <app-aptidao-icone [aptidao]="pr.aptidao" [tamanho]="18" /> nível {{ pr.nivel }}+
+                      </p>
+                    }
                   }
+                  <p class="cartao-porque"><a routerLink="/equipe">Ver a equipe e quem colocar</a></p>
                 </div>
               }
               <p class="cartao-porque">{{ d.porque }}</p>
@@ -287,22 +298,33 @@
             @for (p of b.pratos; track p.nome) {
               <li>
                 <span class="prato">{{ p.nome }} <b class="num">×{{ b.porPrato }}</b></span>
-                @if (p.doFestival) {
-                  <span class="pede">Prato do festival: a fonte não informa a receita.</span>
-                } @else {
-                  <span class="pede">
-                    {{ p.maquina }} ·
-                    @for (c of p.culturas; track c.nome) {
-                      <span class="cultura"><span class="bolinha" [style.background]="c.cor"></span>{{ c.nome }}</span>
-                    }
-                  </span>
-                  @if (p.rvLibera) {
-                    <span class="pede trava">A receita libera no RV {{ p.rvLibera }}.</span>
+                <span class="pede">
+                  {{ p.maquina }}
+                  @if (p.preco) { · vende a {{ p.preco }} }
+                  @for (c of p.culturas; track c.nome) {
+                    <span class="cultura"><span class="bolinha" [style.background]="c.cor"></span>{{ c.nome }}</span>
                   }
+                </span>
+                @if (p.ingredientes) {
+                  <span class="pede">{{ p.ingredientes }}</span>
+                }
+                @if (p.rvLibera) {
+                  <span class="pede trava">Dá para fazer a partir do RV {{ p.rvLibera }}.</span>
                 }
               </li>
             }
           </ul>
+          <p class="cartao-sobre">Outras receitas do festival</p>
+          <ul class="banquete">
+            @for (r of b.outras; track r.nome) {
+              <li>
+                <span class="prato">{{ r.nome }}</span>
+                <span class="pede">{{ r.maquina }} · vende a {{ r.preco }}</span>
+                <span class="pede">{{ r.ingredientes }}</span>
+              </li>
+            }
+          </ul>
+          <p class="nota">O Rabanete e a Pimenta crescem nas Fazendas coringa: sem nenhuma, essas receitas aparecem em "Plantando mais".</p>
           <p class="nota">Fora as culturas, o banquete inteiro pede: {{ b.outros }}.</p>
         </div>
       }

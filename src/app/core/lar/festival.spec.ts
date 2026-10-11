@@ -1,5 +1,6 @@
 import json from '../../../assets/data/lar-construcao.json';
-import { FESTIVAL, MAX_PLANTIOS_POR_DIA, coringasSugeridas, festivalAtivo, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from './festival';
+import { FESTIVAL, MAX_PLANTIOS_POR_DIA, PRODUTOS_DO_FESTIVAL, RECEITAS_DO_FESTIVAL, comFestival, coringasSugeridas, festivalAtivo, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from './festival';
+import { rvDoProduto } from './liberacao';
 import type { DadosConstrucao } from './modelos-lar';
 
 const dados = json as unknown as DadosConstrucao;
@@ -56,12 +57,61 @@ describe('plantiosNecessarios', () => {
   });
 });
 
+const doFestival = new Set(RECEITAS_DO_FESTIVAL.map((r) => r.chave));
+
 describe('Grande Banquete', () => {
-  it('os pratos com chave existem nos dados do Lar', () => {
+  it('três pratos são receitas comuns do Lar e três são do festival', () => {
     const chaves = new Set(dados.produtos.map((p) => p.chave));
-    const comChave = FESTIVAL.banquete.pratos.filter((p) => p.chave);
-    expect(comChave).toHaveLength(3);
-    for (const p of comChave) expect(chaves.has(p.chave!), p.nome).toBe(true);
+    const comuns = FESTIVAL.banquete.pratos.filter((p) => !doFestival.has(p.chave));
+    expect(comuns).toHaveLength(3);
+    for (const p of comuns) expect(chaves.has(p.chave), p.nome).toBe(true);
+    expect(FESTIVAL.banquete.pratos).toHaveLength(6);
+  });
+});
+
+describe('receitas do festival', () => {
+  const d = comFestival(dados);
+  const porChave = new Map(d.produtos.map((p) => [p.chave, p]));
+
+  it('só entram com comFestival, uma vez', () => {
+    expect(dados.produtos.some((p) => doFestival.has(p.chave))).toBe(false);
+    expect(d.produtos).toHaveLength(dados.produtos.length + PRODUTOS_DO_FESTIVAL.length);
+    expect(comFestival(d)).toBe(d);
+  });
+
+  it('toda máquina e todo ingrediente existem nos dados', () => {
+    const construcoes = new Set(dados.construcoes.map((c) => c.chave));
+    for (const r of RECEITAS_DO_FESTIVAL) {
+      expect(construcoes.has(r.construcao), r.chave).toBe(true);
+      for (const i of r.ingredientes) expect(porChave.has(i.produto), `${r.chave} ← ${i.produto}`).toBe(true);
+    }
+  });
+
+  it('o Aniimo da receita tem a aptidão da máquina', () => {
+    for (const r of RECEITAS_DO_FESTIVAL) expect(r.aniimo?.aptidao, r.chave).toBe(dados.construcoes.find((c) => c.chave === r.construcao)!.aptidao);
+  });
+
+  it('os totais do banquete batem com os insumos que a fonte soma', () => {
+    const pratos = new Set<string>(FESTIVAL.banquete.pratos.map((p) => p.chave));
+    const total = new Map<string, number>();
+    const somar = (chave: string, vezes: number) => {
+      for (const i of porChave.get(chave)!.ingredientes) {
+        if (doFestival.has(i.produto)) somar(i.produto, vezes * i.quantidade);
+        else total.set(i.produto, (total.get(i.produto) ?? 0) + vezes * i.quantidade);
+      }
+    };
+    for (const r of RECEITAS_DO_FESTIVAL) if (pratos.has(r.chave)) somar(r.chave, FESTIVAL.banquete.porPrato);
+    expect(total.get('sea_salt')).toBe(115);
+    expect(total.get('fresh_water')).toBe(40);
+    expect(total.get('cider_vinegar')).toBe(5);
+    expect(total.get('rock_candy')).toBe(5);
+  });
+
+  it('todas têm carga de trabalho e preço (capturas do usuário)', () => {
+    for (const r of RECEITAS_DO_FESTIVAL) {
+      expect(r.trabalho, r.chave).toBeGreaterThan(0);
+      expect(r.venda, r.chave).toBeGreaterThan(0);
+    }
   });
 });
 
@@ -77,16 +127,29 @@ describe('pratosDoBanquete', () => {
   });
 
   it('RV 1: os pratos comuns ainda fechados dizem quando liberam e o que vão pedir', () => {
-    for (const p of pratosDoBanquete(dados, 1).filter((x) => x.prato.chave)) {
+    for (const p of pratosDoBanquete(dados, 1)) {
       expect(p.liberado, p.prato.nome).toBe(false);
       expect(p.rvLibera, p.prato.nome).toBeGreaterThan(1);
-      expect(p.culturas.length, p.prato.nome).toBeGreaterThan(0);
+      if (!p.doFestival) expect(p.culturas.length, p.prato.nome).toBeGreaterThan(0);
     }
   });
 
-  it('os pratos do festival não têm receita', () => {
-    const doFestival = pratosDoBanquete(dados, 20).filter((p) => !p.prato.chave);
-    expect(doFestival).toHaveLength(3);
-    for (const p of doFestival) expect(p).toMatchObject({ produto: null, liberado: false, culturas: [] });
+  it('os pratos do festival pedem as sementes dele, que não contam como cultura', () => {
+    const r = new Map(pratosDoBanquete(dados, 20).map((p) => [p.prato.chave, p]));
+    expect(r.get('umbral_pickle')).toMatchObject({ doFestival: true, liberado: true, culturas: ['apple'], sementes: ['crescent_pepper', 'moon_radish'] });
+    expect(r.get('umbral_casserole')).toMatchObject({ doFestival: true, liberado: true, culturas: [], sementes: ['crescent_pepper', 'moon_radish'] });
+    expect(r.get('harvest_platter')).toMatchObject({ doFestival: true, liberado: true, sementes: ['crescent_pepper', 'moon_radish'] });
+    expect(r.get('tanghulu')).toMatchObject({ doFestival: false, sementes: [] });
+  });
+
+  it('o prato só libera quando o que ele pede também libera', () => {
+    // A Conserva é do nível 1 do Pote de Conservas, mas pede o Vinagre de Cidra, do nível 2.
+    const d = comFestival(dados);
+    const vinagre = rvDoProduto(d.produtos.find((p) => p.chave === 'cider_vinegar')!, d)!;
+    const pote = d.construcoes.find((c) => c.chave === 'pickling-jar')!.nivelPorRv.findIndex((n) => n >= 1) + 1;
+    expect(vinagre).toBeGreaterThan(pote);
+    const conserva = (rv: number) => pratosDoBanquete(dados, rv).find((p) => p.prato.chave === 'umbral_pickle')!;
+    expect(conserva(pote)).toMatchObject({ liberado: false, rvLibera: vinagre });
+    expect(conserva(vinagre).liberado).toBe(true);
   });
 });

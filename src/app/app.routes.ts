@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'requisitos' },
+  { path: '', pathMatch: 'full', redirectTo: 'equipe' },
   {
-    path: 'requisitos',
-    title: 'Requisitos · Zona de Produção',
-    loadComponent: () => import('./features/requisitos/requisitos-page').then((m) => m.RequisitosPage),
+    path: 'equipe',
+    title: 'Equipe · Zona de Produção',
+    loadComponent: () => import('./features/equipe/equipe-page').then((m) => m.EquipePage),
   },
   {
     path: 'roster',
@@ -13,14 +13,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/roster/roster-page').then((m) => m.RosterPage),
   },
   {
-    path: 'resultado',
-    title: 'Resultado · Zona de Produção',
-    loadComponent: () => import('./features/resultado/resultado-page').then((m) => m.ResultadoPage),
-  },
-  {
     path: 'lar',
     title: 'Construção do Lar · Zona de Produção',
     loadComponent: () => import('./features/lar/lar-page').then((m) => m.LarPage),
   },
-  { path: '**', redirectTo: 'requisitos' },
+  // `requisitos` e `resultado` (telas antigas) caem aqui.
+  { path: '**', redirectTo: 'equipe' },
 ];

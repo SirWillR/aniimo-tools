@@ -1,0 +1,228 @@
+<section class="cabecalho">
+  <p class="sobretitulo">Quem colocar no Lar</p>
+  <h1>Equipe<br /><span>do Lar</span></h1>
+  <p class="lede">
+    O plano escolhe junto a receita de cada máquina e quais Aniimo colocar, pelo maior ganho dentro do limite
+    do Lar. Cada máquina fica com uma receita só, para rodar sem você mexer: sem material ela espera, e a
+    que não compensa fica parada de propósito.
+  </p>
+</section>
+
+<section class="folha plano" aria-label="Plano do Lar em uso">
+  <span><small>Nível</small><strong class="num">RV {{ plano.rvAtual() }}</strong></span>
+  <span><small>Foco</small><strong>{{ foco() }}</strong></span>
+  <label class="campo">
+    <small>Aniimo a usar</small>
+    <input class="campo-num" type="number" inputmode="numeric" min="1" [max]="limiteDoLar() ?? 99"
+      [value]="zona.aniimoAUsar() ?? ''" [placeholder]="limiteDoLar() ?? 'todos'" (change)="definirAniimoAUsar($event)" />
+  </label>
+  <a class="btn discreto" routerLink="/lar">Mudar no Lar</a>
+</section>
+
+<section class="opcoes" aria-labelledby="titulo-opcoes">
+  <h2 id="titulo-opcoes">Opções</h2>
+  <div class="opcoes-grade">
+    <label class="chave folha opcao">
+      <input type="checkbox" [checked]="zona.soMeus()" (change)="zona.alternar('soMeus', $any($event.target).checked)" />
+      <span>
+        Só os meus
+        <small>
+          Usa apenas os Aniimo do seu roster ({{ roster.total() }}).
+          <a routerLink="/roster">Editar roster</a>
+        </small>
+      </span>
+    </label>
+
+    <label class="chave folha opcao">
+      <input type="checkbox" [checked]="zona.excluirPrismana()" (change)="zona.alternar('excluirPrismana', $any($event.target).checked)" />
+      <span>
+        Excluir Prismana
+        <small>Ignora as formas Prismana.</small>
+      </span>
+    </label>
+
+    <div class="folha opcao com-campo" [class.desativada]="zona.soMeus()">
+      <label for="max-copias">
+        Cópias por Aniimo
+        <small>
+          @if (zona.soMeus()) { No modo "só os meus" vale a quantidade que você tem. }
+          @else { Vazio = sem limite. }
+        </small>
+      </label>
+      <input id="max-copias" class="campo-num" type="number" inputmode="numeric" min="1" max="20" placeholder="∞"
+        [value]="zona.maxCopias() ?? ''" [disabled]="zona.soMeus()" (change)="definirMaxCopias($event)" />
+    </div>
+
+    <div class="folha opcao com-campo">
+      <label for="geradores">
+        Geradores de Estalos
+        <small>Instalação na rede trabalha sem Aniimo; cada gerador ligado ocupa um de Elétrico nível {{ energia().nivel }}.</small>
+      </label>
+      <input id="geradores" class="campo-num" type="number" inputmode="numeric" min="0" [max]="maxGeradores"
+        [value]="zona.geradores() ?? ''" [placeholder]="energia().geradores" (change)="definirGeradores($event)" />
+    </div>
+
+    <div class="folha opcao com-campo">
+      <label for="watts">
+        Watts por gerador
+        <small>600 no nível 1, 800 no nível 2.</small>
+      </label>
+      <input id="watts" class="campo-num" type="number" inputmode="numeric" min="0" step="50"
+        [value]="zona.wattsPorGerador()" (change)="definirWatts($event)" />
+    </div>
+  </div>
+</section>
+
+@if (tarefas().length) {
+  <section class="folha lotes" aria-labelledby="titulo-lotes">
+    <h2 id="titulo-lotes">Equipe dos lotes</h2>
+    <p class="nota">
+      Quantos Aniimo circulam em cada tarefa das Fazendas e Bosques. O número em cinza é o automático (1 para
+      cada 8 lotes); digite outro para fixar.
+    </p>
+    <ul class="tarefas">
+      @for (t of tarefas(); track t.aptidao) {
+        <li>
+          <app-aptidao-icone [aptidao]="t.aptidao" [tamanho]="30" />
+          <label [for]="'lotes-' + t.aptidao">
+            {{ t.etapas }}
+            <small>{{ t.nome }} nível {{ t.nivel }}+</small>
+          </label>
+          <input [id]="'lotes-' + t.aptidao" class="campo-num" type="number" inputmode="numeric" min="0" [max]="maxEquipeLotes"
+            [value]="t.manual ? t.quantidade : ''" [placeholder]="t.quantidade" (change)="definirEquipeLotes(t.aptidao, $event)" />
+          @if (t.atendidos !== null && t.atendidos < t.quantidade) {
+            <span class="aviso">só {{ t.atendidos }} disponível</span>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+@if (resultado.error()) {
+  <div class="folha vazio erro" role="alert">
+    <p>A recomendação falhou: {{ $any(resultado.error())?.message ?? resultado.error() }}</p>
+    <button type="button" class="btn discreto" (click)="resultado.reload()">Tentar de novo</button>
+  </div>
+} @else if (resumo(); as r) {
+  <section class="placar folha" [class.recarregando]="resultado.isLoading()" aria-live="polite">
+    <div class="placar-num">
+      <span class="num grande">{{ r.total }}</span>
+      <span class="unidade">
+        Aniimo
+        <small>@if (r.limite) { de {{ r.limite }} que cabem } @else { na equipe }</small>
+      </span>
+    </div>
+    <div class="placar-info">
+      <span class="selo ok"><span class="num">{{ r.moedas }}</span> moedas por hora</span>
+      <span class="detalhes">
+        <span class="num">{{ r.moedasPorDia }}</span> por dia, vendendo tudo o que sobra.
+        @if (r.diasParaSubir) { Itens do próximo RV em cerca de {{ r.diasParaSubir }} dias. }
+        @if (r.banquete !== null) { Banquete: {{ r.banquete }}% do ritmo para fechar no prazo. }
+        @if (r.energia.geradores) { Rede: {{ r.energia.wattsUsados }} de {{ r.energia.wattsDisponiveis }} W. }
+        @if (r.paradas) { {{ r.paradas }} máquinas paradas. }
+        @if (r.fixosVazios) { {{ r.fixosVazios }} postos fixos sem Aniimo. }
+        @if (r.tarefasFaltando) { Falta gente para os lotes. }
+      </span>
+    </div>
+  </section>
+
+  <div class="colunas" [class.recarregando]="resultado.isLoading()">
+    <section class="folha bloco" aria-labelledby="titulo-quem">
+      <h2 id="titulo-quem">Quem colocar</h2>
+      <ul class="quem">
+        @for (q of quem(); track q.aniimo.id) {
+          <li class="aniimo" [class.prismana]="q.aniimo.prismana">
+            <span class="retrato">
+              @if (q.aniimo.imagem) {
+                <img [src]="q.aniimo.imagem" alt="" loading="lazy" decoding="async" width="48" height="48" (error)="escondeImagem($event)" />
+              }
+            </span>
+            <span class="quem-e">
+              <span class="nome">{{ q.aniimo.nome }} <span class="copias num">×{{ q.copias }}</span></span>
+              <span class="forma">
+                @if (q.aniimo.prismana) { <span class="selo-prismana">Prismana</span> } @else { {{ q.aniimo.forma }} }
+                @for (a of q.aptidoes; track a.chave) {
+                  <app-aptidao-icone [aptidao]="a.chave" [tamanho]="18" [titulo]="nomeAptidao(a.chave) + ' nível ' + a.nivel" />
+                }
+              </span>
+              <span class="faz">{{ q.faz }}</span>
+            </span>
+          </li>
+        } @empty {
+          <li class="nada">Ninguém: nada do que está disponível rende.</li>
+        }
+      </ul>
+    </section>
+
+    <section class="folha bloco" aria-labelledby="titulo-instalacoes">
+      <h2 id="titulo-instalacoes">O que cada instalação faz</h2>
+      @if (r.pendentes) {
+        <p class="nota">
+          <span class="marca-pendente" aria-hidden="true">?</span>
+          produto de moradia cuja família de Aniimo ainda não foi cadastrada: conta só a aptidão e o nível.
+        </p>
+      }
+      <ul class="instalacoes">
+        @for (i of instalacoes(); track i.chave) {
+          <li class="instalacao" [class.parada]="!i.receitas.length">
+            <span class="cabeca">
+              @if (i.aptidao) { <app-aptidao-icone [aptidao]="i.aptidao" [tamanho]="24" /> }
+              <span class="nome">{{ i.nome }} <span class="num">×{{ i.unidades }}</span></span>
+              <span class="uso num">
+                @if (!i.receitas.length) { parada } @else if (i.paradas) { {{ i.paradas }} parada{{ i.paradas > 1 ? 's' : '' }} }
+              </span>
+            </span>
+            @if (i.receitas.length) {
+              <ul class="receitas">
+                @for (x of i.receitas; track x.chave) {
+                  <li [title]="x.pede">
+                    <span>
+                      <b class="num">{{ x.unidades }}×</b> {{ x.nome }}
+                      @if (x.naRede) { <small>{{ x.naRede === x.unidades ? 'na rede' : x.naRede + ' na rede' }}</small> }
+                      @if (x.familia) { <small>só {{ x.familia }}</small> }
+                      @if (x.pendente) { <span class="marca-pendente" title="Família exigida ainda não cadastrada">?</span> }
+                    </span>
+                    <span class="num">{{ x.porHora }}/h · trabalha {{ x.ocupacao }}%</span>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <div class="colunas" [class.recarregando]="resultado.isLoading()">
+    @if (fixos().length) {
+      <section class="folha bloco" aria-labelledby="titulo-fixos">
+        <h2 id="titulo-fixos">Ambientes e armazéns</h2>
+        <ul class="fixos">
+          @for (f of fixos(); track f.id) {
+            <li [class.sem]="!f.aniimo">
+              <app-aptidao-icone [aptidao]="f.aptidao" [tamanho]="22" />
+              <span>{{ f.nome }}</span>
+              <span class="num">{{ f.aniimo?.nome ?? 'sem Aniimo que sirva' }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+    @if (vendas().length) {
+      <section class="folha bloco" aria-labelledby="titulo-vendas">
+        <h2 id="titulo-vendas">O que sobra para vender</h2>
+        <ul class="fixos">
+          @for (v of vendas(); track v.chave) {
+            <li>
+              <span>{{ v.nome }}</span>
+              <span class="num">{{ v.porHora }}/h · {{ v.moedas }} moedas/h</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+} @else {
+  <p class="calculando" aria-live="polite"><span class="giro" aria-hidden="true"></span> Montando a equipe…</p>
+}

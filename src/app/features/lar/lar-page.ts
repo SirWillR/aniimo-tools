@@ -1,6 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import type { Aptidao } from '../../core/data/models';
 import { DadosConstrucaoService } from '../../core/lar/dados-construcao.service';
 import { DadosEnfeitesService } from '../../core/lar/dados-enfeites.service';
@@ -8,12 +8,14 @@ import type { TipoJardim } from '../../core/lar/decoracao';
 import { inventario, moedasPorHora } from '../../core/lar/inventario';
 import { LarStore, MAX_ARMAZENS, MAX_CHOCADEIRAS, MAX_CORINGAS } from '../../core/lar/lar.store';
 import type { Ambiente, Produto } from '../../core/lar/modelos-lar';
-import { AMBIENTE_PT, nomeConstrucao, nomeProduto } from '../../core/lar/nomes-pt';
-import { FESTIVAL, MAX_PLANTIOS_POR_DIA, SEMENTES_DO_FESTIVAL, coringasSugeridas, festivalAtivo, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from '../../core/lar/festival';
-import { type Foco, culturasDoFoco } from '../../core/lar/foco';
+import { AMBIENTE_PT, ETAPA_PT, nomeConstrucao, nomeProduto } from '../../core/lar/nomes-pt';
+import { FESTIVAL, MAX_PLANTIOS_POR_DIA, RECEITAS_DO_FESTIVAL, SEMENTES_DO_FESTIVAL, coringasSugeridas, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from '../../core/lar/festival';
+import type { Foco } from '../../core/lar/foco';
 import { liberacaoPorItem, rvDoProduto } from '../../core/lar/liberacao';
 import { type TipoBloco, plantaDoLar } from '../../core/lar/planta';
-import { type Producao, producaoPorUnidade } from '../../core/lar/producao';
+import type { ReceitaDaEntrada } from '../../core/lar/entrada-equipe';
+import { PlanoLarService } from '../../core/lar/plano-lar.service';
+import { EquipeService } from '../../core/solver/equipe.service';
 import { familia } from '../../core/lar/sugestao';
 import { type SugestaoVenda, paraVender } from '../../core/lar/vendas';
 import { AptidaoIcone } from '../../shared/aptidao-icone/aptidao-icone';
@@ -23,11 +25,6 @@ import { MapaSimbolos } from '../../shared/mapa-lar/mapa-simbolos';
 import { type LinhaVenda, OQueVender } from './o-que-vender';
 import { SeletorCulturas } from './seletor-culturas';
 import { type CartaoTerreno, type LinhaProducao, TabuleiroTerrenos } from './tabuleiro-terrenos';
-
-const ETAPA_PT: Readonly<Record<string, string>> = {
-  Reclaiming: 'Preparar a terra', Sowing: 'Semear', Reaping: 'Colher', Collecting: 'Coletar', Logging: 'Cortar',
-  Watering: 'Regar',
-};
 
 interface AptidaoNivel {
   aptidao: Aptidao;
@@ -60,7 +57,7 @@ const PRODUTOS_NO_TOTAL = 12;
 
 @Component({
   selector: 'app-lar-page',
-  imports: [MapaLar, MapaSimbolos, TabuleiroTerrenos, OQueVender, AptidaoIcone, SeletorCulturas, NgTemplateOutlet],
+  imports: [MapaLar, MapaSimbolos, TabuleiroTerrenos, OQueVender, AptidaoIcone, SeletorCulturas, NgTemplateOutlet, RouterLink],
   templateUrl: './lar-page.html',
   styleUrl: './lar-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,6 +65,8 @@ const PRODUTOS_NO_TOTAL = 12;
 export class LarPage {
   protected readonly dados = inject(DadosConstrucaoService);
   protected readonly lar = inject(LarStore);
+  private readonly plano = inject(PlanoLarService);
+  private readonly equipe = inject(EquipeService);
   private readonly catalogo = inject(DadosEnfeitesService);
   private readonly router = inject(Router);
 
@@ -78,7 +77,7 @@ export class LarPage {
   protected readonly maxArmazens = MAX_ARMAZENS;
   protected readonly maxCoringas = MAX_CORINGAS;
   /** O Festival da Lua da Colheita está acontecendo: as coringas mostram as sementes dele. */
-  protected readonly festival = festivalAtivo(new Date());
+  protected readonly festival = this.plano.festival;
   protected readonly dicaCoringas = this.festival
     ? `Fazendas sem cultura fixa, para as sementes do ${FESTIVAL.nome} (${SEMENTES_DO_FESTIVAL})`
     : 'Fazendas sem cultura fixa, para sementes de evento';
@@ -106,9 +105,9 @@ export class LarPage {
    * Sempre a base completa do nível máximo: o jogador monta a planta final e, enquanto sobe de nível,
    * vai construindo nos espaços já reservados (decisão do usuário).
    */
-  protected readonly rv = computed(() => this.dados.dados()?.rvMaximo ?? 20);
+  protected readonly rv = this.plano.rvDaPlanta;
   /** Nível atual do jogador: só destaca o que já libera; a planta continua sendo a do RV máximo. */
-  protected readonly rvAtual = computed(() => Math.min(this.lar.rvAtual(), this.rv()));
+  protected readonly rvAtual = this.plano.rvAtual;
   protected readonly niveis = computed(() => Array.from({ length: this.rv() }, (_, i) => i + 1));
   protected readonly grade = signal(false);
   protected readonly selecionado = signal<ItemConstrucao | null>(null);
@@ -134,36 +133,17 @@ export class LarPage {
     ...(this.festival ? [{ valor: 'festival' as const, rotulo: 'Festival', dica: `Culturas dos pratos do Grande Banquete do ${FESTIVAL.nome}, mais as de dinheiro` }] : []),
   ];
   /** O foco em uso: "Festival" salvo de antes volta para "Minha seleção" quando o festival acaba. */
-  protected readonly focoAtual = computed<Foco>(() => (this.lar.foco() === 'festival' && !this.festival ? 'selecao' : this.lar.foco()));
+  protected readonly focoAtual = this.plano.focoAtual;
 
   /** Culturas do foco escolhido (null no foco "Minha seleção"). */
-  protected readonly culturasDoFoco = computed(() => {
-    const d = this.dados.dados();
-    return d ? culturasDoFoco(d, this.rvAtual(), this.focoAtual()) : null;
-  });
+  protected readonly culturasDoFoco = this.plano.culturasDoFoco;
 
   /** Culturas que o mapa usa: as do foco, ou as marcadas pelo jogador (null = todas). */
-  protected readonly culturasEmUso = computed(() => this.culturasDoFoco() ?? this.lar.culturas());
+  protected readonly culturasEmUso = this.plano.culturasEmUso;
 
-  protected readonly planta = computed(() => {
-    const d = this.dados.dados();
-    return d ? plantaDoLar(d, this.rv(), {
-          chocadeiras: this.lar.chocadeiras(),
-          armazens: this.lar.armazens(),
-          coringas: this.lar.coringas(),
-          enfeites: this.catalogo.enfeites(),
-          equilibrio: this.lar.equilibrio(),
-          ...(this.culturasEmUso() ? { culturas: this.culturasEmUso()! } : {}),
-          // Só o que já dá para plantar no nível escolhido.
-          rvCulturas: this.rvAtual(),
-        }) : undefined;
-  });
+  protected readonly planta = this.plano.planta;
 
-  protected readonly liberacao = computed(() => {
-    const p = this.planta();
-    const d = this.dados.dados();
-    return p && d ? liberacaoPorItem(p, d, this.rvAtual()) : new Map<ItemConstrucao, number>();
-  });
+  protected readonly liberacao = this.plano.liberacao;
 
   private liberado(i: ItemConstrucao): boolean {
     return (this.liberacao().get(i) ?? 0) <= this.rvAtual();
@@ -224,6 +204,11 @@ export class LarPage {
         ? `Fazenda coringa do ${FESTIVAL.nome}: cada semente leva ${FESTIVAL.crescimentoMin} min, rende ${FESTIVAL.rendimento} e custa ${FESTIVAL.precoDaSemente} ${FESTIVAL.moeda}`
         : 'Fazenda coringa: fica livre para sementes de evento';
     }
+    if (i.construcao === 'farmland' || i.construcao === 'woodland') {
+      // Lote sem cultura: nenhuma das escolhidas cresce nesta condição.
+      const onde = i.condicao ? `em ${AMBIENTE_PT[i.condicao]}` : 'sem ambiente';
+      return `Vazio: nenhuma das culturas escolhidas cresce ${onde} neste tipo de lote. Marque uma em "Culturas" para plantar aqui`;
+    }
     if (i.construcao === 'chocadeira') return 'Choca ovos de Aniimo';
     if (i.construcao === 'armazem') return 'Os Aniimo trazem para cá o que é produzido; na beira do caminho, perto das construções que mais produzem';
     if (i.condicao) return `Modo ${AMBIENTE_PT[i.condicao]}`;
@@ -280,18 +265,17 @@ export class LarPage {
   });
 
   /** Culturas que o jogador está plantando (marcadas no filtro; "todas" = todas as de Fazenda e Bosque). */
-  private readonly plantadas = computed(() => {
-    const escolhidas = this.culturasEmUso();
-    if (escolhidas) return new Set(escolhidas);
-    return new Set((this.dados.dados()?.produtos ?? []).filter((p) => p.construcao === 'farmland' || p.construcao === 'woodland').map((p) => familia(p.chave)));
-  });
+  private readonly plantadas = this.plano.plantadas;
+
+  /** Dados das contas de venda e produção: com as receitas do festival enquanto ele dura. A planta não os usa. */
+  private readonly dadosVenda = this.plano.dadosVenda;
 
   /**
    * Card "O que vender": produtos finais que mais rendem por hora de máquina no nível escolhido,
    * separados entre o que dá para fazer com o que se planta e o que pede plantar mais.
    */
   protected readonly vendas = computed(() => {
-    const d = this.dados.dados();
+    const d = this.dadosVenda();
     if (!d) return { agora: [], plantandoMais: [] };
     const nomeDe = (chave: string) => nomeProduto(chave, d.produtos.find((x) => x.chave === chave)?.nomeEn ?? chave);
     const linha = (s: SugestaoVenda): LinhaVenda => ({
@@ -309,7 +293,7 @@ export class LarPage {
 
   /**
    * Espaços liberados de cada construção na ordem de liberação (RV, depois leitura do mapa): a unidade k
-   * do plano de produção é o k-ésimo daqui.
+   * do plano é o k-ésimo daqui.
    */
   private readonly unidadesNoMapa = computed(() => {
     const lib = this.liberacao();
@@ -319,66 +303,51 @@ export class LarPage {
     return porChave;
   });
 
-  /** Receita de cada unidade liberada de cada máquina no RV atual, conforme o foco. */
-  private readonly producao = computed(() => {
-    const d = this.dados.dados();
-    return d ? producaoPorUnidade(d, this.rvAtual(), this.focoAtual(), this.plantadas()) : new Map<string, Producao[]>();
+  /**
+   * O plano da equipe (o mesmo da página Equipe), unidade por unidade: cada uma com a sua receita, se
+   * fica na rede elétrica e o que rende. As unidades de uma receita vêm juntas, as da rede primeiro;
+   * as que sobram ficam paradas (null).
+   */
+  private readonly unidadesDoPlano = computed(() => {
+    const porChave = new Map<string, ({ receita: ReceitaDaEntrada; naRede: boolean; ocupacao: number; porHora: number } | null)[]>();
+    for (const i of this.equipe.equipe()?.instalacoes ?? []) {
+      const unidades = i.receitas.flatMap((x) =>
+        Array.from({ length: x.unidades }, (_, k) => ({ receita: x.receita, naRede: k < x.naRede, ocupacao: x.ocupacao, porHora: x.porHora / x.unidades })),
+      );
+      porChave.set(i.chave, [...unidades, ...Array.from({ length: i.paradas }, () => null)]);
+    }
+    return porChave;
   });
 
-  /**
-   * "Deve produzir" da máquina selecionada: a unidade é a posição do espaço na ordem de liberação
-   * (RV, depois leitura do mapa), igual à de `liberacaoPorItem`. Espaço reservado não produz ainda.
-   */
+  /** A unidade do plano que cai neste espaço do mapa; undefined enquanto o plano não chega. */
+  private unidadeDoPlano(i: ItemConstrucao) {
+    return this.unidadesDoPlano().get(i.construcao)?.[(this.unidadesNoMapa().get(i.construcao) ?? []).indexOf(i)];
+  }
+
+  /** "Deve produzir" da máquina selecionada: a receita que o plano da equipe deixa nela. Espaço reservado não produz ainda. */
   private producaoDe(i: ItemConstrucao) {
-    const d = this.dados.dados();
-    const unidades = this.producao().get(i.construcao);
-    if (!d || !unidades || !this.liberado(i)) return null;
-    const u = unidades[(this.unidadesNoMapa().get(i.construcao) ?? []).indexOf(i)];
-    if (!u) return null;
+    const d = this.dadosVenda();
+    if (!d || !this.liberado(i) || !this.equipe.entrada()?.instalacoes.some((x) => x.chave === i.construcao)) return null;
+    const u = this.unidadeDoPlano(i);
+    if (u === undefined) return { estado: 'calculando' as const };
+    if (u === null) return { estado: 'parada' as const };
     const nomeDe = (chave: string) => nomeProduto(chave, d.produtos.find((x) => x.chave === chave)?.nomeEn ?? chave);
-    const moedas = Math.round(u.moedasPorHora).toLocaleString('pt-BR');
-    const proximo = Math.min(this.rvAtual() + 1, d.rvMaximo);
-    let para: string;
-    switch (u.finalidade) {
-      case 'vender':
-        para = `Para vender · ~${moedas} moedas/h a mais`;
-        break;
-      case 'coleta':
-        para = `Para vender · ~${moedas} moedas/h`;
-        break;
-      case 'banquete':
-        para = `Para o Grande Banquete do festival: são ${FESTIVAL.banquete.porPrato}`;
-        break;
-      case 'ingrediente':
-        para = `Vira ${nomeDe(u.vira!.chave)} (${this.nome(u.vira!.construcao)}), ${
-          this.focoAtual() === 'festival' && FESTIVAL.banquete.pratos.some((p) => p.chave === u.vira!.chave) ? 'que vai para o Grande Banquete' : 'que é vendido'
-        }`;
-        break;
-      case 'nivel':
-        para = u.vira
-          ? `Vira ${nomeDe(u.vira.chave)}, material para subir de nível`
-          : u.produto.subproduto
-            ? `Rende ${u.produto.subproduto.quantidade} ${nomeDe(u.produto.subproduto.produto)} por leva, para subir de nível`
-            : this.rvAtual() < d.rvMaximo
-              ? `Material para subir ao RV ${proximo}`
-              : 'Material de subir de nível (já no RV máximo)';
-        break;
-      case 'outra-moeda':
-        para = u.produto.moeda === 'aniimo_exp' ? 'Rende experiência para os Aniimo' : 'Rende Aniicápsulas';
-        break;
-    }
     return {
-      nome: nomeDe(u.produto.chave),
-      porHora: u.porHora >= 10 ? Math.round(u.porHora) : Math.round(u.porHora * 10) / 10,
-      para,
-      ingredientes: u.produto.ingredientes.map((x) => `${x.quantidade}× ${nomeDe(x.produto)}`).join(', '),
-      aniimo: u.produto.aniimo,
+      estado: 'produz' as const,
+      nome: nomeDe(u.receita.chave),
+      porHora: (u.porHora >= 10 ? Math.round(u.porHora) : Math.round(u.porHora * 10) / 10).toLocaleString('pt-BR'),
+      ocupacao: Math.max(1, Math.round(u.ocupacao * 100)),
+      naRede: u.naRede,
+      usa: Object.entries(u.receita.consome).map(([chave, n]) => `${n}× ${nomeDe(chave)}`).join(', '),
+      aptidao: u.receita.aptidao,
+      nivel: u.receita.nivel,
     };
   }
 
   /**
    * O que cada terreno produz por dia no RV atual: os lotes pela cultura plantada (sem parar e já com a
-   * eficiência fora da temperatura), as máquinas e a coleta pelo "Deve produzir" de cada unidade.
+   * eficiência fora da temperatura), as máquinas e a coleta pela receita que o plano da equipe deixa em
+   * cada unidade.
    */
   private readonly producaoPorTerreno = computed(() => {
     const porTerreno = new Map<number, Map<string, number>>();
@@ -393,8 +362,8 @@ export class LarPage {
         if (i.cultura.tempo) somar(i.terreno, i.cultura.chave, ((i.cultura.rendimento * 3600) / i.cultura.tempo) * (i.eficiencia ?? 1));
         continue;
       }
-      const u = this.producao().get(i.construcao)?.[(this.unidadesNoMapa().get(i.construcao) ?? []).indexOf(i)];
-      if (u) somar(i.terreno, u.produto.chave, u.porHora);
+      const u = this.unidadeDoPlano(i);
+      if (u) somar(i.terreno, familia(u.receita.chave), u.porHora);
     }
     return porTerreno;
   });
@@ -533,7 +502,9 @@ export class LarPage {
     const d = this.dados.dados();
     if (!this.festival || !d) return null;
     const nomeDe = (chave: string) => nomeProduto(chave, d.produtos.find((x) => x.chave === chave)?.nomeEn ?? chave);
-    const { prazo, porPrato, outrosInsumos } = FESTIVAL.banquete;
+    const { prazo, porPrato, outrosInsumos, pratos } = FESTIVAL.banquete;
+    const ingredientes = (p: Produto) => p.ingredientes.map((x) => `${x.quantidade}× ${nomeDe(x.produto)}`).join(', ');
+    const preco = (p: Produto) => p.venda.toLocaleString('pt-BR');
     return {
       prazo: `${prazo.dia}/${prazo.mes}`,
       porPrato,
@@ -541,9 +512,18 @@ export class LarPage {
         nome: p.prato.nome,
         maquina: p.produto ? this.nome(p.produto.construcao) : null,
         culturas: p.culturas.map((f) => ({ nome: nomeDe(f), cor: coresDaCultura(f)[1] })),
-        // Prato comum que o RV ainda não libera.
+        // Receita do festival: o que ela pede e por quanto vende.
+        ingredientes: p.doFestival && p.produto ? ingredientes(p.produto) : '',
+        preco: p.doFestival && p.produto ? preco(p.produto) : null,
+        // Prato que o RV ainda não libera.
         rvLibera: p.produto && !p.liberado ? p.rvLibera : null,
-        doFestival: !p.produto,
+      })),
+      // As receitas do festival que não são prato do banquete: os dois preparos da Travessa e o Molho.
+      outras: RECEITAS_DO_FESTIVAL.filter((r) => !pratos.some((p) => p.chave === r.chave)).map((r) => ({
+        nome: nomeDe(r.chave),
+        maquina: this.nome(r.construcao),
+        ingredientes: ingredientes(r),
+        preco: preco(r),
       })),
       outros: outrosInsumos.map((o) => `${o.nome} ×${o.quantidade}`).join(', '),
     };

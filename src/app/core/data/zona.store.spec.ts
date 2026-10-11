@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RosterService } from './roster.service';
-import { CHAVE_ZONA, ZonaStore } from './zona.store';
+import { CHAVE_ZONA, MAX_EQUIPE_LOTES, ZonaStore } from './zona.store';
 
 describe('ZonaStore', () => {
   beforeEach(() => {
@@ -10,21 +10,21 @@ describe('ZonaStore', () => {
 
   const criar = () => TestBed.inject(ZonaStore);
 
-  it('começa zerado, com 1 cópia e sem modos especiais', () => {
+  it('começa sem limite de cópias, sem modos especiais e com tudo no automático', () => {
     const zona = criar();
-    expect(zona.requisitos()).toEqual(Array(13).fill(0));
-    expect(zona.temRequisitos()).toBe(false);
-    expect(zona.opcoes()).toEqual({ excluirPrismana: false, maxCopias: 1 });
+    expect(zona.opcoes()).toEqual({ excluirPrismana: false });
+    expect(zona.equipeLotes()).toEqual({});
+    expect(zona.aniimoAUsar()).toBeNull();
+    expect(zona.geradores()).toBeNull();
+    expect(zona.wattsPorGerador()).toBe(800);
   });
 
-  it('edita requisitos por aptidão e aceita os 13 de uma vez', () => {
+  it('cópias: um número limita, vazio ou zero volta a "sem limite"', () => {
     const zona = criar();
-    zona.definirRequisito('rock', 10);
-    expect(zona.requisitos()[3]).toBe(10);
-    zona.definirRequisitos([4, 5, 7, 10, 1, 1, 2, 4, 1, 5, 2, 2, 1]);
-    expect(zona.requisitos()).toEqual([4, 5, 7, 10, 1, 1, 2, 4, 1, 5, 2, 2, 1]);
-    zona.definirRequisitos([1, 2]); // tamanho errado: ignora
-    expect(zona.requisitos()[0]).toBe(4);
+    zona.definirMaxCopias(3);
+    expect(zona.opcoes()).toEqual({ excluirPrismana: false, maxCopias: 3 });
+    zona.definirMaxCopias(0);
+    expect(zona.opcoes()).toEqual({ excluirPrismana: false });
   });
 
   it('"só os meus" passa o roster e deixa o limite de cópias com ele', () => {
@@ -35,22 +35,38 @@ describe('ZonaStore', () => {
     expect(zona.opcoes()).toEqual({ excluirPrismana: false, roster: { '001-basic-form': 2 } });
   });
 
-  it('modo complementar só manda a distribuição atual quando preenchida', () => {
+  it('equipe dos lotes: o jogador fixa por tarefa, dentro do teto, e pode devolver ao automático', () => {
     const zona = criar();
-    zona.alternar('complementar', true);
-    zona.definirAlocado('001-basic-form', 1);
-    expect(zona.opcoes().complementar).toEqual({ alocados: { '001-basic-form': 1 } });
+    zona.definirEquipeLotes('grass', 3);
+    zona.definirEquipeLotes('water', 99);
+    zona.definirEquipeLotes('rock', -2);
+    expect(zona.equipeLotes()).toEqual({ grass: 3, water: MAX_EQUIPE_LOTES, rock: 0 });
+    zona.definirEquipeLotes('grass', null);
+    expect(zona.equipeLotes()).toEqual({ water: MAX_EQUIPE_LOTES, rock: 0 });
+  });
 
-    zona.definirAtual('fire', 2);
-    expect(zona.opcoes().complementar?.atual?.[0]).toBe(2);
+  it('Aniimo a usar e energia', () => {
+    const zona = criar();
+    zona.definirAniimoAUsar(30);
+    zona.definirGeradores(2);
+    zona.definirWattsPorGerador(600);
+    expect([zona.aniimoAUsar(), zona.geradores(), zona.wattsPorGerador()]).toEqual([30, 2, 600]);
+    zona.definirAniimoAUsar(null);
+    zona.definirGeradores(null);
+    expect([zona.aniimoAUsar(), zona.geradores()]).toEqual([null, null]);
   });
 
   it('persiste no localStorage', () => {
-    criar().definirRequisito('water', 7);
+    criar().definirEquipeLotes('water', 2);
     TestBed.tick();
-    expect(JSON.parse(localStorage.getItem(CHAVE_ZONA)!).requisitos[2]).toBe(7);
+    expect(JSON.parse(localStorage.getItem(CHAVE_ZONA)!).equipeLotes.water).toBe(2);
 
     TestBed.resetTestingModule();
-    expect(criar().requisitos()[2]).toBe(7);
+    expect(criar().equipeLotes().water).toBe(2);
+  });
+
+  it('estado salvo inválido volta ao inicial', () => {
+    localStorage.setItem(CHAVE_ZONA, JSON.stringify({ soMeus: true, excluirPrismana: false, maxCopias: 1, equipeLotes: { fogo: 2 } }));
+    expect(criar().soMeus()).toBe(false);
   });
 });

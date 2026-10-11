@@ -2,8 +2,8 @@
 
 Contexto para agentes de IA. Para humanos, veja o [README.md](README.md).
 
-Otimizador de Zona de Produção do Lar do jogo Aniimo: dado um vetor de 13 requisitos, sugere o menor
-número de Aniimo que atinge todos. Angular 22 (standalone, signals, zoneless, control flow novo),
+Planejador do Lar do jogo Aniimo: monta a planta do Lar e recomenda a equipe (o que cada instalação
+faz e quais Aniimo colocar, escolhidos juntos pelo maior ganho dentro do limite do Lar). Angular 22 (standalone, signals, zoneless, control flow novo),
 TypeScript strict, SCSS, Vitest via `ng test`. Textos da UI e do código em português.
 
 ## Ambiente
@@ -33,7 +33,14 @@ TypeScript strict, SCSS, Vitest via `ng test`. Textos da UI e do código em port
   do Luar, pratos do Grande Banquete) vêm do Aniimo Tools
   (aniimotools.dev/pt-br/systems/homeland/home-season/), que proíbe reproduzir o conteúdo: só nomes,
   números e datas, escritos à mão em `src/app/core/lar/festival.ts`, sem script de extração. Crédito
-  no rodapé.
+  no rodapé. **Informado pelo usuário (2026-10-11), por capturas do jogo:** as seis receitas do
+  festival (máquina, ingredientes, preço de venda), também em `festival.ts`.
+  **Exceção aprovada (2026-10-11):** do Aniimo Tools, também as regras de velocidade de trabalho por
+  nível da aptidão (página "Aniimos no trabalho") e a equipe de 1 Aniimo por tarefa para cada 8
+  lotes; só os números, à mão, em `src/app/core/lar/velocidade.ts`. O método da recomendação de lá
+  serviu de referência (o usuário pediu para ver como eles fazem); a conta é nossa.
+- **Decoração:** para consultar itens decorativos, usar `aniidex.com/pt/items/furniture/` (pedido do
+  usuário, 2026-10-11), dentro da exceção do Aniidex acima.
 - Nomes das 13 aptidões e as traduções PT (tabela abaixo) foram aprovados.
 - Solver: HiGHS (`highs`, MIT). `glpk.js` descartado por ser GPL-3.0; `javascript-lp-solver` por
   problemas numéricos em ILP.
@@ -192,9 +199,10 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   produtivo antes de repetir, começando pelos que abrem primeiro (`vagaDeArmazem` em `planta.ts`; no
   cultivo ocupa uma célula da malha perto do meio). O antigo `armazens.ts` (k-medianas na beira dos
   caminhos) foi removido com a planta única.
-- **Decisão do usuário (2026-10-03): energia fora do app.** Gerador de Estalos e Poste de Energia
-  Estalante não entram no mapa nem na página, e nada é calculado com watts; o jogador cuida disso no
-  jogo. Não reintroduzir sem ele pedir. (Uma versão com a vila em anel em volta do gerador foi
+- **Decisão do usuário (2026-10-03): energia fora do mapa.** Gerador de Estalos e Poste de Energia
+  Estalante não entram no mapa nem na página do Lar. **Mudou em 2026-10-11 só para a equipe** ("use
+  energia quando achar necessário"): a recomendação de Aniimo decide quais instalações ligar na rede
+  (`energia.ts`, ver "Equipe do Lar"). Postes e distâncias continuam fora. (Uma versão com a vila em anel em volta do gerador foi
   rejeitada: "horrível".) Para referência, o que ele informou no RV 12: cada máquina trabalha com
   energia OU com um Aniimo; Gerador 600 W; Poste a até 8 tiles do Gerador ou 6 de outro Poste; 1
   Gerador e 6 Postes no RV 12; consumo: Mina 90, Poço 60, Secadora Jukebox 60, Máquina de Garra Gurmê
@@ -259,14 +267,14 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
     habitabilidade. Enfeite que a loja ainda não libera no RV do jogador aparece apagado.
   - **Feedback anterior do usuário:** a oficina em fileiras sobre piso de pedra era "sem graça"; por
     isso é gramado com pátios individuais.
-- "Deve produzir" (`producao.ts`, `producaoPorUnidade`): ao selecionar uma máquina, Mina, Poço ou
-  moradia liberada, o cartão mostra a receita daquela unidade (posição na ordem de liberação) no RV
-  atual. Dinheiro/Minha seleção: finais de `melhoresParaVender` feitos com as culturas plantadas, em
-  rodadas, e o intermediário de outra máquina é reservado antes (sem vaga para ele, o final fica de
-  fora). Nível: Bancada de Marcenaria e Forno com Chaminé fazem o material do próximo RV
-  (`custoPorRv`, do `LEVEL_UP_COSTS` do aniimax) e as outras unidades descem pela cadeia; Mina, o
-  minério com mais Areia Mineral por hora. Sobras: coleta pelo maior moedas/h; Jogo de Dança Lapidador
-  e Fabricante de Aniicápsula rendem XP/Aniicápsulas (`outra-moeda`).
+- "Deve produzir" e "Produz por dia" (desde 2026-10-11): vêm do plano da equipe
+  (`core/solver/equipe.service.ts`, o mesmo cálculo da página Equipe; ver "Equipe do Lar"). O cartão
+  da máquina selecionada mostra a receita que o plano deixa naquela unidade (a k-ésima na ordem de
+  liberação, `unidadesNoMapa`: as unidades de uma receita vêm juntas, as da rede primeiro), quanto
+  do tempo ela trabalha, se vai na rede elétrica, ou "Fica parada". "Produz por dia" soma a receita
+  de cada unidade. O antigo
+  `producao.ts` (`producaoPorUnidade`: uma receita por unidade, escolhida sem olhar material nem
+  Aniimo) foi removido.
 
 ### Culturas escolhidas (`LarStore.culturas`, `OpcoesPlanta.culturas`)
 
@@ -336,26 +344,113 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   aniimax) e nas Fazendas as de dinheiro. "Festival" (só enquanto `festivalAtivo`; salvo de antes,
   volta para "Minha seleção" em `focoAtual` da página) usa as culturas dos pratos do Grande Banquete
   que o RV já libera (`pratosDoBanquete` em `festival.ts`: Tanghulu, Geleia de Maçã com Bordo,
-  Biscoitos de Lavanda) mais as de dinheiro, e em `producao.ts` cada um desses pratos ocupa uma
-  unidade antes de tudo (`finalidade: 'banquete'`). Os outros três pratos são do festival e a fonte
-  não dá a receita: aparecem só no cartão "Grande Banquete" da coluna lateral. Fora de "Minha seleção" o seletor fica travado mostrando as
+  Biscoitos de Lavanda) mais as de dinheiro, e no plano da equipe os pratos do banquete são a meta
+  que vem antes das moedas (`metasDoFoco` em `entrada-equipe.ts`). **Receitas do festival** (`RECEITAS_DO_FESTIVAL`, capturas do usuário de 2026-10-11):
+  Conserva Umbralina, Caçarola Umbralina e Travessa da Colheita (pratos do banquete), Pimenta da Lua
+  Crescente Assada e Fatias de Rabanete Orvalho-lunar (viram a Travessa) e Molho Doce e Apimentado do
+  Umbral (só venda). Confirmado por ele: o balde é Água Doce (`fresh_water`), os cristais são Açúcar
+  Cristal (`rock_candy`) e o frasco é Vinagre de Cidra (`cider_vinegar`). Elas e as duas sementes
+  (`moon_radish`, `crescent_pepper`, chaves nossas) só existem nos dados de `comFestival(dados)`, que
+  a página usa nas contas de venda e produção (`dadosVenda`) enquanto o festival dura; a planta, o
+  seletor e a legenda nunca as veem. As sementes contam como plantadas quando há Fazenda coringa.
+  A carga de trabalho também veio de capturas dele (**informado pelo usuário: carga de trabalho é o
+  tempo em segundos**), então elas entram em "O que vender" e disputam máquinas pelo ganho como
+  qualquer receita; no RV 14 a Caçarola, a Conserva e o Molho são os três primeiros (~30 mil
+  moedas/h). Falta só o preço de venda das sementes cruas (conta 0 como custo). O cartão "Grande
+  Banquete" lista as seis com ingredientes e preço. Um prato só conta como liberado quando o
+  que ele pede também libera (`rvDaReceita`: a Conserva espera o Vinagre de Cidra). Fora de "Minha seleção" o seletor fica travado mostrando as
   culturas do foco; a seleção do jogador nunca é apagada. Não considera a
-  quantidade de lotes.
+  quantidade de lotes. **Todo foco leva uma cultura de Fazenda e uma de Bosque sem ambiente**
+  (`comSemAmbiente` em `foco.ts`; no Nível, a árvore sem ambiente com mais Blocos de Madeira): o
+  usuário viu Bosques vazios no terreno 1 (2026-10-11), porque o foco Nível só escolhia árvores de
+  ambiente e os Bosques que não cabem nas zonas sobram no terreno sem ambiente. Em "Minha seleção" o
+  lote sem cultura que sirva continua vazio, e o cartão dele explica o motivo.
 - Layout (pedido do usuário): quadro dos terrenos com uma coluna ao lado (Como ler e Culturas no
   mapa); "O que vender" abaixo do mapa, em largura total, com as listas "Com o que você
   planta" e "Plantando mais" lado a lado. No celular tudo empilha. Todos os produtos têm nome PT (`nomes-pt.spec.ts` garante).
 - **Decisão do usuário:** a página é só o mapa (sem tabela nem equipe de Aniimo; ambas removidas).
 
+## Equipe do Lar (recomendação de Aniimo)
+
+Rota `/equipe` (a inicial; `requisitos` e `resultado`, das telas antigas, redirecionam para ela).
+
+**Histórico (2026-10-11), para não repetir:** (1) o solver dos 13 números digitados (`solver.ts`,
+cobertura por aptidão sem nível) deixava máquinas paradas no jogo e foi removido; (2) "um Aniimo fixo
+por posto, por faixas de prioridade", sobre o plano de `producaoPorUnidade`, foi **rejeitado pelo
+usuário** ("não tá ficando legal"): o plano era montado sem olhar material nem Aniimo, metade das
+máquinas ficava sem material e a lista saía com um Aniimo diferente por posto; (3) o modelo atual
+escolhe tudo junto, no formato do Aniimo Tools.
+
+Regras do jogo usadas, e de onde vêm:
+
+- Usuário: os Aniimo postos no Lar vão sozinhos para o trabalho da aptidão deles, um trabalho de cada
+  vez; quem produz matéria-prima trabalha 24 h e quem faz receita só quando há material; a receita
+  pede um **nível mínimo** da aptidão ("não tenho certeza, mas acho": `NIVEL_MINIMO_OBRIGATORIO` em
+  `velocidade.ts`; em `false`, abaixo do nível o Aniimo só fica mais lento, como diz o Aniimo Tools);
+  ambiente e armazém ocupam um Aniimo fixo cada; regar pede Água; pode sacrificar produções.
+- Usuário, famílias dos produtos de moradia (`especies-exigidas.ts`): Pérola = Conchita, Estrela =
+  Celéstis, Lã = Nimbi, Sal Marinho = Timilontra, Aromatista = Orval, Pétalas = Íris, Escamas =
+  Irisális, Borbossono e Sonhovino (esses três nomes são dele). Nas outras, quem é de cada família é
+  dedução nossa por números vizinhos (a wiki não publica a linha evolutiva). `familiaPendente` existe
+  para produto de moradia novo sem família cadastrada; hoje nenhum.
+- Usuário (2026-10-11): **o jogo faz escolher entre Lunara e Hélion; a conta só tem um dos dois**
+  (`ESCOLHAS_POR_CONTA`, também em `especies-exigidas.ts`); a recomendação pede no máximo um do par,
+  mesmo sem limite de cópias.
+- Usuário, energia (`energia.ts`): cada instalação trabalha com um Aniimo OU com energia; consumo por
+  instalação (lista de 2026-10-03); o gerador dele está no nível 2, dá 800 W e pede um Aniimo de
+  Elétrico nível 2 (600 W no nível 1). Suposições nossas, a confirmar: moradias, ambientes e armazéns
+  não rodam com energia; na rede a instalação trabalha a 100% (o Aniimo Tools fala em "até 120%").
+- Aniimo Tools (`velocidade.ts`): velocidade por nível do Aniimo × nível da receita, uma tabela para
+  processamento e outra para Mina, Poço, moradias e Fabricante de Aniicápsula; 1 Aniimo por tarefa
+  dos lotes para cada 8 Fazendas ou Bosques.
+
+Código:
+
+- `core/lar/entrada-equipe.ts` (`entradaDaEquipe`): todas as receitas liberadas de cada instalação
+  (a coleta entra como receita: o solver decide se a Mina faz o que vende mais ou o que as máquinas
+  pedem), a oferta dos lotes (`ofertaDosLotes` em `utilizacao.ts`: o que os lotes liberados colhem
+  por hora; no festival, as coringas dão as duas sementes até onde o Trigo do Luar compra), preços,
+  postos fixos (ambientes de `AMBIENTES_NA_PLANTA` e armazéns), tarefas dos lotes (automático
+  `ceil(lotes / 8)` ou o que o jogador fixar), energia, limite e as metas do foco.
+- `core/solver/equipe.ts` (`montarEquipe`): um MILP, descrito no topo do arquivo. Pontos que importam:
+  Aniimo com as mesmas aptidões viram um perfil (sem limite de cópias, perfil superado por outro sai
+  do modelo; Prismana não tira um comum); balanço de material por produto, e o que sobra é vendido;
+  fases: postos fixos e lotes, metas do foco, moedas/h, e por fim menos Aniimo mantendo 99,5% das
+  moedas (no empate, menos Prismana e mais moedas).
+- **Pedido do usuário (2026-10-11): uma receita por máquina.** Uma versão em que as unidades de uma
+  instalação repartiam o dia entre receitas foi rejeitada ("tenho 2 Secadoras e está me sugerindo 3
+  receitas; o ideal é definir uma receita em cada máquina e deixar rolando, sem interferência
+  minha"). Cada unidade fica com uma receita (`n_r` inteiro), e a que não tem o que fazer fica
+  parada. Com todas as receitas isso leva 20 a 60 s, então `montarEquipe` roda em duas passadas: um
+  rascunho rápido sem `n_r` inteiro diz quais receitas valem a pena, e o plano final escolhe só entre
+  elas mais as duas de maior valor acrescentado por hora de cada instalação. É heurística: no RV 14
+  fica a ~1% do ótimo e leva ~2 s; no RV 20 com o Lar cheio, ~12 s (cada fase para em 10 s com a
+  melhor solução). A meta do banquete conta prato a prato (com uma receita por unidade nem sempre dá
+  para fazer todos); a do nível continua sendo o item mais atrasado.
+- Foco: Dinheiro e Minha seleção maximizam moedas/h; Nível põe na frente o ritmo dos itens de
+  `custoPorRv` do próximo RV (o mais atrasado manda); Festival, os pratos do banquete no ritmo que
+  fecha 5 de cada até o prazo. Instalação que não rende moedas (Jogo de Dança Lapidador, Fabricante
+  de Aniicápsula) fica parada fora das metas.
+- `core/lar/plano-lar.service.ts`: foco, culturas, planta, liberação, oferta e lotes liberados,
+  compartilhados com a página do Lar. `SolverService`/worker transportam `montarEquipe`.
+- `ZonaStore` (chave `aniimo.zona.v3`): `soMeus`, `excluirPrismana`, `maxCopias` (null = sem limite,
+  **decisão do usuário**: padrão sem limite), `equipeLotes` (só o que o jogador fixou; **decisão do
+  usuário**: automático com ajuste), `aniimoAUsar` (null = limite do Lar), `geradores`,
+  `wattsPorGerador`.
+- Tela (`features/equipe/`): plano em uso e "Aniimo a usar", opções, energia, equipe dos lotes,
+  placar (Aniimo usados, moedas/h), "Quem colocar" (por forma, com quantidade e onde trabalha), "O
+  que cada instalação faz" (quantas unidades em cada receita, itens/h e quanto trabalham; paradas no fim), ambientes e
+  armazéns, e o que sobra para vender. **Decisão do usuário:** manter "só os meus" e "sem Prismana".
+- **Aprovado pelo usuário (2026-10-11).** `EquipeService` (`core/solver/equipe.service.ts`) guarda a
+  entrada e o resultado, e as duas páginas leem dele: na do Lar, "Deve produzir" e "Produz por dia".
+  O card "O que vender" do Lar continua sendo o ranking de receitas por hora de máquina
+  (`vendas.ts`), que serve para escolher culturas e alimenta os focos; o que o plano de fato vende
+  está em "O que sobra para vender", na página Equipe.
+
 ## Solver (`src/app/core/solver/`)
 
-- `solver.ts` é TS puro, sem Angular; recebe o backend (`LegacyHighs`) por parâmetro. Browser:
+- `equipe.ts` é TS puro, sem Angular; recebe o backend (`LegacyHighs`) por parâmetro. Browser:
   `highs-browser.ts` no `solver.worker.ts`, via `SolverService`. Testes: `highs-node.ts`.
-- Modelo: x_i inteiro; a_ij binário (**nunca** usar o nível como contribuição). Fase 1 minimiza Σx;
-  fase 2 fixa Σx no ótimo e maximiza a soma dos níveis nas aptidões requeridas (lexicográfico).
-- Inviabilidade é detectada sem ILP (sem limite de vagas, o máximo por aptidão é usar tudo).
-- Referência para testes: o exemplo `[4,5,7,10,1,1,2,4,1,5,2,2,1]` dá **18** Aniimo (**20** sem
-  Prismana), conferido com um segundo solver (YALPS). Se os dados mudarem, esses números podem mudar;
-  reconfira antes de ajustar o teste.
 - Empates são arbitrários entre soluções com o mesmo total e a mesma soma de níveis: em testes com
   dados sintéticos, torne o vencedor único.
 
@@ -368,4 +463,4 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
 - `backdrop-filter` num ancestral prende elementos `position: fixed`; o cabeçalho remove o filtro no
   celular para a navegação inferior funcionar.
 - `localStorage` sempre via `core/data/armazenamento.ts` (tolerante a falhas e com validação).
-  Chaves: `aniimo.roster.v1` e `aniimo.zona.v1`; mude a versão se mudar o formato.
+  Chaves: `aniimo.roster.v1`, `aniimo.zona.v3` e `aniimo.lar.v1`; mude a versão se mudar o formato.

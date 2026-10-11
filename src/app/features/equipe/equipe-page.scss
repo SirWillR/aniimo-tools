@@ -1,0 +1,265 @@
+:host { display: block; }
+
+.cabecalho { margin-bottom: 1.5rem; }
+
+.sobretitulo {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+h1 {
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+
+  span { color: var(--tinta-suave); font-weight: 500; }
+}
+
+h2 { font-size: 1.35rem; }
+small { display: block; color: var(--tinta-suave); font-weight: 400; line-height: 1.35; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+.lede {
+  max-width: 60ch;
+  margin: 0.85rem 0 0;
+  color: var(--tinta-suave);
+  font-size: 1.05rem;
+}
+
+.nota { margin: 0.25rem 0 0.9rem; color: var(--tinta-suave); font-size: 0.9rem; }
+
+// ---- Plano em uso ----
+.plano {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 2rem;
+  padding: 0.9rem 1.1rem;
+
+  small { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  strong { font-family: var(--fonte-titulo); font-size: 1.15rem; }
+  .campo .campo-num { width: 5rem; min-height: 38px; }
+  .btn { margin-left: auto; }
+}
+
+// ---- Opções ----
+.opcoes { margin-top: 1.5rem; }
+.opcoes h2 { margin-bottom: 0.8rem; }
+
+.opcoes-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.6rem;
+}
+
+.opcao { padding: 0.9rem 1rem; font-weight: 700; }
+
+.com-campo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  .campo-num { width: 4.5rem; flex: none; }
+  &.desativada { opacity: 0.6; }
+}
+
+.campo-num::placeholder { color: var(--tinta-suave); font-weight: 500; opacity: 0.8; }
+
+// ---- Equipe dos lotes ----
+.lotes { margin-top: 1.5rem; padding: 1rem 1.1rem; }
+
+.tarefas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.6rem 1.25rem;
+
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr 4rem;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+  }
+
+  .aviso { grid-column: 2 / -1; color: var(--falta); font-size: 0.85rem; font-weight: 600; }
+}
+
+// ---- Placar ----
+.placar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--tinta);
+  box-shadow: 5px 5px 0 var(--tinta);
+}
+
+.recarregando { opacity: 0.55; transition: opacity 0.2s ease; }
+
+.placar-num { display: flex; align-items: baseline; gap: 0.6rem; }
+
+.grande {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(4rem, 14vw, 6rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+}
+
+.unidade {
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+
+  small { margin-top: 0.2rem; font-family: var(--fonte-texto); font-size: 0.85rem; font-weight: 500; }
+}
+
+.placar-info { display: grid; gap: 0.4rem; }
+
+.selo {
+  justify-self: start;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+
+  &.ok { background: var(--ok-fundo); color: var(--ok); }
+}
+
+.detalhes { max-width: 60ch; color: var(--tinta-suave); font-size: 0.9rem; }
+
+.marca-pendente {
+  display: inline-grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--linha-forte);
+  color: var(--folha);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+// ---- Blocos ----
+.colunas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .colunas { grid-template-columns: 1fr; }
+}
+
+.bloco {
+  padding: 1rem 1.1rem;
+
+  h2 { margin-bottom: 0.7rem; }
+}
+
+.quem { display: grid; gap: 0.7rem; }
+.aniimo { display: flex; align-items: flex-start; gap: 0.7rem; }
+.nada { color: var(--tinta-suave); }
+
+.retrato {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--papel-2);
+  overflow: hidden;
+
+  img { width: 100%; height: 100%; object-fit: contain; }
+  .prismana & { background: var(--prismana); }
+}
+
+.quem-e { display: grid; gap: 0.1rem; min-width: 0; }
+.nome { font-family: var(--fonte-titulo); font-size: 1.05rem; font-weight: 700; line-height: 1.15; }
+
+.copias {
+  margin-left: 0.2rem;
+  padding: 0 0.4rem;
+  border-radius: 6px;
+  background: var(--acento);
+  color: var(--acento-tinta);
+  font-size: 0.85rem;
+}
+
+.forma { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: var(--tinta-suave); }
+.faz { font-size: 0.85rem; }
+
+.instalacoes { display: grid; gap: 0.5rem; }
+
+.instalacao {
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  background: var(--papel-2);
+
+  &.parada { opacity: 0.6; }
+}
+
+.cabeca {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .uso { margin-left: auto; color: var(--tinta-suave); font-size: 0.85rem; text-align: right; }
+}
+
+.receitas {
+  display: grid;
+  gap: 0.15rem;
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+
+  li { display: flex; justify-content: space-between; gap: 0.75rem; }
+  small { display: inline; margin-left: 0.3rem; font-size: 0.78rem; }
+  b { color: var(--tinta-suave); }
+  .num { flex: none; color: var(--tinta-suave); }
+}
+
+.fixos {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+
+  li { display: flex; align-items: center; gap: 0.5rem; }
+  .num { margin-left: auto; text-align: right; color: var(--tinta-suave); }
+  .sem .num { color: var(--falta); font-weight: 600; }
+}
+
+// ---- Estados ----
+.vazio {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+
+  p { margin: 0; }
+  &.erro { border-color: var(--falta); background: var(--falta-fundo); }
+}
+
+.calculando { display: flex; align-items: center; gap: 0.75rem; margin-top: 1.5rem; color: var(--tinta-suave); }
+
+.giro {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--linha);
+  border-top-color: var(--acento);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+@media (max-width: 720px) {
+  .plano .btn { margin-left: 0; }
+}

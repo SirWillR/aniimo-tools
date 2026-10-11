@@ -1,14 +1,15 @@
 // Protocolo entre o SolverService e o solver.worker.
-import type { AniimoLar, VetorAptidoes } from '../data/models';
-import type { OpcoesSolver, ResultadoSolver } from './solver';
+import type { AniimoLar } from '../data/models';
+import type { EntradaEquipe } from '../lar/entrada-equipe';
+import type { OpcoesEquipe, ResultadoEquipe } from './equipe';
 
 export interface PedidoSolver {
   id: number;
   aniimos: readonly AniimoLar[];
-  requisitos: VetorAptidoes;
-  opcoes: OpcoesSolver;
+  entrada: EntradaEquipe;
+  opcoes: OpcoesEquipe;
 }
 
 export type RespostaSolver =
-  | { id: number; ok: true; resultado: ResultadoSolver }
+  | { id: number; ok: true; resultado: ResultadoEquipe }
   | { id: number; ok: false; erro: string };

@@ -1,4 +1,5 @@
 import json from '../../../assets/data/lar-construcao.json';
+import { SEMENTES_FESTIVAL_CHAVES, comFestival } from './festival';
 import { inventario } from './inventario';
 import type { DadosConstrucao } from './modelos-lar';
 import { melhoresParaVender, paraVender } from './vendas';
@@ -46,5 +47,25 @@ describe('melhoresParaVender', () => {
     // Plantando tudo, nada fica em "plantando mais".
     const tudo = new Set(dados.produtos.map((p) => p.chave.replace(/^(quick|premium)_/, '')));
     expect(paraVender(dados, 20, tudo).plantandoMais).toEqual([]);
+  });
+});
+
+describe('receitas do festival em "O que vender"', () => {
+  const d = comFestival(dados);
+  const todasAsCulturas = new Set(dados.produtos.filter((p) => p.construcao === 'farmland' || p.construcao === 'woodland').map((p) => p.chave.replace(/^(quick|premium)_/, '')));
+
+  it('com as sementes plantadas (Fazenda coringa), entram no que dá para fazer agora', () => {
+    const r = paraVender(d, 20, new Set([...todasAsCulturas, ...SEMENTES_FESTIVAL_CHAVES]), { agora: Infinity, plantandoMais: Infinity });
+    const molho = r.agora.find((s) => s.produto.chave === 'umbral_sweet_spicy_sauce');
+    // (2390 − 23 de Sal Marinho a 16) ÷ 243 s.
+    expect(Math.round(molho!.ganhoPorHora)).toBe(Math.round(((2390 - 23 * 16) / 243) * 3600));
+  });
+
+  it('sem coringa, caem em "Plantando mais" pedindo as sementes; os preparos da Travessa não são produto final', () => {
+    const r = paraVender(d, 20, todasAsCulturas, { agora: Infinity, plantandoMais: Infinity });
+    const chaves = (l: typeof r.agora) => l.map((s) => s.produto.chave);
+    expect(chaves(r.agora)).not.toContain('umbral_sweet_spicy_sauce');
+    expect(r.plantandoMais.find((s) => s.produto.chave === 'harvest_platter')!.faltam.sort()).toEqual(['crescent_pepper', 'moon_radish']);
+    for (const i of ['roasted_crescent_pepper', 'moon_radish_slices']) expect([...chaves(r.agora), ...chaves(r.plantandoMais)]).not.toContain(i);
   });
 });

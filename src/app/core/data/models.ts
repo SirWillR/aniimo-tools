@@ -8,9 +8,6 @@ export const APTIDOES = [
 
 export type Aptidao = (typeof APTIDOES)[number];
 
-/** Um número por aptidão, na ordem de {@link APTIDOES}. */
-export type VetorAptidoes = readonly number[];
-
 export interface AniimoLar {
   /** `{numero}-{forma}`, ex.: `001-basic-form`. */
   id: string;
@@ -22,7 +19,7 @@ export interface AniimoLar {
   elementos: string[];
   /** URL da imagem no CDN oficial (pode ser vazia). */
   imagem: string;
-  /** Aptidão → nível. O nível não conta na cobertura: cada aptidão presente vale 1. */
+  /** Aptidão → nível (1 a 4). */
   aptidoes: Partial<Record<Aptidao, number>>;
 }
 
@@ -38,9 +35,4 @@ export interface DadosLar {
   fonte: { site: string; endpoint: string; extraidoEm: string; formas: number; nota: string };
   aptidoes: AptidaoInfo[];
   aniimos: AniimoLar[];
-}
-
-/** Soma, por aptidão, quantos dos Aniimo informados a possuem (com cópias). */
-export function distribuicao(aniimos: readonly { aniimo: AniimoLar; copias: number }[]): number[] {
-  return APTIDOES.map((ap) => aniimos.reduce((s, { aniimo, copias }) => s + (aniimo.aptidoes[ap] ? copias : 0), 0));
 }

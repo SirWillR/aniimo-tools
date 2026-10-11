@@ -13,7 +13,7 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('mostra a marca, as quatro seções e a data dos dados', async () => {
+  it('mostra a marca, as três seções e a data dos dados', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     TestBed.inject(HttpTestingController)
@@ -24,7 +24,7 @@ describe('App', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('.marca-nome')?.textContent).toContain('Zona de Produção');
     const abas = [...el.querySelectorAll('.abas a')].map((a) => a.textContent?.trim());
-    expect(abas).toEqual(['Requisitos', 'Meus Aniimo', 'Resultado', 'Lar']);
+    expect(abas).toEqual(['Equipe', 'Meus Aniimo', 'Lar']);
     expect(el.querySelector('.rodape')?.textContent).toContain('25/09/2026');
   });
 });
