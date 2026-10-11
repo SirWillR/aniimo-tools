@@ -59,6 +59,39 @@ h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); }
   input { width: 5.5rem; }
 }
 
+// Sugestão de coringas para o festival: uma linha inteira no fim do painel.
+.sugestao-festival {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--linha);
+  font-size: 0.9rem;
+  color: var(--tinta-suave);
+
+  strong { color: var(--tinta); }
+
+  input {
+    width: 4rem;
+    font: 600 0.95rem var(--fonte-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    border: 1px solid var(--linha-forte);
+    border-radius: 8px;
+    padding: 0.25rem 0.4rem;
+
+    &:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+  }
+
+  .btn { min-height: 2.25rem; padding: 0.25rem 0.9rem; font-size: 0.9rem; }
+
+  // O ritmo já calculado para as coringas atuais: numa linha própria.
+  .ritmo { flex-basis: 100%; }
+}
+
 .segmentado {
   display: inline-flex;
   min-height: 2.5rem;
@@ -247,6 +280,21 @@ h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); }
 .fora { color: #d98a1f; font-weight: 700; }
 
 .sem-lote { font-size: 0.78rem; font-weight: 600; color: var(--falta); }
+
+// Cartão do Grande Banquete: um prato por linha, com o que ele pede plantar embaixo.
+.banquete {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: grid; gap: 0.15rem; }
+  .prato { font-weight: 700; }
+  .pede { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.5rem; font-size: 0.85rem; color: var(--tinta-suave); }
+  .cultura { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .trava { color: var(--acento); }
+}
 
 .legenda {
   display: grid;

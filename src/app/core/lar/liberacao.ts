@@ -4,8 +4,9 @@
 // - ambientes primeiro, o par Fornalha + Resfriador antes dos avulsos (só funciona completo);
 // - Fazendas e Bosques: entre os lotes que já servem naquele RV (ambiente do bloco construído e cultura
 //   liberada), a cultura escolhida com menos lotes até ali ganha o próximo (revezamento), para cada
-//   cultura marcada ter lote assim que possível; as coringas entram no revezamento como uma cultura que
-//   serve desde o RV 1; lote sem cultura fica por último;
+//   cultura marcada ter lote assim que possível; as coringas servem assim que o terreno abre e, depois
+//   do primeiro lote de cada cultura, passam na frente dos lotes repetidos (semente de evento é para
+//   plantar agora); lote sem cultura fica por último;
 // - o resto, e os empates, pelos terrenos que abrem antes e, dentro do terreno, na ordem de leitura (de
 //   cima para baixo, da esquerda para a direita);
 // - nenhum espaço libera antes do seu terreno.
@@ -65,7 +66,12 @@ export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAt
     const doTipo = todos.filter((i) => i.construcao === chave).map((i) => ({ i, desde: serveDesde(i) }));
     type Lote = (typeof doTipo)[number];
     const porCultura = new Map<string, number>();
-    const vez = (r: Lote) => porCultura.get(grupo(r.i)) ?? 0;
+    // Coringa é para plantar agora (semente de evento): depois que cada cultura tem o seu primeiro lote,
+    // as coringas passam na frente dos lotes repetidos.
+    const vez = (r: Lote) => {
+      const n = porCultura.get(grupo(r.i)) ?? 0;
+      return r.i.coringa ? Math.min(n, 0.5) : n;
+    };
     /**
      * Tira de `fila` o próximo lote: entre os que servem no RV, a cultura com menos lotes até ali; se
      * nenhum serve, um de terreno já aberto (o que serve antes); se nem isso, o do terreno que abre antes.
@@ -78,7 +84,7 @@ export function liberacaoPorItem(planta: PlantaLar, dados: DadosConstrucao, rvAt
         : abertos.length
           ? abertos.reduce((a, b) => (b.desde < a.desde ? b : a))
           : fila.reduce((a, b) => (rvDoTerreno(b.i) < rvDoTerreno(a.i) ? b : a));
-      porCultura.set(grupo(escolhido.i), vez(escolhido) + 1);
+      porCultura.set(grupo(escolhido.i), (porCultura.get(grupo(escolhido.i)) ?? 0) + 1);
       fila.splice(fila.indexOf(escolhido), 1);
       return escolhido;
     };

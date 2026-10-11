@@ -12,10 +12,25 @@ describe('liberacaoPorItem', () => {
   const itens = [...lib.keys()];
 
   it('a cada RV, os espaços liberados de cada construção batem com a quantidade permitida', () => {
-    for (const c of dados.construcoes) {
+    const lote = (chave: string) => chave === 'farmland' || chave === 'woodland';
+    for (const c of dados.construcoes.filter((x) => !lote(x.chave))) {
       const deste = itens.filter((i) => i.construcao === c.chave);
       for (let rv = 1; rv <= 20; rv++)
-        expect(deste.filter((i) => lib.get(i)! <= rv).length).toBe(Math.min(c.quantidadePorRv[rv - 1]!, deste.length));
+        expect(deste.filter((i) => lib.get(i)! <= rv).length, `${c.chave} no RV ${rv}`).toBe(Math.min(c.quantidadePorRv[rv - 1]!, deste.length));
+    }
+  });
+
+  it('em cada nível do jogador, as Fazendas e os Bosques que ele já pode ter ficam em terrenos abertos', () => {
+    // Os lotes se rearrumam para o nível do jogador (como a página faz), então a conta é nível a nível.
+    for (let rv = 1; rv <= 20; rv++) {
+      const p = plantaDoLar(dados, 20, { chocadeiras: 2, armazens: 2, rvCulturas: rv });
+      const l = liberacaoPorItem(p, dados, rv);
+      for (const chave of ['farmland', 'woodland']) {
+        const c = dados.construcoes.find((x) => x.chave === chave)!;
+        const liberados = [...l.keys()].filter((i) => i.construcao === chave && l.get(i)! <= rv);
+        expect(liberados.length, `${chave} no RV ${rv}`).toBe(c.quantidadePorRv[rv - 1]!);
+        for (const i of liberados) expect(terreno(i.terreno).rv).toBeLessThanOrEqual(rv);
+      }
     }
   });
 
@@ -58,6 +73,23 @@ describe('liberacaoPorItem', () => {
     const l = liberacaoPorItem(p, dados, 5);
     const coringasNoRv5 = [...l.keys()].filter((i) => i.coringa && l.get(i)! <= 5);
     expect(coringasNoRv5.length).toBeGreaterThan(0);
+  });
+
+  it('as coringas ficam em Fazendas que o jogador já tem, sem tirar o lote de nenhuma cultura', () => {
+    const fazenda = dados.construcoes.find((c) => c.chave === 'farmland')!;
+    for (const rv of [3, 5, 8, 10, 14, 17]) {
+      const tem = fazenda.quantidadePorRv[rv - 1]!;
+      const coringas = Math.floor(tem / 2);
+      const sem = plantaDoLar(dados, 20, { rvCulturas: rv });
+      const libSem = liberacaoPorItem(sem, dados, rv);
+      const culturas = (planta: typeof sem, l: typeof libSem) =>
+        new Set(planta.itens.flatMap((i) => (i.tipo === 'construcao' && i.construcao === 'farmland' && i.cultura && l.get(i)! <= rv ? [i.cultura.chave.replace(/^(quick|premium)_/, '')] : [])));
+      const p = plantaDoLar(dados, 20, { coringas, rvCulturas: rv });
+      const l = liberacaoPorItem(p, dados, rv);
+      const liberadas = [...l.keys()].filter((i) => i.coringa && l.get(i)! <= rv).length;
+      expect(liberadas, `RV ${rv}: ${coringas} coringas`).toBe(coringas);
+      expect(culturas(p, l), `RV ${rv}`).toEqual(culturas(sem, libSem));
+    }
   });
 
   it('nenhum espaço libera antes do seu terreno', () => {

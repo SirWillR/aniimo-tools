@@ -9,7 +9,8 @@ import { inventario, moedasPorHora } from '../../core/lar/inventario';
 import { LarStore, MAX_ARMAZENS, MAX_CHOCADEIRAS, MAX_CORINGAS } from '../../core/lar/lar.store';
 import type { Ambiente, Produto } from '../../core/lar/modelos-lar';
 import { AMBIENTE_PT, nomeConstrucao, nomeProduto } from '../../core/lar/nomes-pt';
-import { culturasDoFoco } from '../../core/lar/foco';
+import { FESTIVAL, MAX_PLANTIOS_POR_DIA, SEMENTES_DO_FESTIVAL, coringasSugeridas, festivalAtivo, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from '../../core/lar/festival';
+import { type Foco, culturasDoFoco } from '../../core/lar/foco';
 import { liberacaoPorItem, rvDoProduto } from '../../core/lar/liberacao';
 import { type TipoBloco, plantaDoLar } from '../../core/lar/planta';
 import { type Producao, producaoPorUnidade } from '../../core/lar/producao';
@@ -76,6 +77,29 @@ export class LarPage {
   protected readonly maxChocadeiras = MAX_CHOCADEIRAS;
   protected readonly maxArmazens = MAX_ARMAZENS;
   protected readonly maxCoringas = MAX_CORINGAS;
+  /** O Festival da Lua da Colheita está acontecendo: as coringas mostram as sementes dele. */
+  protected readonly festival = festivalAtivo(new Date());
+  protected readonly dicaCoringas = this.festival
+    ? `Fazendas sem cultura fixa, para as sementes do ${FESTIVAL.nome} (${SEMENTES_DO_FESTIVAL})`
+    : 'Fazendas sem cultura fixa, para sementes de evento';
+  protected readonly maxPlantios = MAX_PLANTIOS_POR_DIA;
+
+  /** Quantas coringas dão conta das sementes que o Trigo do Luar diário compra (só durante o festival). */
+  protected readonly sugestaoFestival = computed(() => {
+    const fazendas = this.dados.construcaoPorChave().get('farmland')?.quantidadePorRv[this.rvAtual() - 1];
+    if (!this.festival || !fazendas) return null;
+    const coringas = coringasSugeridas(FESTIVAL.trigoPorDia, this.lar.plantiosPorDia(), fazendas);
+    return {
+      festival: FESTIVAL.nome,
+      moeda: FESTIVAL.moeda,
+      trigo: FESTIVAL.trigoPorDia,
+      sementes: sementesPorDia(FESTIVAL.trigoPorDia),
+      coringas,
+      noTeto: coringas === fazendas,
+      // O inverso, já calculado para as coringas que o jogador tem agora.
+      comAsSuas: this.ritmoDasCoringas(),
+    };
+  });
   protected readonly zonas = ZONAS.map((z) => ({ nome: AMBIENTE_PT[z], cor: COR_AMBIENTE[z] }));
 
   /**
@@ -102,16 +126,20 @@ export class LarPage {
   /** Enfeite clicado no mapa. */
   protected readonly enfeite = signal<ItemDecoracao | null>(null);
 
-  protected readonly focos = [
-    { valor: 'selecao' as const, rotulo: 'Minha seleção', dica: 'As culturas que você marcar no painel Culturas' },
-    { valor: 'dinheiro' as const, rotulo: 'Dinheiro', dica: 'Culturas dos 10 produtos que mais rendem neste nível' },
-    { valor: 'nivel' as const, rotulo: 'Nível', dica: 'Bosques com as árvores que dão mais Blocos de Madeira; Fazendas para dinheiro' },
+  protected readonly focos: readonly { valor: Foco; rotulo: string; dica: string }[] = [
+    { valor: 'selecao', rotulo: 'Minha seleção', dica: 'As culturas que você marcar no painel Culturas' },
+    { valor: 'dinheiro', rotulo: 'Dinheiro', dica: 'Culturas dos 10 produtos que mais rendem neste nível' },
+    { valor: 'nivel', rotulo: 'Nível', dica: 'Bosques com as árvores que dão mais Blocos de Madeira; Fazendas para dinheiro' },
+    // Só enquanto o festival dura.
+    ...(this.festival ? [{ valor: 'festival' as const, rotulo: 'Festival', dica: `Culturas dos pratos do Grande Banquete do ${FESTIVAL.nome}, mais as de dinheiro` }] : []),
   ];
+  /** O foco em uso: "Festival" salvo de antes volta para "Minha seleção" quando o festival acaba. */
+  protected readonly focoAtual = computed<Foco>(() => (this.lar.foco() === 'festival' && !this.festival ? 'selecao' : this.lar.foco()));
 
   /** Culturas do foco escolhido (null no foco "Minha seleção"). */
   protected readonly culturasDoFoco = computed(() => {
     const d = this.dados.dados();
-    return d ? culturasDoFoco(d, this.rvAtual(), this.lar.foco()) : null;
+    return d ? culturasDoFoco(d, this.rvAtual(), this.focoAtual()) : null;
   });
 
   /** Culturas que o mapa usa: as do foco, ou as marcadas pelo jogador (null = todas). */
@@ -191,7 +219,11 @@ export class LarPage {
       const zona = i.condicao ? `Pede ${AMBIENTE_PT[i.condicao]}` : 'Sem exigência de ambiente';
       return `${zona}; a mais rentável aqui (~${ganho} moedas/h por lote)`;
     }
-    if (i.coringa) return 'Fazenda coringa: fica livre para sementes de evento';
+    if (i.coringa) {
+      return this.festival
+        ? `Fazenda coringa do ${FESTIVAL.nome}: cada semente leva ${FESTIVAL.crescimentoMin} min, rende ${FESTIVAL.rendimento} e custa ${FESTIVAL.precoDaSemente} ${FESTIVAL.moeda}`
+        : 'Fazenda coringa: fica livre para sementes de evento';
+    }
     if (i.construcao === 'chocadeira') return 'Choca ovos de Aniimo';
     if (i.construcao === 'armazem') return 'Os Aniimo trazem para cá o que é produzido; na beira do caminho, perto das construções que mais produzem';
     if (i.condicao) return `Modo ${AMBIENTE_PT[i.condicao]}`;
@@ -243,7 +275,7 @@ export class LarPage {
     }
     const lista = [...vistas.values()].sort((a, b) => b.lotes - a.lotes || a.nome.localeCompare(b.nome));
     const coringas = p.itens.filter((i) => i.tipo === 'construcao' && i.coringa).length;
-    if (coringas) lista.push({ nome: 'Coringa (sementes de evento)', copa: '#b98a4a', fruto: '#f6c343', lotes: coringas });
+    if (coringas) lista.push({ nome: this.festival ? `Coringa (${FESTIVAL.nome})` : 'Coringa (sementes de evento)', copa: '#b98a4a', fruto: '#f6c343', lotes: coringas });
     return lista;
   });
 
@@ -290,7 +322,7 @@ export class LarPage {
   /** Receita de cada unidade liberada de cada máquina no RV atual, conforme o foco. */
   private readonly producao = computed(() => {
     const d = this.dados.dados();
-    return d ? producaoPorUnidade(d, this.rvAtual(), this.lar.foco(), this.plantadas()) : new Map<string, Producao[]>();
+    return d ? producaoPorUnidade(d, this.rvAtual(), this.focoAtual(), this.plantadas()) : new Map<string, Producao[]>();
   });
 
   /**
@@ -314,8 +346,13 @@ export class LarPage {
       case 'coleta':
         para = `Para vender · ~${moedas} moedas/h`;
         break;
+      case 'banquete':
+        para = `Para o Grande Banquete do festival: são ${FESTIVAL.banquete.porPrato}`;
+        break;
       case 'ingrediente':
-        para = `Vira ${nomeDe(u.vira!.chave)} (${this.nome(u.vira!.construcao)}), que é vendido`;
+        para = `Vira ${nomeDe(u.vira!.chave)} (${this.nome(u.vira!.construcao)}), ${
+          this.focoAtual() === 'festival' && FESTIVAL.banquete.pratos.some((p) => p.chave === u.vira!.chave) ? 'que vai para o Grande Banquete' : 'que é vendido'
+        }`;
         break;
       case 'nivel':
         para = u.vira
@@ -467,7 +504,7 @@ export class LarPage {
     const construcao = this.dados.construcaoPorChave().get(i.construcao);
     return {
       nome: this.nome(i.construcao),
-      produto: i.coringa ? 'Coringa · sementes de evento' : i.cultura ? nomeProduto(i.cultura.chave, i.cultura.nomeEn) : null,
+      produto: i.coringa ? `Coringa · ${this.festival ? SEMENTES_DO_FESTIVAL : 'sementes de evento'}` : i.cultura ? nomeProduto(i.cultura.chave, i.cultura.nomeEn) : null,
       condicao: i.condicao ? AMBIENTE_PT[i.condicao] : null,
       cor: i.condicao ? COR_AMBIENTE[i.condicao] : null,
       tamanho: `${i.area.largura}×${i.area.altura}`,
@@ -489,6 +526,42 @@ export class LarPage {
 
   protected escolherRvAtual(evento: Event): void {
     this.lar.definirRvAtual(Number((evento.target as HTMLSelectElement).value));
+  }
+
+  /** Cartão "Grande Banquete": os 6 pratos, o que cada um pede plantar e se o jogador já faz (só no festival). */
+  protected readonly banquete = computed(() => {
+    const d = this.dados.dados();
+    if (!this.festival || !d) return null;
+    const nomeDe = (chave: string) => nomeProduto(chave, d.produtos.find((x) => x.chave === chave)?.nomeEn ?? chave);
+    const { prazo, porPrato, outrosInsumos } = FESTIVAL.banquete;
+    return {
+      prazo: `${prazo.dia}/${prazo.mes}`,
+      porPrato,
+      pratos: pratosDoBanquete(d, this.rvAtual()).map((p) => ({
+        nome: p.prato.nome,
+        maquina: p.produto ? this.nome(p.produto.construcao) : null,
+        culturas: p.culturas.map((f) => ({ nome: nomeDe(f), cor: coresDaCultura(f)[1] })),
+        // Prato comum que o RV ainda não libera.
+        rvLibera: p.produto && !p.liberado ? p.rvLibera : null,
+        doFestival: !p.produto,
+      })),
+      outros: outrosInsumos.map((o) => `${o.nome} ×${o.quantidade}`).join(', '),
+    };
+  });
+
+  /** Com as coringas atuais: quantas vezes replantar por dia e de quanto em quanto tempo. */
+  private ritmoDasCoringas(): { coringas: number; plantios: number; intervalo: string; sementes: number; faltam: number } | null {
+    const coringas = this.lar.coringas();
+    const r = plantiosNecessarios(FESTIVAL.trigoPorDia, coringas);
+    if (!r) return null;
+    const h = Math.floor(r.intervaloMin / 60);
+    const min = r.intervaloMin % 60;
+    const intervalo = [h ? `${h} h` : '', min ? `${min} min` : ''].filter(Boolean).join(' ');
+    return { coringas, plantios: r.plantios, intervalo, sementes: r.sementes, faltam: sementesPorDia(FESTIVAL.trigoPorDia) - r.sementes };
+  }
+
+  protected escolherPlantios(evento: Event): void {
+    this.lar.definirPlantiosPorDia(Number((evento.target as HTMLInputElement).value));
   }
 
   protected escolherCoringas(evento: Event): void {

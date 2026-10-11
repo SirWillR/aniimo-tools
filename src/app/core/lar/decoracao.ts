@@ -1,26 +1,26 @@
 // Decoração da planta por terrenos, com itens reais do jogo (catálogo em lar-enfeites.json). Só enfeite:
 // nunca ocupa espaço de construção nem de pátio, e não muda a posição de nada. Três partes:
-// - ruas: meio tile de calçada na borda de cada terreno, que junto com a do vizinho forma uma rua de um
-//   tile ligando todos os terrenos (pedido do usuário: os terrenos não podem parecer ilhas soltas);
+// - ruas: peças de piso de 2×2 em toda a borda do tabuleiro e na divisa entre duas áreas diferentes (ver
+//   ruas.ts), ligando tudo (pedidos do usuário: os terrenos não podem parecer ilhas soltas, e o mapa
+//   tem rua em toda a borda). Terrenos vizinhos do mesmo tema são uma área só, sem rua no meio;
 // - terrenos produtivos: vinhetas do tema no espaço que sobra (feno e girassóis no cultivo, lenha e
 //   vasos junto às máquinas, carrinhos e pedras nas minas, flores e ninhos nas moradias);
 // - terrenos sem construção: viram jardins. Dois terrenos livres lado a lado se unem num jardim grande,
 //   sem rua no meio (pedido do usuário); os demais ficam com um dos quatro tipos (praça, lago, pomar,
-//   lazer dos Aniimo). Os caminhos de cada jardim vão até a borda, onde encontram a rua.
+//   lazer dos Aniimo). Os caminhos de cada jardim, também em peças de 2×2 inteiras, vão até a rua.
+// Suposição nossa: o piso é uma camada de chão, e construções e enfeites podem ficar em cima dele.
 // O controle "Eficiente ↔ Bonito" muda a densidade. Aleatória mas determinística (RNG com semente).
 // TS puro.
 import { type Retangulo, contem, expandir, sobrepoe, uniao } from './geometria';
 import type { Enfeite, UsoEnfeite } from './modelos-lar';
 import type { Bloco, ItemMapa, TerrenoDaPlanta, TipoBloco } from './planta';
+import { type Margens, malhaDeRuas } from './ruas';
 
 export type Equilibrio = 'eficiente' | 'equilibrado' | 'bonito';
 export const EQUILIBRIOS: readonly Equilibrio[] = ['eficiente', 'equilibrado', 'bonito'];
 
 /** Tipos de terreno decorativo. `jardinagem` é o jardim grande, que ocupa dois terrenos vizinhos. */
 export type TipoJardim = 'praca' | 'lago' | 'pomar' | 'lazer' | 'jardinagem';
-
-/** Largura da calçada na borda de cada terreno, em tiles (duas calçadas vizinhas fazem a rua). */
-export const CALCADA = 0.5;
 
 type Decoracao = Extract<ItemMapa, { tipo: 'decoracao' }>;
 type Rua = Extract<ItemMapa, { tipo: 'caminho' }>;
@@ -44,7 +44,7 @@ export interface Jardim {
 
 export interface ResultadoDecoracao {
   itens: Decoracao[];
-  /** Calçadas na borda dos terrenos em uso. Existem mesmo sem enfeites. */
+  /** Peças de piso das ruas entre os terrenos em uso. Existem mesmo sem enfeites. */
   ruas: Rua[];
   jardins: Jardim[];
 }
@@ -64,8 +64,10 @@ function rng(semente: number) {
 /** Densidade das vinhetas e do preenchimento dos jardins em cada posição do controle. */
 const DENSIDADE: Readonly<Record<Equilibrio, number>> = { eficiente: 0, equilibrado: 0.6, bonito: 1.15 };
 
-/** Peças de chão (podem passar por cima da calçada, para o caminho do jardim chegar à rua) e a cerca, que fica na borda. */
-const SOBRE_A_CALCADA = new Set(['cascalho-chao', 'laje', 'cerca-jardim']);
+/** Peças de chão: nunca se sobrepõem (nem às da rua), e só o que for posto de propósito fica em cima delas. */
+const CHAO = new Set(['cascalho-chao', 'laje']);
+/** A cerca fica na metade de dentro da rua, em cima do piso. */
+const SOBRE_A_CALCADA = new Set(['cerca-jardim']);
 
 /** Chance de cada enfeite numa célula livre de um terreno produtivo; `junto` = só encostado numa construção. */
 const VINHETAS: Readonly<Record<TipoBloco, readonly { slug: string; chance: number; junto?: boolean }[]>> = {
@@ -150,18 +152,22 @@ const PREENCHIMENTO: Readonly<Record<TipoJardim, readonly { slug: string; chance
 class Canteiro {
   readonly itens: Decoracao[] = [];
   private readonly ocupado: Retangulo[];
+  /** Peças de chão já postas. */
+  private readonly pecasDeChao: Retangulo[] = [];
   readonly area: Retangulo;
 
   constructor(
+    /** Onde os enfeites podem ficar: o terreno, ou o miolo do jardim (para dentro das ruas). */
+    area: Retangulo,
     private readonly terrenos: readonly TerrenoDaPlanta[],
     private readonly porSlug: ReadonlyMap<string, Enfeite>,
     readonly aleatorio: () => number,
     /** Construções e pátios (com meio tile de respiro em volta das construções). */
     private readonly estrutura: readonly Retangulo[],
-    /** Calçadas: só chão e cerca podem ficar em cima. */
+    /** Peças de piso das ruas: só a cerca pode ficar em cima. */
     private readonly calcadas: readonly Retangulo[],
   ) {
-    this.area = uniao(terrenos.map((t) => t.area));
+    this.area = area;
     this.ocupado = [...estrutura];
   }
 
@@ -169,9 +175,10 @@ class Canteiro {
     return { x: this.area.x + x, y: this.area.y + y, largura, altura };
   }
 
-  private cabe(e: Enfeite, r: Retangulo): boolean {
+  private cabe(e: Enfeite, r: Retangulo, sobreChao: boolean): boolean {
     if (!contem(this.area, r) || this.ocupado.some((o) => sobrepoe(o, r))) return false;
-    return SOBRE_A_CALCADA.has(e.forma) || !this.calcadas.some((c) => sobrepoe(c, r));
+    if (!SOBRE_A_CALCADA.has(e.forma) && this.calcadas.some((c) => sobrepoe(c, r))) return false;
+    return (!CHAO.has(e.forma) && sobreChao) || !this.pecasDeChao.some((c) => sobrepoe(c, r));
   }
 
   /** Encostado numa construção ou pátio (a até um tile). */
@@ -180,14 +187,17 @@ class Canteiro {
     return this.estrutura.some((o) => sobrepoe(o, perto));
   }
 
-  /** Põe o enfeite se ele existir no catálogo e couber. `giro` 90 troca largura e altura. */
-  por(slug: string, x: number, y: number, giro: 0 | 90 = 0, soJunto = false): boolean {
+  /**
+   * Põe o enfeite se ele existir no catálogo e couber. `giro` 90 troca largura e altura; `sobreChao`
+   * deixa ficar em cima de peças de chão do jardim (o gazebo no largo, a fonte na praça).
+   */
+  por(slug: string, x: number, y: number, giro: 0 | 90 = 0, soJunto = false, sobreChao = false): boolean {
     const e = this.porSlug.get(slug);
     if (!e) return false;
     const [largura, altura] = giro ? [e.altura, e.largura] : [e.largura, e.altura];
     const area = this.global(x, y, largura, altura);
-    if (!this.cabe(e, area) || (soJunto && !this.junto(area))) return false;
-    this.ocupado.push(area);
+    if (!this.cabe(e, area, sobreChao) || (soJunto && !this.junto(area))) return false;
+    (CHAO.has(e.forma) ? this.pecasDeChao : this.ocupado).push(area);
     // O enfeite é do terreno onde está o seu centro (no jardim grande, pode cruzar a divisa).
     const cx = area.x + largura / 2;
     const cy = area.y + altura / 2;
@@ -207,12 +217,12 @@ class Canteiro {
   }
 
   /** Mesmo enfeite nas posições espelhadas na horizontal (e, com `vertical`, nos quatro cantos). */
-  espelhar(slug: string, x: number, y: number, vertical = false): void {
+  espelhar(slug: string, x: number, y: number, vertical = false, sobreChao = false): void {
     const e = this.porSlug.get(slug);
     if (!e) return;
     const xs = [x, this.area.largura - x - e.largura];
     const ys = vertical ? [y, this.area.altura - y - e.altura] : [y];
-    for (const py of ys) for (const px of xs) this.por(slug, px, py);
+    for (const py of ys) for (const px of xs) this.por(slug, px, py, 0, false, sobreChao);
   }
 
   /** Espalha miudezas pelas células livres: cada célula sorteia, na ordem, os enfeites da lista. */
@@ -231,7 +241,7 @@ class Canteiro {
       }
   }
 
-  /** Uma faixa de chão (peças de `slug`) de (x, y) até cobrir `largura` × `altura`. */
+  /** Uma faixa de chão (peças inteiras de `slug`) de (x, y) até cobrir `largura` × `altura`. Vem antes dos enfeites. */
   chao(slug: string, x: number, y: number, largura: number, altura: number): void {
     const e = this.porSlug.get(slug);
     if (!e) return;
@@ -240,124 +250,141 @@ class Canteiro {
   }
 }
 
-// ---- composições dos jardins (terreno de 20×15; o jardim grande tem 40×15) ----
-// Todo jardim tem um caminho que cruza o terreno de lado a lado e outro de cima a baixo, até a rua.
+// ---- composições dos jardins ----
+// As coordenadas são do miolo do jardim, para dentro das ruas (o canteiro já vem com essa área): 16 ou 18
+// de largura e 12 ou 14 de altura num terreno, 36 ou 38 de largura no jardim grande. O chão é sempre em
+// peças de 2×2 inteiras e os caminhos encostam nas ruas dos quatro lados: o largo do meio tem o tamanho
+// certo (`largo`) para os braços fecharem em peças inteiras.
+
+/** Lado do largo central num miolo de tamanho `n`: 4 ou 6, o que deixar os dois braços com tamanho par. */
+const largo = (n: number) => ((n / 2) % 2 ? 6 : 4);
+
+/** Caminhos em cruz de `slug` até as quatro ruas, com um largo no meio `mais` tiles maior que o mínimo. */
+function cruz(c: Canteiro, slug: string, mais = 0): Retangulo {
+  const { largura: W, altura: H } = c.area;
+  const [cx, cy] = [W / 2, H / 2];
+  const [pw, ph] = [largo(W) + mais, largo(H) + mais];
+  const meio = { x: cx - pw / 2, y: cy - ph / 2, largura: pw, altura: ph };
+  c.chao(slug, meio.x, meio.y, pw, ph);
+  c.chao(slug, 0, cy - 1, meio.x, 2);
+  c.chao(slug, meio.x + pw, cy - 1, meio.x, 2);
+  c.chao(slug, cx - 1, 0, 2, meio.y);
+  c.chao(slug, cx - 1, meio.y + ph, 2, meio.y);
+  return meio;
+}
 
 const JARDINS: Readonly<Record<TipoJardim, (c: Canteiro) => void>> = {
-  /** Praça de laje com a fonte no meio, estátuas, bancos e postes; canteiros em volta e árvores floridas nos cantos. */
+  /** Praça de laje com a fonte no meio, estátuas, bancos e postes; árvores floridas nos cantos. */
   praca(c) {
-    c.por('spinning-fountain', 9, 6.5);
-    c.chao('flagstone-pavement', 6, 3.5, 8, 8);
-    c.chao('flagstone-pavement', 0, 6.5, 6, 2);
-    c.chao('flagstone-pavement', 14, 6.5, 6, 2);
-    c.chao('flagstone-pavement', 9, 1.5, 2, 2);
-    c.chao('flagstone-pavement', 9, 11.5, 2, 2);
-    c.espelhar('stone-carved-figure', 5, 3, true);
-    c.espelhar('retro-streetlamp', 5, 5.5, true);
-    c.espelhar('solid-wood-low-stool', 4, 5, true);
-    c.espelhar('golden-trumpet-tree', 0.5, 0.5, true);
-    c.espelhar('wisteria', 3, 0.5, true);
-    c.espelhar('floral-arch', 1, 5.5);
-    c.espelhar('floral-arch', 1, 8.5);
-    c.espelhar('box-hedge', 6, 2.5, true);
-    for (let x = 6; x < 9; x++) c.espelhar(x % 2 ? 'red-rose' : 'endless-summer', x, 1.5, true);
+    const { largura: W, altura: H } = c.area;
+    const [cx, cy] = [W / 2, H / 2];
+    const p = cruz(c, 'flagstone-pavement', 4);
+    c.por('spinning-fountain', cx - 1, cy - 1, 0, false, true);
+    c.espelhar('retro-streetlamp', p.x, p.y, true, true);
+    c.espelhar('solid-wood-low-stool', p.x + 1.5, p.y + 1, true, true);
+    c.espelhar('stone-carved-figure', p.x - 1, p.y, true);
+    c.espelhar('golden-trumpet-tree', 0, 0, true);
+    c.espelhar('wisteria', 2.5, 0, true);
+    c.espelhar('floral-arch', 0.5, cy - 2);
+    c.espelhar('floral-arch', 0.5, cy + 1);
+    c.espelhar('box-hedge', 5, p.y - 1, true);
   },
-  /** Lago largo com roda-d'água numa ponta e ponte na outra; do lado da ponte, acampamento com mesa, sombrinha e fogueira. */
+  /** Lago largo com ponte; do lado da ponte, acampamento com mesa, sombrinha e fogueira. */
   lago(c) {
-    c.por('wooden-waterwheel', 0.5, 6.5);
-    c.por('curved-pond', 2.5, 6);
-    c.por('curved-pond', 6.5, 6);
-    c.por('stone-bridge', 10.5, 6.5);
-    c.chao('gravel-path', 13.5, 6.5, 6.5, 2);
-    c.chao('gravel-path', 13.5, 0.5, 2, 6);
-    c.chao('gravel-path', 13.5, 8.5, 2, 6.5);
-    c.por('camping-canopy', 16, 2);
-    c.por('bonfire', 11.5, 4);
-    c.por('solid-wood-low-stool', 10.5, 4);
-    c.por('solid-wood-low-stool', 12.5, 5);
-    c.por('grassland-dining-table', 16, 9.5);
-    c.por('sun-umbrella', 17.5, 12);
-    c.por('glowstone-lamp-i', 10, 5.5);
-    c.por('glowstone-lamp-i', 10, 9);
-    for (const y of [0.5, 12.5]) {
-      c.por('willow', 0.5, y);
-      c.por('oak', 4, y);
-      c.por('pine-tree', 7.5, y);
-      c.por('pine-tree', 10.5, y);
+    const { largura: W, altura: H } = c.area;
+    // O caminho corre numa linha par, para os dois braços de cima a baixo fecharem em peças inteiras.
+    const y0 = 2 * Math.floor((H / 2 - 1) / 2);
+    const px = W - 6;
+    c.chao('gravel-path', px, y0, 6, 2);
+    c.chao('gravel-path', px, 0, 2, y0);
+    c.chao('gravel-path', px, y0 + 2, 2, H - y0 - 2);
+    c.por('stone-bridge', px - 3, y0);
+    c.por('curved-pond', px - 7, y0 - 0.5);
+    c.por('curved-pond', px - 11, y0 - 0.5);
+    if (!c.por('wooden-waterwheel', px - 11, y0 + 2.5)) c.por('wooden-waterwheel', px - 7, y0 + 2.5);
+    c.por('camping-canopy', px + 2.5, 0.5);
+    c.por('bonfire', px - 2, y0 - 2);
+    c.por('solid-wood-low-stool', px - 3, y0 - 2);
+    c.por('solid-wood-low-stool', px - 1.5, y0 - 1);
+    c.por('grassland-dining-table', px + 2.5, y0 + 2.5);
+    c.por('sun-umbrella', px + 3.5, H - 2);
+    c.por('glowstone-lamp-i', px - 3, y0 - 1);
+    c.por('glowstone-lamp-i', px - 3, y0 + 2);
+    for (const y of [0, H - 2]) {
+      c.por('willow', 0, y);
+      c.por('oak', 3, y);
+      c.por('pine-tree', 6, y);
+      c.por('pine-tree', 8.5, y);
     }
-    c.por('oak', 15.5, 12);
   },
-  /** Pomar em fileiras com um gazebo na clareira do meio; portão e treliças na entrada. */
+  /** Pomar em fileiras com um gazebo no largo do meio; portão e treliças na entrada. */
   pomar(c) {
-    c.por('gazebo', 8, 5.5);
-    c.chao('gravel-path', 0, 6.5, 8, 2);
-    c.chao('gravel-path', 12, 6.5, 8, 2);
-    c.chao('gravel-path', 9, 1.5, 2, 4);
-    c.chao('gravel-path', 9, 9.5, 2, 4);
-    c.espelhar('garden-gate', 0.5, 5.5);
-    c.espelhar('puffby-flower-trellis', 3, 5.5);
-    c.espelhar('puffby-flower-trellis', 3, 8.5);
+    const { largura: W, altura: H } = c.area;
+    const [cx, cy] = [W / 2, H / 2];
+    cruz(c, 'gravel-path');
+    c.por('gazebo', cx - 2, cy - 2, 0, false, true);
+    c.espelhar('garden-gate', 0, cy - 2);
+    c.espelhar('puffby-flower-trellis', 2.5, cy - 2);
+    c.espelhar('puffby-flower-trellis', 2.5, cy + 1);
     const arvores = ['cherry-tree', 'apple-tree', 'maple-tree'];
-    [0.5, 4, 7].forEach((x, i) => {
-      c.espelhar(arvores[i]!, x, 0.5, true);
-      c.espelhar(arvores[(i + 1) % 3]!, x, 3, true);
+    [0, 2.5, 5].forEach((x, i) => {
+      c.espelhar(arvores[i]!, x, 0, true);
+      c.espelhar(arvores[(i + 1) % 3]!, x, 2, true);
     });
-    c.espelhar('mushroom-light', 7, 5.5, true);
   },
-  /** Parquinho dos Aniimo: escalada, balanços e tocas em volta de um cruzamento de cascalho. */
+  /** Parquinho dos Aniimo: escalada, balanços e tocas em volta de um largo de cascalho com a fogueira. */
   lazer(c) {
-    c.chao('gravel-path', 0, 6.5, 20, 2);
-    c.chao('gravel-path', 9, 0.5, 2, 6);
-    c.chao('gravel-path', 9, 8.5, 2, 6);
-    c.por('aniimo-climbing-frame', 4, 2.5);
-    c.por('playful-adventure-den', 13, 2.5);
-    c.por('pawprint-swing', 5, 10);
-    c.por('pawprint-swing', 13.5, 10);
-    c.espelhar('cozy-bear-den', 1, 10.5);
-    c.por('sun-umbrella', 1.5, 3);
-    c.por('pond', 16.5, 3);
-    c.por('bonfire', 7.5, 11.5);
-    c.espelhar('garden-gate', 0.5, 5.5);
-    c.espelhar('coconut-tree', 0.5, 0.5, true);
-    c.espelhar('balloon', 8, 5.5, true);
-    c.espelhar('mushroom-light', 3, 5.5, true);
+    const { largura: W, altura: H } = c.area;
+    const [cx, cy] = [W / 2, H / 2];
+    const p = cruz(c, 'gravel-path');
+    c.por('bonfire', cx - 0.5, cy - 0.5, 0, false, true);
+    c.espelhar('solid-wood-low-stool', cx - 2, cy - 0.5, false, true);
+    c.por('aniimo-climbing-frame', 2.5, 0.5);
+    c.por('playful-adventure-den', W - 5.5, 0.5);
+    c.por('pawprint-swing', 3, H - 3);
+    c.por('pawprint-swing', W - 5, H - 3);
+    c.espelhar('cozy-bear-den', 0, H - 2.5);
+    c.espelhar('garden-gate', 0, cy - 2);
+    c.espelhar('coconut-tree', 0, 0);
+    c.por('sun-umbrella', 0, 2);
+    c.por('pond', W - 2, 2);
+    c.espelhar('balloon', p.x - 1, p.y - 1, true);
+    c.espelhar('mushroom-light', 2.5, cy - 2, true);
   },
   /**
-   * Jardim grande em dois terrenos (40×15): alameda de cascalho de ponta a ponta com arcos floridos, gazebo
-   * no meio, canteiros de flores com cerca viva, lagos e fontes, e árvores floridas nas bordas.
+   * Jardim grande em dois terrenos: alameda de cascalho de ponta a ponta com arcos floridos, gazebo no
+   * meio, canteiros de flores com cerca viva, lagos e fontes, e árvores floridas nas bordas.
    */
   jardinagem(c) {
-    c.por('gazebo', 18, 5.5);
-    c.chao('gravel-path', 0, 6.5, 40, 2);
-    c.chao('gravel-path', 19, 1.5, 2, 4);
-    c.chao('gravel-path', 19, 9.5, 2, 4);
-    c.espelhar('garden-gate', 0.5, 5.5);
-    for (const x of [4, 8, 12]) {
-      c.espelhar('floral-arch', x, 5.5);
-      c.espelhar('floral-arch', x, 8.5);
+    const { largura: W, altura: H } = c.area;
+    const [cx, cy] = [W / 2, H / 2];
+    // Os braços de cima e de baixo têm tamanho par; a folga que sobrar até a alameda fica sob o gazebo.
+    const braco = 2 * Math.floor((cy - 1) / 2);
+    c.chao('gravel-path', 0, cy - 1, W, 2);
+    c.chao('gravel-path', cx - 1, 0, 2, braco);
+    c.chao('gravel-path', cx - 1, H - braco, 2, braco);
+    c.por('gazebo', cx - 2, cy - 2, 0, false, true);
+    c.espelhar('garden-gate', 0, cy - 2);
+    for (const x of [3, 7, 11]) {
+      c.espelhar('floral-arch', x, cy - 2);
+      c.espelhar('floral-arch', x, cy + 1);
     }
     // Canteiros: 4×2 flores de uma espécie, com cerca viva do lado de fora.
     const flores = ['red-rose', 'endless-summer', 'pink-tulip', 'sunflower'];
-    [4, 9].forEach((bx, i) => {
+    [3, 8].forEach((bx, i) => {
       for (let dx = 0; dx < 4; dx++)
         for (let dy = 0; dy < 2; dy++) {
-          c.espelhar(flores[i]!, bx + dx, 3 + dy);
-          c.espelhar(flores[i + 2]!, bx + dx, 10 + dy);
+          c.espelhar(flores[i]!, bx + dx, 1 + dy);
+          c.espelhar(flores[i + 2]!, bx + dx, H - 3 + dy);
         }
-      for (const dx of [0, 2]) c.espelhar('box-hedge', bx + dx, 2, true);
+      for (const dx of [0, 2]) c.espelhar('box-hedge', bx + dx, 0, true);
     });
-    c.espelhar('curved-pond', 14, 2.5);
-    c.espelhar('spinning-fountain', 15, 10);
-    c.espelhar('stone-carved-figure', 14, 10.5);
-    c.espelhar('solid-wood-low-stool', 17, 10.5);
-    c.espelhar('retro-streetlamp', 17, 5.5, true);
-    c.espelhar('retro-streetlamp', 2.5, 5.5, true);
-    c.espelhar('cherry-tree', 0.5, 0.5, true);
-    c.espelhar('wisteria', 1, 3);
-    c.espelhar('wisteria', 1, 10);
-    c.espelhar('golden-trumpet-tree', 6.5, 0.5);
-    c.espelhar('golden-trumpet-tree', 6.5, 12.5);
-    c.espelhar('cherry-tree', 15.5, 12.5);
+    c.espelhar('curved-pond', 13, 0.5);
+    c.espelhar('spinning-fountain', 14, H - 3);
+    c.espelhar('stone-carved-figure', 13, H - 2.5);
+    c.espelhar('solid-wood-low-stool', 16, H - 2.5);
+    c.espelhar('retro-streetlamp', 2, cy - 2, true);
+    c.espelhar('cherry-tree', 0, 0, true);
   },
 };
 
@@ -384,30 +411,57 @@ function escolherJardins(e: EntradaDecoracao): Jardim[] {
   return jardins;
 }
 
-/** Calçadas na borda de cada terreno em uso; os dois terrenos de um jardim grande não têm calçada entre si. */
-function tracarRuas(terrenos: readonly TerrenoDaPlanta[], jardins: readonly Jardim[], emUso: (t: TerrenoDaPlanta) => boolean): Rua[] {
-  const ruas: Rua[] = [];
-  for (const t of terrenos.filter(emUso)) {
-    const { x, y, largura, altura } = t.area;
-    const grupo = jardins.find((j) => j.terrenos.includes(t.n))?.terrenos ?? [];
-    const unido = (coluna: number) => terrenos.some((o) => o !== t && grupo.includes(o.n) && o.linha === t.linha && o.coluna === coluna);
-    ruas.push({ tipo: 'caminho', area: { x, y, largura, altura: CALCADA } }, { tipo: 'caminho', area: { x, y: y + altura - CALCADA, largura, altura: CALCADA } });
-    if (!unido(t.coluna - 1)) ruas.push({ tipo: 'caminho', area: { x, y, largura: CALCADA, altura } });
-    if (!unido(t.coluna + 1)) ruas.push({ tipo: 'caminho', area: { x: x + largura - CALCADA, y, largura: CALCADA, altura } });
-  }
-  return ruas;
+/**
+ * Ruas na borda do tabuleiro e entre as áreas (ver ruas.ts): terrenos vizinhos do mesmo tema, e os dois de
+ * um jardim grande, são uma área só e não têm rua entre si. Uma peça só existe se todos os terrenos em que
+ * ela pisa já abriram e algum terreno em uso encosta nela.
+ */
+function tracarRuas(
+  terrenos: readonly TerrenoDaPlanta[],
+  jardins: readonly Jardim[],
+  aberto: (t: TerrenoDaPlanta) => boolean,
+  emUso: (t: TerrenoDaPlanta) => boolean,
+): { ruas: Rua[]; margens: (t: TerrenoDaPlanta) => Margens } {
+  const porNumero = new Map(terrenos.map((t) => [t.n, t]));
+  /** A área de cada terreno: o tema, ou o jardim a que pertence; sem nada planejado, nenhuma. */
+  const areaDe = (n: number) => {
+    const jardim = jardins.findIndex((j) => j.terrenos.includes(n));
+    return jardim >= 0 ? `jardim ${jardim}` : (porNumero.get(n)?.tema ?? null);
+  };
+  const malha = malhaDeRuas(terrenos, (a, b) => areaDe(a.n) === areaDe(b.n));
+  const ruas: Rua[] = malha.pecas
+    .filter((peca) => {
+      // A rua de uma divisa pode ficar inteira num dos dois terrenos: conta também quem só encosta nela.
+      const perto = expandir(peca, 1);
+      return terrenos.filter((t) => sobrepoe(t.area, peca)).every(aberto) && terrenos.some((t) => emUso(t) && sobrepoe(t.area, perto));
+    })
+    .map((area) => ({ tipo: 'caminho', area }));
+  return { ruas, margens: (t) => malha.margens(t) };
 }
 
-/** Cerca de jardim no contorno do terreno (só em "Bonito", nos terrenos cercados), com um vão de portão em cima. */
-function cercar(c: Canteiro): void {
+/** A parte do terreno para dentro das ruas. */
+const miolo = (t: TerrenoDaPlanta, m: Margens): Retangulo => ({
+  x: t.area.x + m.esq,
+  y: t.area.y + m.topo,
+  largura: t.area.largura - m.esq - m.dir,
+  altura: t.area.altura - m.topo - m.base,
+});
+
+/**
+ * Cerca de jardim (só em "Bonito", nos terrenos cercados) nos lados do terreno que têm rua, na metade de
+ * dentro dela, para não tirar espaço dos lotes; em cima, um vão de portão. Do lado em que o terreno se
+ * une a outro, ou em que a rua fica toda no vizinho, não há cerca.
+ */
+function cercar(c: Canteiro, m: Margens): void {
   const { largura, altura } = c.area;
-  for (let x = 0; x + 2 <= largura; x += 2) {
-    if (Math.abs(x + 1 - largura / 2) > 1.5) c.por('garden-fence', x, 0);
-    c.por('garden-fence', x, altura - 0.5);
+  const [x0, x1, y0, y1] = [m.esq, largura - m.dir, m.topo, altura - m.base];
+  for (let x = x0; x + 2 <= x1; x += 2) {
+    if (m.topo && Math.abs(x + 1 - (x0 + x1) / 2) > 1.5) c.por('garden-fence', x, y0 - 0.5);
+    if (m.base) c.por('garden-fence', x, y1);
   }
-  for (let y = 0.5; y + 2 <= altura - 0.5; y += 2) {
-    c.por('garden-fence', 0, y, 90);
-    c.por('garden-fence', largura - 0.5, y, 90);
+  for (let y = y0; y + 2 <= y1; y += 2) {
+    if (m.esq) c.por('garden-fence', x0 - 0.5, y, 90);
+    if (m.dir) c.por('garden-fence', x1, y, 90);
   }
 }
 
@@ -416,7 +470,7 @@ export function decorar(e: EntradaDecoracao): ResultadoDecoracao {
   const decorando = densidade > 0 && e.enfeites.length > 0;
   const jardins = decorando ? escolherJardins(e) : [];
   const noJardim = new Set(jardins.flatMap((j) => j.terrenos));
-  const ruas = tracarRuas(e.terrenos, jardins, (t) => t.rv <= e.rv && (!!t.tema || noJardim.has(t.n)));
+  const { ruas, margens } = tracarRuas(e.terrenos, jardins, (t) => t.rv <= e.rv, (t) => t.rv <= e.rv && (!!t.tema || noJardim.has(t.n)));
   if (!decorando) return { itens: [], ruas, jardins };
 
   const porSlug = new Map(e.enfeites.map((x) => [x.slug, x]));
@@ -425,7 +479,8 @@ export function decorar(e: EntradaDecoracao): ResultadoDecoracao {
   const semente = (n: number) => rng(e.semente * 7919 + n * 131 + 17);
 
   for (const jardim of jardins) {
-    const c = new Canteiro(e.terrenos.filter((t) => jardim.terrenos.includes(t.n)), porSlug, semente(jardim.terrenos[0]!), [], calcadas);
+    const doJardim = e.terrenos.filter((t) => jardim.terrenos.includes(t.n));
+    const c = new Canteiro(uniao(doJardim.map((t) => miolo(t, margens(t)))), doJardim, porSlug, semente(jardim.terrenos[0]!), [], calcadas);
     JARDINS[jardim.tipo](c);
     c.espalhar(PREENCHIMENTO[jardim.tipo], densidade);
     itens.push(...c.itens);
@@ -439,11 +494,12 @@ export function decorar(e: EntradaDecoracao): ResultadoDecoracao {
     // Meio tile de respiro em volta das construções; os pátios já são esse respiro.
     const estrutura = doTerreno.map((i) => (i.tipo === 'construcao' ? expandir(i.area, 0.5) : i.area));
     // A cerca fica na borda, onde o respiro das construções não deixaria: ela só evita as construções em si.
-    const cerca = new Canteiro([terreno], porSlug, aleatorio, doTerreno.filter((i) => i.tipo === 'construcao').map((i) => i.area), calcadas);
-    if (e.equilibrio === 'bonito' && bloco.cercado) cercar(cerca);
-    const c = new Canteiro([terreno], porSlug, aleatorio, [...estrutura, ...cerca.itens.map((i) => i.area)], calcadas);
+    const m = margens(terreno);
+    const cerca = new Canteiro(terreno.area, [terreno], porSlug, aleatorio, doTerreno.filter((i) => i.tipo === 'construcao').map((i) => i.area), calcadas);
+    if (e.equilibrio === 'bonito' && bloco.cercado) cercar(cerca, m);
+    const c = new Canteiro(terreno.area, [terreno], porSlug, aleatorio, [...estrutura, ...cerca.itens.map((i) => i.area)], calcadas);
     // Um poste em cada canto, na beira da rua.
-    c.espelhar('retro-streetlamp', CALCADA, CALCADA, true);
+    for (const x of [m.esq, terreno.area.largura - m.dir - 1]) for (const y of [m.topo, terreno.area.altura - m.base - 1]) c.por('retro-streetlamp', x, y);
     c.espalhar(VINHETAS[bloco.tipo], densidade);
     itens.push(...cerca.itens, ...c.itens);
   }
@@ -462,7 +518,7 @@ export const USOS: readonly UsoEnfeite[] = ['praca', 'lago', 'pomar', 'lazer', '
 export function slugsUsados(): Set<string> {
   const usados = new Set<string>(['garden-fence', 'retro-streetlamp']);
   for (const lista of [...Object.values(VINHETAS), ...Object.values(PREENCHIMENTO)]) for (const v of lista) usados.add(v.slug);
-  const espiao = { por: (s: string) => (usados.add(s), true), espelhar: (s: string) => usados.add(s), chao: (s: string) => usados.add(s) };
+  const espiao = { area: { x: 0, y: 0, largura: 18, altura: 12 }, por: (s: string) => (usados.add(s), true), espelhar: (s: string) => usados.add(s), chao: (s: string) => usados.add(s) };
   for (const compor of Object.values(JARDINS)) compor(espiao as unknown as Canteiro);
   return usados;
 }

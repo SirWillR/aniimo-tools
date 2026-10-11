@@ -28,3 +28,16 @@ describe('culturasDoFoco', () => {
     expect(nivel).toEqual(dinheiro);
   });
 });
+
+describe('foco Festival', () => {
+  it('RV 20: as culturas dos três pratos comuns do banquete, mais as de dinheiro', () => {
+    const r = culturasDoFoco(dados, 20, 'festival')!;
+    for (const f of ['strawberry', 'apple', 'maple_syrup', 'lavender', 'wheat']) expect(r, f).toContain(f);
+    for (const f of culturasDoFoco(dados, 20, 'dinheiro')!) expect(r, f).toContain(f);
+  });
+
+  it('prato que o RV ainda não libera não entra', () => {
+    const dinheiro = culturasDoFoco(dados, 1, 'dinheiro')!;
+    expect(culturasDoFoco(dados, 1, 'festival')).toEqual(dinheiro);
+  });
+});

@@ -13,19 +13,19 @@
         [attr.fill]="'url(#ml-' + t.chao + ')'" />
     }
 
-    <!-- ruas: a calçada na borda de cada terreno -->
-    <g fill="url(#ml-pedras)">
+    <!-- ruas: peças de piso 2×2 em cima das divisas dos terrenos -->
+    <g fill="url(#ml-pedras)" stroke="#5b4a2e" stroke-opacity=".25" stroke-width=".05">
       @for (r of c.ruas; track $index) {
         <rect [attr.x]="r.area.x" [attr.y]="r.area.y" [attr.width]="r.area.largura" [attr.height]="r.area.altura" />
       }
     </g>
 
-    <!-- pátios de lajotas das construções -->
-    @for (t of c.pisos; track $index) {
-      <rect [attr.x]="t.area.x - 0.12" [attr.y]="t.area.y - 0.12" [attr.width]="t.area.largura + 0.24" [attr.height]="t.area.altura + 0.24"
-        rx=".7" fill="#b89c6a" opacity=".55" />
-      <rect [attr.x]="t.area.x" [attr.y]="t.area.y" [attr.width]="t.area.largura" [attr.height]="t.area.altura" rx=".6" fill="url(#ml-piso)" />
-    }
+    <!-- pátios das construções: peças de piso 2×2 -->
+    <g fill="url(#ml-piso)" stroke="#8a744c" stroke-opacity=".45" stroke-width=".06">
+      @for (t of c.pisos; track $index) {
+        <rect [attr.x]="t.area.x" [attr.y]="t.area.y" [attr.width]="t.area.largura" [attr.height]="t.area.altura" rx=".12" />
+      }
+    </g>
 
     <!-- auras dos ambientes -->
     @for (a of c.coberturas; track $index) {

@@ -76,3 +76,24 @@ describe('producaoPorUnidade', () => {
     for (const u of mina) expect(areia(u.produto.chave)).toBe(melhor);
   });
 });
+
+describe('foco Festival', () => {
+  it('RV 20: cada prato comum do banquete tem uma unidade, e o que ele pede de outra máquina também', () => {
+    const r = producaoPorUnidade(dados, 20, 'festival', todas);
+    const banquete = [...r.values()].flat().filter((u) => u.finalidade === 'banquete').map((u) => u.produto.chave);
+    expect(banquete.sort()).toEqual(['lavender_cookies', 'maple_candy_apple_jam', 'tanghulu']);
+    const feitos = new Set([...r.values()].flat().map((u) => u.produto.chave));
+    for (const i of ['rock_candy', 'lavender_powder', 'wheatmeal']) expect(feitos.has(i), i).toBe(true);
+  });
+
+  it('as unidades continuam todas ocupadas, como em Dinheiro', () => {
+    const festival = producaoPorUnidade(dados, 20, 'festival', todas);
+    const dinheiro = producaoPorUnidade(dados, 20, 'dinheiro', todas);
+    for (const [chave, unidades] of dinheiro) expect(festival.get(chave)!.length, chave).toBe(unidades.length);
+  });
+
+  it('sem as culturas plantadas, o prato fica de fora', () => {
+    const r = producaoPorUnidade(dados, 20, 'festival', new Set());
+    expect([...r.values()].flat().some((u) => u.finalidade === 'banquete')).toBe(false);
+  });
+});

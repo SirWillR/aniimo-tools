@@ -2,7 +2,7 @@
   "fonte": {
     "site": "https://aniidex.com",
     "endpoint": "/pt/items/{slug}/",
-    "extraidoEm": "2026-10-10T20:55:34.144Z",
+    "extraidoEm": "2026-10-11T00:47:26.779Z",
     "nota": "Nome, categoria, RV, preço e habitabilidade: Aniidex. Tamanho em tiles, desenho e usos: nossos (tamanho estimado até conferir no jogo)."
   },
   "moedas": {
@@ -832,7 +832,7 @@
       "habitabilidade": 16,
       "largura": 2,
       "altura": 2,
-      "tamanhoEstimado": true,
+      "tamanhoEstimado": false,
       "forma": "cascalho-chao",
       "cor": null,
       "usos": [
@@ -853,7 +853,7 @@
       "habitabilidade": 16,
       "largura": 2,
       "altura": 2,
-      "tamanhoEstimado": true,
+      "tamanhoEstimado": false,
       "forma": "laje",
       "cor": null,
       "usos": [

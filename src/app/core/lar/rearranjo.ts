@@ -143,6 +143,14 @@ export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: D
     limite[tipo] = Math.max(0, total[tipo] - Math.max(neutras, Math.round((total[tipo] * neutras) / Math.max(1, todas))));
   }
 
+  // Os lotes que o jogador já pode ter no seu nível ficam em terrenos já abertos: nos que abrem depois só
+  // cabe o que ele ainda vai ganhar.
+  const permitido = (tipo: TipoLote, noRv: number) => dados.construcoes.find((c) => c.chave === tipo)?.quantidadePorRv[noRv - 1] ?? 0;
+  const teto: Teto | undefined =
+    rv === undefined
+      ? undefined
+      : { rv, depois: { farmland: Math.max(0, total.farmland - permitido('farmland', rv)), woodland: Math.max(0, total.woodland - permitido('woodland', rv)) } };
+
   const modosDe = ambientes.map((a) => {
     const modos = regras.construcoes[a.construcao]!.modos;
     if (opcoes.manterModos && a.condicao) return [a.condicao];
@@ -161,7 +169,7 @@ export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: D
         rv,
       ),
     );
-    const r = arrumar(candidatos, familias, valor, total, limite);
+    const r = arrumar(candidatos, familias, valor, total, limite, teto);
     if (r && melhorNota(r.nota, melhor?.nota)) melhor = { ...r, modos };
   }
   if (!melhor) return semMudanca(false);
@@ -190,6 +198,12 @@ export function rearranjar(planta: Pick<PlantaLar, 'itens' | 'blocos'>, dados: D
   return { ativos, coube: true };
 }
 
+/** Quantos lotes de cada tipo podem ficar, no máximo, em terrenos que abrem depois do RV `rv`. */
+interface Teto {
+  rv: number;
+  depois: Contagem;
+}
+
 /** Posiciona todos os lotes para uma combinação de modos; undefined se não couber tudo. */
 function arrumar(
   candidatos: readonly Posicao[],
@@ -197,14 +211,17 @@ function arrumar(
   valor: (tipo: TipoLote, condicao: Ambiente | null) => number,
   total: Readonly<Contagem>,
   limite: Readonly<Contagem>,
+  teto: Teto | undefined,
 ): { posicoes: Posicao[]; nota: [number, number, number] } | undefined {
   const util = (p: Posicao) => familias(p.tipo, p.condicao) > 0;
   const postos: Posicao[] = [];
   const usados: Contagem = { farmland: 0, woodland: 0 };
   const emAmbiente: Contagem = { farmland: 0, woodland: 0 };
   const livre = (p: Posicao) => !postos.some((q) => q.regiao === p.regiao && sobrepoe(q.area, p.area));
+  const noTeto = (p: Posicao) =>
+    !teto || p.rvTerreno <= teto.rv || postos.filter((q) => q.tipo === p.tipo && q.rvTerreno > teto.rv).length < teto.depois[p.tipo];
   const cabe = (p: Posicao) =>
-    usados[p.tipo] < total[p.tipo] && (p.condicao === null || emAmbiente[p.tipo] < limite[p.tipo]) && livre(p);
+    usados[p.tipo] < total[p.tipo] && (p.condicao === null || emAmbiente[p.tipo] < limite[p.tipo]) && noTeto(p) && livre(p);
   const por = (p: Posicao) => {
     postos.push(p);
     usados[p.tipo]++;
@@ -246,7 +263,7 @@ function arrumar(
       .sort((x, y) => Number(x.condicao !== null) - Number(y.condicao !== null) || x.rvTerreno - y.rvTerreno || x.distancia - y.distancia);
     for (const p of resto) {
       if (usados[tipo] >= total[tipo]) break;
-      if (livre(p) && (p.condicao === null || emAmbiente[tipo] < total[tipo])) por(p);
+      if (livre(p) && noTeto(p) && (p.condicao === null || emAmbiente[tipo] < total[tipo])) por(p);
     }
   }
   if (usados.farmland !== total.farmland || usados.woodland !== total.woodland) return undefined;

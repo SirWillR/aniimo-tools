@@ -18,7 +18,7 @@
         }
       </select>
     </label>
-    <label class="campo" title="Fazendas sem cultura fixa, para sementes de evento">
+    <label class="campo" [title]="dicaCoringas">
       <span>Coringas</span>
       <input type="number" min="0" [max]="maxCoringas" inputmode="numeric" [value]="lar.coringas()"
         (change)="escolherCoringas($event)" />
@@ -37,7 +37,7 @@
       <span id="rotulo-foco">Foco</span>
       <div class="segmentado" role="radiogroup" aria-labelledby="rotulo-foco">
         @for (f of focos; track f.valor) {
-          <button type="button" role="radio" [attr.aria-checked]="lar.foco() === f.valor" [title]="f.dica"
+          <button type="button" role="radio" [attr.aria-checked]="focoAtual() === f.valor" [title]="f.dica"
             (click)="lar.definirFoco(f.valor)">{{ f.rotulo }}</button>
         }
       </div>
@@ -56,6 +56,35 @@
       <span class="trilho" aria-hidden="true"></span>
       <span>Ver grade</span>
     </label>
+    @if (sugestaoFestival(); as s) {
+      <p class="sugestao-festival">
+        <span>
+          <strong>{{ s.festival }}:</strong> as tarefas diárias dão {{ s.trigo }} {{ s.moeda }}, o bastante para
+          <strong class="num">{{ s.sementes }}</strong> sementes por dia. Replantando
+        </span>
+        <input type="number" min="1" [max]="maxPlantios" inputmode="numeric" [value]="lar.plantiosPorDia()"
+          aria-label="Quantas vezes você replanta por dia" (change)="escolherPlantios($event)" />
+        <span>
+          vezes por dia, elas cabem em <strong class="num">{{ s.coringas }}</strong>
+          {{ s.coringas === 1 ? 'Fazenda coringa' : 'Fazendas coringa' }}@if (s.noTeto) { (todas as do RV {{ rvAtual() }})}.
+        </span>
+        @if (s.coringas !== lar.coringas()) {
+          <button type="button" class="btn discreto" (click)="lar.definirCoringas(s.coringas)">Usar {{ s.coringas }}</button>
+        }
+        @if (s.comAsSuas; as c) {
+          <span class="ritmo">
+            Com as suas <strong class="num">{{ c.coringas }}</strong> {{ c.coringas === 1 ? 'coringa' : 'coringas' }}:
+            replante <strong class="num">{{ c.plantios }}</strong> {{ c.plantios === 1 ? 'vez' : 'vezes' }} por dia
+            (a cada <strong>{{ c.intervalo }}</strong>)
+            @if (c.faltam) {
+              e ainda sobram <strong class="num">{{ c.faltam }}</strong> sementes sem plantar: são poucas coringas.
+            } @else {
+              para plantar as <span class="num">{{ c.sementes }}</span> sementes do dia.
+            }
+          </span>
+        }
+      </p>
+    }
   </div>
 </section>
 
@@ -75,7 +104,7 @@
     </p>
   }
 
-  <app-seletor-culturas [rvAtual]="rvAtual()" [emUso]="culturasDoFoco()" [foco]="lar.foco()" />
+  <app-seletor-culturas [rvAtual]="rvAtual()" [emUso]="culturasDoFoco()" [foco]="focoAtual()" />
 
   <div class="palco">
     <app-mapa-simbolos />
@@ -229,9 +258,10 @@
             temperaturas se somam e surge uma terceira zona.
           </p>
           <p>
-            O mapa mostra os 16 terrenos do jogo (20×15 cada) como ficam lado a lado: a calçada de pedra na
-            borda de cada um forma as ruas que ligam todos, e dois terrenos livres vizinhos se unem num jardim
-            grande. Abaixo, um cartão por terreno com o que ele produz. Toque num deles para abrir, numa construção para ver o
+            O mapa mostra os 16 terrenos do jogo (20×15 cada) como ficam lado a lado. A divisa entre eles é só
+            visual: terrenos vizinhos do mesmo tema formam uma área só (uma grande fazenda, uma grande oficina) e
+            dois terrenos livres vizinhos se unem num jardim grande. As ruas de pedra ficam em toda a borda do
+            mapa e entre áreas diferentes e, como todo piso da planta, são feitas de peças de 2×2 inteiras. Abaixo, um cartão por terreno com o que ele produz. Toque num deles para abrir, numa construção para ver o
             que ela pede e deve produzir, e num enfeite para ver o item do jogo. Os que ainda não abriram no seu nível mostram o RV e o preço.
           </p>
           <ul class="zonas">
@@ -248,6 +278,34 @@
             No terreno aberto: arraste para mover, Ctrl + rodinha ou pinça para dar zoom.
           </p>
         </div>
+
+      @if (banquete(); as b) {
+        <div class="cartao folha">
+          <p class="cartao-sobre">Grande Banquete · até {{ b.prazo }}</p>
+          <p>{{ b.porPrato }} de cada prato. O foco "Festival" planta o que eles pedem e põe as máquinas para fazê-los.</p>
+          <ul class="banquete">
+            @for (p of b.pratos; track p.nome) {
+              <li>
+                <span class="prato">{{ p.nome }} <b class="num">×{{ b.porPrato }}</b></span>
+                @if (p.doFestival) {
+                  <span class="pede">Prato do festival: a fonte não informa a receita.</span>
+                } @else {
+                  <span class="pede">
+                    {{ p.maquina }} ·
+                    @for (c of p.culturas; track c.nome) {
+                      <span class="cultura"><span class="bolinha" [style.background]="c.cor"></span>{{ c.nome }}</span>
+                    }
+                  </span>
+                  @if (p.rvLibera) {
+                    <span class="pede trava">A receita libera no RV {{ p.rvLibera }}.</span>
+                  }
+                }
+              </li>
+            }
+          </ul>
+          <p class="nota">Fora as culturas, o banquete inteiro pede: {{ b.outros }}.</p>
+        </div>
+      }
 
       @if (legenda().length) {
         <div class="cartao folha">

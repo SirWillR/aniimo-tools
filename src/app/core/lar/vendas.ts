@@ -24,7 +24,7 @@ export interface SugestaoVenda {
 const familia = (chave: string) => chave.replace(/^(quick|premium)_/, '');
 
 /** Desce pelos ingredientes até a origem: culturas (Fazenda/Bosque) e outros insumos brutos. */
-function origens(p: Produto, porChave: ReadonlyMap<string, Produto>, visitados = new Set<string>()): { culturas: Set<string>; outros: Set<string> } {
+export function origens(p: Produto, porChave: ReadonlyMap<string, Produto>, visitados = new Set<string>()): { culturas: Set<string>; outros: Set<string> } {
   const culturas = new Set<string>();
   const outros = new Set<string>();
   for (const i of p.ingredientes) {

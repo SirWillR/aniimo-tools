@@ -74,8 +74,9 @@ export const ESCOLHIDOS: readonly Escolhido[] = [
   e('glowstone-lamp-i', '40600065', 'lanterna', 1, 1, ['lago', 'recursos']),
   e('stone-carved-figure', '40600027', 'estatua', 1, 1, ['praca']),
   // ---- chão e cercas ----
-  e('gravel-path', '40100010', 'cascalho-chao', 2, 2, ['lago', 'pomar', 'lazer']),
-  e('flagstone-pavement', '40100002', 'laje', 2, 2, ['praca']),
+  // O piso ocupa 2×2 (conferido no jogo pelo usuário, 2026-10-10).
+  { ...e('gravel-path', '40100010', 'cascalho-chao', 2, 2, ['lago', 'pomar', 'lazer']), medido: true },
+  { ...e('flagstone-pavement', '40100002', 'laje', 2, 2, ['praca']), medido: true },
   e('garden-fence', '40200004', 'cerca-jardim', 2, 0.5, ['cultivo', 'ninhal']),
   // ---- fazenda, minas e oficina ----
   e('hayrick', '40600001', 'feno', 1, 1, ['cultivo', 'ninhal']),

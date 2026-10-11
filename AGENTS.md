@@ -29,6 +29,11 @@ TypeScript strict, SCSS, Vitest via `ng test`. Textos da UI e do código em port
   decorativos escolhidos à mão (`scripts/enfeites-escolhidos.ts`), uma página por item. Nada de
   ícones nem de descrições. **E a quantidade de cada instalação por RV** (`capByRv`), a pedido do
   usuário ("ache uma fonte confiável"): o aniimax extrapolava acima do RV 11 e errava.
+  **Exceção aprovada (2026-10-10):** os fatos do Festival da Lua da Colheita (datas, sementes, Trigo
+  do Luar, pratos do Grande Banquete) vêm do Aniimo Tools
+  (aniimotools.dev/pt-br/systems/homeland/home-season/), que proíbe reproduzir o conteúdo: só nomes,
+  números e datas, escritos à mão em `src/app/core/lar/festival.ts`, sem script de extração. Crédito
+  no rodapé.
 - Nomes das 13 aptidões e as traduções PT (tabela abaixo) foram aprovados.
 - Solver: HiGHS (`highs`, MIT). `glpk.js` descartado por ser GPL-3.0; `javascript-lp-solver` por
   problemas numéricos em ILP.
@@ -179,7 +184,8 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   produtos de máquina são traduções propostas (há teste para nenhum faltar).
 - Chocadeira (de ovos de Aniimo): não está no aniimax nem na wiki. Informado pelo usuário: 2×2 (o
   espaço de uma Fazenda), sem Aniimo trabalhando. A quantidade por RV é desconhecida, então o usuário
-  informa na página (`LarStore`, chave `aniimo.lar.v1`); fica num bloco "ninhal" cercado.
+  informa na página (`LarStore`, chave `aniimo.lar.v1`); fica num bloco "ninhal" cercado. Sem terreno sobrando (ex.: RV 7), ficam soltas nos espaços livres dos outros
+  terrenos, como os armazéns (`chocadeirasSoltas` em `montar`).
 - Unidade de armazenamento: também informada pelo usuário: 2×2, é para onde os Aniimo levam o que é
   produzido, e quem carrega usa Transporte (nível desconhecido, conta 1). Quantidade na página
   (`LarStore.armazens`, padrão 1). **Decisão do usuário:** espalhadas, não juntas: uma por terreno
@@ -195,8 +201,10 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   60, Mesa de Criação 60, Panela de Cozimento 45, Mesa Fonolfatória 45, Bancada de Marcenaria 15, Jogo
   de Dança Lapidador 90, Fabricante de Aniicápsula 90, as demais máquinas 30 W.
 - Oficina, recursos e moradias (`arrumar` em `planta.ts`, **pedido do usuário: lado a lado**):
-  construções maiores primeiro em fileiras centradas no terreno, com 2 tiles de passagem (desencontradas
-  na oficina); oficina e moradias com um pátio (`piso`, meio tile em volta) cada.
+  construções maiores primeiro em fileiras centradas na área útil do terreno, com 2 tiles de passagem
+  (desencontradas na oficina); oficina e moradias com um pátio cada, um quadrado de peças de piso 2×2
+  inteiras (`ladoDoPatio`: lado ímpar ganha meio tile de borda, lado par um tile) com a construção no
+  meio. A passagem entre construções conta o piso dos dois pátios.
 - Decoração (`decoracao.ts`, só enfeite, RNG com semente). **Pedido do usuário (2026-10-10):** o mapa
   sem enfeites era "sem graça"; ele quer os itens decorativos do jogo e os terrenos vazios decorados.
   - Catálogo: `src/assets/data/lar-enfeites.json`, gerado por `scripts/extract-enfeites.ts`
@@ -213,17 +221,36 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
     pomar e bosque, lazer dos Aniimo (os quatro pedidos pelo usuário). Composição fixa por tipo
     (`JARDINS`) mais miudezas sorteadas; o de lazer vai para o terreno livre mais perto das moradias e
     os outros se revezam.
-  - **Pedido do usuário (2026-10-10): os terrenos têm de se conectar**, não parecer ilhas soltas.
-    (a) Ruas: `tracarRuas` põe meio tile de calçada (`CALCADA`, itens `caminho`) na borda de cada
-    terreno em uso; com a do vizinho vira uma rua de 1 tile. Por isso `MARGEM` em `planta.ts` é 1
-    (calçada + pátio) e Minas e moradias usam 1 tile de passagem (`FOLGA_DO_TEMA`; a oficina mantém os 2
-    aprovados). Só chão e cerca podem ficar sobre a calçada. (b) Todo jardim tem caminhos em cruz até a
-    borda, onde encontram a rua. (c) **Jardim grande** (`jardinagem`): o primeiro par de terrenos livres
+  - **Informado pelo usuário (2026-10-10): o piso do jogo ocupa 2×2.** Todo piso da planta é feito de
+    peças de 2×2 inteiras, sem sobreposição (há teste): ruas (itens `caminho`), pátios (itens `piso`) e
+    o chão dos jardins. Suposição nossa, a confirmar: construções e enfeites podem ficar em cima do piso.
+  - **Informado pelo usuário (2026-10-10): o limite dos terrenos é só visual; eles podem se unir.**
+    **Decisões:** terrenos vizinhos do mesmo tema viram uma área só, sem rua nem margem entre eles, e a
+    rua fica só na divisa entre duas áreas diferentes **e em toda a borda do tabuleiro** (pedido do
+    usuário: não gostou do mapa sem rua na borda). `ruas.ts` (`malhaDeRuas`): as peças caem numa malha
+    única de 2×2 que começa no canto do tabuleiro, sem fresta nem sobreposição. Por causa dela a rua
+    nem sempre fica meio a meio na divisa: a de cima a baixo fica inteira no terreno da direita (2
+    tiles); a de lado a lado fica em cima da divisa nas linhas 15 e 45 (1 tile em cada terreno) e
+    inteira no terreno de baixo na linha 30. A última coluna (terrenos 16, 9, 6, 5) fica com 16 tiles
+    úteis de largura; as outras, 18. `margens(t)` diz quanto a rua tira de cada lado e de que
+    lados o terreno se une; em `distribuir` as margens usam os temas já dados (um vizinho que ganhar o
+    mesmo tema depois só aumenta o espaço). Do lado unido, as construções ficam a meia passagem da
+    divisa (`areaUtil`); os lotes vão até a divisa (`regiaoDeCultivo`), formando uma área de fazenda só.
+    Minas e moradias usam 1 tile de passagem (`FOLGA_DO_TEMA`; a oficina mantém os 2 aprovados).
+  - **Pedido do usuário (2026-10-10): os terrenos têm de se conectar**, não parecer ilhas soltas: são as
+    ruas acima. Só a cerca fica sobre a rua (na metade de dentro, e só nos lados em que a rua está no
+    próprio terreno). (b) Todo jardim tem caminhos em cruz que encostam na rua dos quatro lados, sem
+    fresta (há teste): as composições (`JARDINS`) usam coordenadas do miolo do jardim (para dentro das
+    ruas: 16 ou 18 de largura, 12 ou 14 de altura) e o largo do meio tem o tamanho que fecha os braços
+    em peças inteiras (`largo`, `cruz`). O que fica em cima do chão do jardim (gazebo, fonte, fogueira)
+    é posto de propósito (`sobreChao`). (c) **Jardim grande** (`jardinagem`): o primeiro par de terrenos livres
     lado a lado se une (`TerrenoDaPlanta.unidoA`), sem calçada no meio, numa composição de 40×15 com
     enfeites cruzando a divisa. (d) A visão geral da página é um mapa contínuo do tabuleiro
     (`MapaLar` com `geral`: clicar num terreno o abre), com os cartões por terreno embaixo; as
-    miniaturas dos cartões só aparecem no celular. Com os dados atuais (RV 20): cultivo 1, 6, 7; oficina
-    2, 5, 8, 9, 11; recursos 3, 10; moradias 4, 12; jardins 13+14 (o grande), 15 e 16.
+    miniaturas dos cartões só aparecem no celular. Com os dados atuais (RV 20): cultivo 1, 7, 8 (7 e 8
+    unidos); oficina 2, 5, 6, 9, 11, 13; recursos 3, 10; moradias 4, 12; jardins 14+15 (o grande) e 16
+    (lazer). São 13 terrenos, um a mais que antes do piso 2×2: a rua agora tira até 2 tiles de um lado e os
+    pátios de construções de lado par têm 1 tile de borda. A praça não aparece mais no RV 20.
   - Controle "Decoração" (`LarStore.equilibrio`, `OpcoesPlanta.equilibrio`): Eficiente (sem enfeites,
     terrenos livres vazios), Equilibrado (padrão), Bonito (mais denso e Cerca de Jardim nos terrenos de
     cultivo e no ninhal). Nunca move construções (há teste).
@@ -258,7 +285,9 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   escolhida (terreno aberto e zona de ambiente já construído no RV do jogador), depois lotes úteis pelo
   valor até o limite do tipo (total menos a parte das culturas sem ambiente), o resto nos campos sem
   ambiente, primeiro nos terrenos que abrem antes. Nota: culturas com lote ativo, lotes úteis, valor;
-  empate mantém os modos. Se nada couber, a base fica como está.
+  empate mantém os modos. Se nada couber, a base fica como está. Com o nível do jogador (`rv`), os
+  lotes que ele já pode ter ficam em terrenos já abertos: nos que abrem depois só cabe o que ele ainda
+  vai ganhar (`teto`; há teste nível a nível em `liberacao.spec.ts`).
 - Resultado (testado RV 1–20, todas marcadas): toda cultura liberada tem lote liberado no nível. Nos
   RV 9–11 há 4 temperaturas pedidas e só 1 Fornalha + 1 Resfriador (3 zonas); **pedido do usuário:**
   a que sobra vai para o lote ativo de temperatura mais próxima, tirado de quem tem lote sobrando
@@ -283,8 +312,13 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   ainda não liberam somem do seletor mas continuam escolhidas para quando o nível subir.
 - Fazendas coringa (`LarStore.coringas`, `OpcoesPlanta.coringas`, pedido do usuário): N Fazendas sem
   cultura fixa, para sementes de evento. Não mudam a disposição (`marcarCoringas` em `planta.ts`:
-  primeiro lotes sem ambiente, depois lotes de zona sem cultura escolhida, depois o resto). Na
-  liberação entram no revezamento como uma cultura que serve desde o RV 1.
+  primeiro nos terrenos já abertos no RV do jogador; em cada parte, lotes sem ambiente, depois lotes
+  de zona sem cultura escolhida, depois o resto; nunca tiram o lote de uma cultura). **Pedido do
+  usuário (2026-10-10):** coringa é para plantar agora, então fica em Fazenda que o jogador já tem: na
+  liberação, depois do primeiro lote de cada cultura, as coringas passam na frente dos lotes repetidos
+  (há teste). São para o Festival da Lua da Colheita (`festival.ts`): enquanto ele dura, o lote mostra
+  as sementes do festival e a página sugere quantas coringas usar (`coringasSugeridas`,
+  `LarStore.plantiosPorDia`).
 - O painel "Culturas" abre recolhido.
 - A legenda "Culturas no mapa" lista exatamente as culturas marcadas no filtro e liberadas no RV
   escolhido (nome da família, igual ao filtro), com os lotes de cada uma; 0 lotes aparece como
@@ -299,7 +333,12 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   o toggle "Plantar para vender", estado antigo migra para "dinheiro"): "Minha seleção" usa as culturas
   marcadas; "Dinheiro" usa as culturas dos 10 produtos que mais rendem no RV; "Nível" põe nos Bosques
   as árvores com mais Blocos de Madeira por hora (`Produto.subproduto`, do `byproduct_yield` do
-  aniimax) e nas Fazendas as de dinheiro. Fora de "Minha seleção" o seletor fica travado mostrando as
+  aniimax) e nas Fazendas as de dinheiro. "Festival" (só enquanto `festivalAtivo`; salvo de antes,
+  volta para "Minha seleção" em `focoAtual` da página) usa as culturas dos pratos do Grande Banquete
+  que o RV já libera (`pratosDoBanquete` em `festival.ts`: Tanghulu, Geleia de Maçã com Bordo,
+  Biscoitos de Lavanda) mais as de dinheiro, e em `producao.ts` cada um desses pratos ocupa uma
+  unidade antes de tudo (`finalidade: 'banquete'`). Os outros três pratos são do festival e a fonte
+  não dá a receita: aparecem só no cartão "Grande Banquete" da coluna lateral. Fora de "Minha seleção" o seletor fica travado mostrando as
   culturas do foco; a seleção do jogador nunca é apagada. Não considera a
   quantidade de lotes.
 - Layout (pedido do usuário): quadro dos terrenos com uma coluna ao lado (Como ler e Culturas no

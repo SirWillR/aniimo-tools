@@ -128,8 +128,19 @@ describe('plantaDoLar', () => {
     });
   }
 
-  it('coloca as chocadeiras num terreno só delas (ninhal), 2×2 e sem sobrepor nada', () => {
+  it('sem terreno sobrando (RV 7), as chocadeiras ficam nos espaços livres dos outros terrenos', () => {
     const p = plantaDoLar(dados, 7, { chocadeiras: 5 });
+    const chocadeiras = construcoes(p.itens).filter((c) => c.construcao === 'chocadeira');
+    expect(chocadeiras).toHaveLength(5);
+    expect(p.blocos.some((b) => b.tipo === 'ninhal')).toBe(false);
+    for (const c of chocadeiras) {
+      expect(terreno(c.terreno).rv).toBeLessThanOrEqual(7);
+      expect(construcoes(p.itens).filter((o) => o !== c && sobrepoe(o.area, c.area))).toEqual([]);
+    }
+  });
+
+  it('coloca as chocadeiras num terreno só delas (ninhal), 2×2 e sem sobrepor nada', () => {
+    const p = plantaDoLar(dados, 12, { chocadeiras: 5 });
     const chocadeiras = construcoes(p.itens).filter((c) => c.construcao === 'chocadeira');
     expect(chocadeiras).toHaveLength(5);
     expect(chocadeiras.every((c) => c.area.largura === 2 && c.area.altura === 2)).toBe(true);
@@ -138,7 +149,7 @@ describe('plantaDoLar', () => {
     expect(chocadeiras.every((c) => c.bloco === ninhal)).toBe(true);
     const todas = construcoes(p.itens);
     for (const c of chocadeiras) expect(todas.filter((o) => o !== c && sobrepoe(o.area, c.area))).toEqual([]);
-    expect(plantaDoLar(dados, 7).blocos.some((b) => b.tipo === 'ninhal')).toBe(false);
+    expect(plantaDoLar(dados, 12).blocos.some((b) => b.tipo === 'ninhal')).toBe(false);
   });
 
   describe('unidades de armazenamento', () => {
@@ -297,8 +308,9 @@ describe('plantaDoLar', () => {
     });
 
     it('na base final, o que o jogador pode ter em cada RV fica em terrenos já abertos', () => {
-      const p = plantaDoLar(dados, 20, { rvCulturas: 20 });
       for (let rv = 1; rv <= 20; rv++) {
+        // As construções não saem do lugar; Fazendas e Bosques se rearrumam para o nível do jogador.
+        const p = plantaDoLar(dados, 20, { rvCulturas: rv });
         const lib = liberacaoPorItem(p, dados, rv);
         for (const c of dados.construcoes) {
           const liberados = [...lib.keys()].filter((i) => i.construcao === c.chave && lib.get(i)! <= rv);

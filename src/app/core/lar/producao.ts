@@ -7,19 +7,22 @@
 // - Nível: Bancada de Marcenaria e Forno com Chaminé fazem o material de subir para o próximo RV
 //   (`custoPorRv`) e, nas outras unidades, os degraus de baixo da mesma cadeia; a Mina tira o minério
 //   com mais Areia Mineral por hora. O resto como em Dinheiro, porque subir também custa moedas.
+// - Festival: os pratos do Grande Banquete que o jogador já faz ocupam uma unidade cada (com os seus
+//   intermediários) antes de tudo; o resto como em Dinheiro.
 // - Coleta (Mina, Poço, moradias de Aniimo): o item com mais moedas por hora.
 // - Unidade que sobra sem nada: Bancada e Forno com Chaminé fazem a cadeia de nível; as demais, o
 //   produto da máquina com mais moedas por hora (Jogo de Dança Lapidador e Fabricante de Aniicápsula,
 //   que não rendem moedas: o que mais rende na moeda deles).
 // Tempo: carga de trabalho ÷ 1 por segundo (Aniimo no nível exigido, sem bônus de personalidade).
+import { FESTIVAL } from './festival';
 import type { Foco } from './foco';
 import { inventario, moedasPorHora } from './inventario';
 import type { DadosConstrucao, Produto } from './modelos-lar';
 import { familia } from './sugestao';
-import { melhoresParaVender } from './vendas';
+import { melhoresParaVender, origens } from './vendas';
 
 /** `outra-moeda`: máquinas que rendem XP de Aniimo ou Aniicápsulas em vez de moedas. */
-export type Finalidade = 'vender' | 'ingrediente' | 'nivel' | 'coleta' | 'outra-moeda';
+export type Finalidade = 'vender' | 'banquete' | 'ingrediente' | 'nivel' | 'coleta' | 'outra-moeda';
 
 export interface Producao {
   produto: Produto;
@@ -124,19 +127,27 @@ export function producaoPorUnidade(
     for (const [m, n] of precisa) if (vagas(m).length < n) return null;
     return pedidos;
   };
+  /** Põe o final numa unidade livre, com os intermediários que faltam antes; false se não couber. */
+  const colocar = (p: Produto, finalidade: Finalidade, moedas = 0): boolean => {
+    if (livres(p.construcao) <= 0) return false;
+    const pedidos = reservar(p);
+    if (!pedidos) return false;
+    for (const x of pedidos) {
+      const destino = [...pedidos, p].find((o) => o.ingredientes.some((i) => i.produto === x.chave)) ?? p;
+      por(x, 'ingrediente', destino);
+    }
+    por(p, finalidade, null, moedas);
+    return true;
+  };
+  // Festival: os pratos do Grande Banquete primeiro, uma unidade cada.
+  if (foco === 'festival')
+    for (const { chave } of FESTIVAL.banquete.pratos) {
+      const p = chave ? porChave.get(chave) : undefined;
+      if (p && saida.has(p.construcao) && [...origens(p, porChave).culturas].every((c) => plantadas.has(c))) colocar(p, 'banquete');
+    }
   for (let mudou = true; mudou; ) {
     mudou = false;
-    for (const s of finais) {
-      if (livres(s.produto.construcao) <= 0) continue;
-      const pedidos = reservar(s.produto);
-      if (!pedidos) continue;
-      for (const x of pedidos) {
-        const destino = [...pedidos, s.produto].find((o) => o.ingredientes.some((i) => i.produto === x.chave)) ?? s.produto;
-        por(x, 'ingrediente', destino);
-      }
-      por(s.produto, 'vender', null, s.ganhoPorHora);
-      mudou = true;
-    }
+    for (const s of finais) if (colocar(s.produto, 'vender', s.ganhoPorHora)) mudou = true;
   }
 
   // ---- Coleta e sobras ----

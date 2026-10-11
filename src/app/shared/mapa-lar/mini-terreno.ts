@@ -19,7 +19,7 @@ type ItemConstrucao = Extract<ItemMapa, { tipo: 'construcao' }>;
         <rect [attr.x]="r.area.x" [attr.y]="r.area.y" [attr.width]="r.area.largura" [attr.height]="r.area.altura" fill="url(#ml-pedras)" />
       }
       @for (p of c.pisos; track $index) {
-        <rect [attr.x]="p.area.x" [attr.y]="p.area.y" [attr.width]="p.area.largura" [attr.height]="p.area.altura" rx=".6" fill="url(#ml-piso)" />
+        <rect [attr.x]="p.area.x" [attr.y]="p.area.y" [attr.width]="p.area.largura" [attr.height]="p.area.altura" rx=".12" fill="url(#ml-piso)" />
       }
       @for (a of c.coberturas; track $index) {
         <rect class="aura" [attr.x]="a.area.x" [attr.y]="a.area.y" [attr.width]="a.area.largura" [attr.height]="a.area.altura"

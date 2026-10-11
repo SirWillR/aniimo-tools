@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import json from '../../../assets/data/lar-construcao.json';
 import catalogo from '../../../assets/data/lar-enfeites.json';
-import { CALCADA, USOS, decoracaoInvade, slugsUsados } from './decoracao';
+import { USOS, decoracaoInvade, slugsUsados } from './decoracao';
 import { contem, expandir, sobrepoe, uniao } from './geometria';
 import type { DadosConstrucao, DadosEnfeites } from './modelos-lar';
 import { type ItemMapa, plantaDoLar } from './planta';
@@ -54,8 +54,11 @@ describe('decoração da planta', () => {
           const area = t.unidoA ? uniao([t.area, p.terrenos[t.unidoA - 1]!.area]) : t.area;
           expect(contem(area, d.area)).toBe(true);
         }
+        // Só o que foi posto de propósito fica em cima do chão do jardim (o gazebo no largo, a fonte na praça).
+        const chao = (d: (typeof enfeitados)[number]) => d.forma === 'cascalho-chao' || d.forma === 'laje';
         for (let i = 0; i < enfeitados.length; i++)
-          for (let j = i + 1; j < enfeitados.length; j++) expect(sobrepoe(enfeitados[i]!.area, enfeitados[j]!.area)).toBe(false);
+          for (let j = i + 1; j < enfeitados.length; j++)
+            if (chao(enfeitados[i]!) === chao(enfeitados[j]!)) expect(sobrepoe(enfeitados[i]!.area, enfeitados[j]!.area)).toBe(false);
       });
 
       it('fora a cerca, os enfeites deixam meio tile de respiro em volta das construções', () => {
@@ -68,35 +71,51 @@ describe('decoração da planta', () => {
         expect(p.terrenos.every((t) => t.tema)).toBe(true);
         const tipos = p.terrenos.filter((t) => t.tema === 'jardim').map((t) => t.jardim);
         expect(tipos.filter((t) => t === 'jardinagem')).toHaveLength(2);
-        expect(tipos).toContain('lazer');
       });
 
       it('o jardim grande une dois terrenos lado a lado, sem rua no meio e com enfeites cruzando a divisa', () => {
         const [a, b] = p.terrenos.filter((t) => t.jardim === 'jardinagem').sort((x, y) => x.coluna - y.coluna);
         expect([a!.unidoA, b!.unidoA]).toEqual([b!.n, a!.n]);
         expect([b!.linha, b!.coluna]).toEqual([a!.linha, a!.coluna + 1]);
-        const divisa = { x: b!.area.x - CALCADA, y: a!.area.y + CALCADA, largura: 2 * CALCADA, altura: a!.area.altura - 2 * CALCADA };
+        // O miolo da divisa, longe da rua de cima e da de baixo.
+        const divisa = { x: b!.area.x - 2, y: a!.area.y + 4, largura: 4, altura: a!.area.altura - 8 };
         expect(p.itens.some((i) => i.tipo === 'caminho' && sobrepoe(i.area, divisa))).toBe(false);
         expect(enfeitados.some((d) => d.area.x < b!.area.x && d.area.x + d.area.largura > b!.area.x && sobrepoe(d.area, divisa))).toBe(true);
       });
 
-      it('os caminhos dos jardins chegam à rua nos quatro lados', () => {
-        const chao = enfeitados.filter((d) => d.forma === 'cascalho-chao' || d.forma === 'laje');
+      it('os caminhos dos jardins encostam na rua nos quatro lados, sem fresta', () => {
+        const ruas = p.itens.filter((i) => i.tipo === 'caminho').map((i) => i.area);
         for (const t of p.terrenos.filter((x) => x.tema === 'jardim')) {
           const area = t.unidoA ? uniao([t.area, p.terrenos[t.unidoA - 1]!.area]) : t.area;
-          const toca = (lado: { x: number; y: number; largura: number; altura: number }) => chao.some((d) => sobrepoe(d.area, lado));
-          const faixa = 1.5;
-          expect(toca({ x: area.x, y: area.y, largura: faixa, altura: area.altura }) || t.jardim === 'lago', `oeste do ${t.n}`).toBe(true);
-          expect(toca({ x: area.x + area.largura - faixa, y: area.y, largura: faixa, altura: area.altura }), `leste do ${t.n}`).toBe(true);
-          expect(toca({ x: area.x, y: area.y, largura: area.largura, altura: faixa + 0.5 }), `norte do ${t.n}`).toBe(true);
-          expect(toca({ x: area.x, y: area.y + area.altura - faixa - 0.5, largura: area.largura, altura: faixa + 0.5 }), `sul do ${t.n}`).toBe(true);
+          const chao = enfeitados.filter((d) => (d.forma === 'cascalho-chao' || d.forma === 'laje') && contem(area, d.area)).map((d) => d.area);
+          // Uma peça do jardim com um lado inteiro colado numa peça da rua.
+          const colada = (lado: 'oeste' | 'leste' | 'norte' | 'sul') =>
+            chao.some((d) =>
+              ruas.some((r) => {
+                const naLinha = r.y < d.y + d.altura && r.y + r.altura > d.y;
+                const naColuna = r.x < d.x + d.largura && r.x + r.largura > d.x;
+                if (lado === 'oeste') return naLinha && r.x + r.largura === d.x;
+                if (lado === 'leste') return naLinha && r.x === d.x + d.largura;
+                if (lado === 'norte') return naColuna && r.y + r.altura === d.y;
+                return naColuna && r.y === d.y + d.altura;
+              }),
+            );
+          expect(colada('oeste') || t.jardim === 'lago', `oeste do ${t.n}`).toBe(true);
+          for (const lado of ['leste', 'norte', 'sul'] as const) expect(colada(lado), `${lado} do ${t.n}`).toBe(true);
         }
       });
 
-      it('só chão e cerca ficam em cima da calçada', () => {
+      it('só a cerca fica em cima da rua; o chão dos jardins não se sobrepõe às peças dela', () => {
         const ruas = p.itens.filter((i) => i.tipo === 'caminho').map((i) => i.area);
-        const outros = enfeitados.filter((d) => !['cascalho-chao', 'laje', 'cerca-jardim'].includes(d.forma));
-        expect(decoracaoInvade(outros, ruas)).toBe(false);
+        expect(decoracaoInvade(enfeitados.filter((d) => d.forma !== 'cerca-jardim'), ruas)).toBe(false);
+      });
+
+      it('todo piso é feito de peças de 2×2 inteiras', () => {
+        const pisos = [...p.itens.filter((i) => i.tipo === 'caminho' || i.tipo === 'piso'), ...enfeitados.filter((d) => d.forma === 'cascalho-chao' || d.forma === 'laje')];
+        expect(pisos.length).toBeGreaterThan(0);
+        for (const i of pisos) expect([i.area.largura, i.area.altura]).toEqual([2, 2]);
+        for (let i = 0; i < pisos.length; i++)
+          for (let j = i + 1; j < pisos.length; j++) expect(sobrepoe(pisos[i]!.area, pisos[j]!.area)).toBe(false);
       });
 
       it('cada enfeite aponta para um item do catálogo, com o tamanho e o RV dele', () => {
@@ -114,21 +133,52 @@ describe('decoração da planta', () => {
       });
     });
 
-  it('todo terreno em uso tem calçada na borda, e nenhuma construção nem pátio fica em cima dela', () => {
+  it('há rua na divisa entre duas áreas diferentes e não entre terrenos do mesmo tema; nada construído fica em cima dela', () => {
     for (const opcoes of [{}, { enfeites, armazens: 12, chocadeiras: 20 }]) {
       const p = plantaDoLar(dados, 20, opcoes);
       const ruas = p.itens.filter((i) => i.tipo === 'caminho').map((i) => i.area);
-      for (const t of p.terrenos.filter((x) => x.tema)) {
-        const topo = { x: t.area.x, y: t.area.y, largura: t.area.largura, altura: CALCADA };
-        expect(ruas.some((r) => contem(r, topo)), `terreno ${t.n}`).toBe(true);
-      }
+      let unidos = 0;
+      for (const a of p.terrenos)
+        for (const b of p.terrenos) {
+          const aoLado = b.linha === a.linha && b.coluna === a.coluna + 1;
+          const abaixo = b.coluna === a.coluna && b.linha === a.linha + 1;
+          if ((!aoLado && !abaixo) || (!a.tema && !b.tema)) continue;
+          // O miolo da divisa, longe dos cruzamentos: 2 tiles para cada lado dela.
+          const miolo = aoLado
+            ? { x: b.area.x - 2, y: a.area.y + 4, largura: 4, altura: a.area.altura - 8 }
+            : { x: a.area.x + 4, y: b.area.y - 2, largura: a.area.largura - 8, altura: 4 };
+          const mesmaArea = a.tema === b.tema && (a.tema !== 'jardim' || a.unidoA === b.n);
+          if (mesmaArea) unidos++;
+          expect(ruas.some((r) => sobrepoe(r, miolo)), `entre ${a.n} e ${b.n}`).toBe(!mesmaArea);
+        }
+      expect(unidos).toBeGreaterThan(0);
       for (const i of p.itens) if (i.tipo === 'construcao' || i.tipo === 'piso') expect(ruas.some((r) => sobrepoe(r, i.area))).toBe(false);
     }
   });
 
-  it('no RV 20 sobram quatro terrenos: o jardim grande em dois, o lazer e a praça', () => {
+  it('o tabuleiro tem rua em toda a borda, encostada nela', () => {
     const p = plantaDoLar(dados, 20, { enfeites });
-    expect(p.terrenos.filter((t) => t.tema === 'jardim').map((t) => t.jardim).sort()).toEqual(['jardinagem', 'jardinagem', 'lazer', 'praca']);
+    const ruas = p.itens.filter((i) => i.tipo === 'caminho').map((i) => i.area);
+    const coberto = (x: number, y: number) => ruas.some((r) => x >= r.x && x < r.x + r.largura && y >= r.y && y < r.y + r.altura);
+    for (let x = 0.5; x < p.largura; x++) expect(coberto(x, 0.5) && coberto(x, p.altura - 0.5), `x=${x}`).toBe(true);
+    for (let y = 0.5; y < p.altura; y++) expect(coberto(0.5, y) && coberto(p.largura - 0.5, y), `y=${y}`).toBe(true);
+  });
+
+  it('terrenos de cultivo vizinhos formam uma área de fazenda só: os lotes vão até a divisa', () => {
+    const p = plantaDoLar(dados, 20);
+    const cultivo = p.blocos.filter((b) => b.tipo === 'cultivo');
+    const pares = cultivo.flatMap((a) => cultivo.filter((b) => b.area.y === a.area.y && b.area.x === a.area.x + a.area.largura).map((b) => [a, b] as const));
+    expect(pares.length).toBeGreaterThan(0);
+    for (const [a, b] of pares) {
+      const [ra, rb] = [a.regioes![0]!, b.regioes![0]!];
+      // Entre as duas malhas não sobra espaço para um lote (2 tiles).
+      expect(rb.x - (ra.x + ra.largura)).toBeLessThan(2);
+    }
+  });
+
+  it('no RV 20 sobram três terrenos: o jardim grande em dois e o lazer', () => {
+    const p = plantaDoLar(dados, 20, { enfeites });
+    expect(p.terrenos.filter((t) => t.tema === 'jardim').map((t) => t.jardim).sort()).toEqual(['jardinagem', 'jardinagem', 'lazer']);
   });
 
   it('em "eficiente", ou sem catálogo, não há enfeites nem jardins', () => {
