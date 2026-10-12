@@ -325,8 +325,12 @@ Arquivo: `src/assets/data/lar-construcao.json`, gerado por `scripts/extract-home
   usuário (2026-10-10):** coringa é para plantar agora, então fica em Fazenda que o jogador já tem: na
   liberação, depois do primeiro lote de cada cultura, as coringas passam na frente dos lotes repetidos
   (há teste). São para o Festival da Lua da Colheita (`festival.ts`): enquanto ele dura, o lote mostra
-  as sementes do festival e a página sugere quantas coringas usar (`coringasSugeridas`,
-  `LarStore.plantiosPorDia`).
+  as sementes do festival e a página sugere quantas coringas usar (`coringasSugeridas`). **Informado
+  pelo usuário (2026-10-11): são os Aniimo que replantam, sozinhos**, então cada coringa dá 36
+  colheitas por dia (40 min cada) e as 150 sementes do dia cabem em 5; a conta antiga supunha o
+  jogador replantando 8 vezes por dia e sugeria 19. O campo "replantios por dia"
+  (`LarStore.plantiosPorDia`) saiu; `usoDasCoringas` diz o que as coringas do jogador fazem com as
+  sementes do dia.
 - O painel "Culturas" abre recolhido.
 - A legenda "Culturas no mapa" lista exatamente as culturas marcadas no filtro e liberadas no RV
   escolhido (nome da família, igual ao filtro), com os lotes de cada uma; 0 lotes aparece como

@@ -144,31 +144,33 @@ export function festivalAtivo(hoje: Date): boolean {
   return t >= meiaNoite(FESTIVAL.inicio) && t < meiaNoite(FESTIVAL.fim, 1);
 }
 
-/** Ciclos de crescimento que cabem em 24 h: o máximo de plantios por dia num mesmo lote. */
-export const MAX_PLANTIOS_POR_DIA = Math.floor((24 * 60) / FESTIVAL.crescimentoMin);
+/**
+ * Colheitas que uma Fazenda coringa dá em 24 h. Informado pelo usuário (2026-10-11): são os Aniimo que
+ * replantam, sozinhos, então o lote emenda uma semente na outra.
+ */
+export const COLHEITAS_POR_DIA = Math.floor((24 * 60) / FESTIVAL.crescimentoMin);
 
 /** Sementes que o Trigo do Luar de um dia compra. */
 export const sementesPorDia = (trigoPorDia: number) => Math.floor(trigoPorDia / FESTIVAL.precoDaSemente);
 
 /**
- * Fazendas coringa que dão conta das sementes do dia, com o jogador replantando `plantiosPorDia` vezes
- * (cada lote cresce uma semente por vez). Nunca mais que as Fazendas que ele tem.
+ * Fazendas coringa que dão conta das sementes do dia, cada uma plantando sem parar. Nunca mais que as
+ * Fazendas que o jogador tem.
  */
-export function coringasSugeridas(trigoPorDia: number, plantiosPorDia: number, fazendas: number): number {
-  const plantios = Math.max(1, Math.min(MAX_PLANTIOS_POR_DIA, Math.floor(plantiosPorDia) || 1));
-  return Math.max(0, Math.min(fazendas, Math.ceil(sementesPorDia(trigoPorDia) / plantios)));
+export function coringasSugeridas(trigoPorDia: number, fazendas: number): number {
+  return Math.max(0, Math.min(fazendas, Math.ceil(sementesPorDia(trigoPorDia) / COLHEITAS_POR_DIA)));
 }
 
 /**
- * O caminho inverso: com `coringas` Fazendas, quantas vezes por dia replantar para dar conta das sementes
- * do dia, e de quanto em quanto tempo (minutos). `sementes` é o que dá para plantar: menos que o total
- * quando nem replantando sem parar as coringas dão conta. Null sem coringas.
+ * O que `coringas` Fazendas fazem com as sementes do dia: quantas plantam, quantas sobram sem lote e
+ * quanto do tempo os lotes ficam ocupados (menos de 1 = há coringa sobrando). Null sem coringas.
  */
-export function plantiosNecessarios(trigoPorDia: number, coringas: number): { plantios: number; intervaloMin: number; sementes: number } | null {
+export function usoDasCoringas(trigoPorDia: number, coringas: number): { sementes: number; sobram: number; ocupacao: number } | null {
   if (!Number.isInteger(coringas) || coringas <= 0) return null;
   const total = sementesPorDia(trigoPorDia);
-  const plantios = Math.max(1, Math.min(MAX_PLANTIOS_POR_DIA, Math.ceil(total / coringas)));
-  return { plantios, intervaloMin: Math.floor((24 * 60) / plantios), sementes: Math.min(total, coringas * plantios) };
+  const capacidade = coringas * COLHEITAS_POR_DIA;
+  const sementes = Math.min(total, capacidade);
+  return { sementes, sobram: total - sementes, ocupacao: sementes / capacidade };
 }
 
 export interface PratoNoRv {

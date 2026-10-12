@@ -60,12 +60,9 @@
       <p class="sugestao-festival">
         <span>
           <strong>{{ s.festival }}:</strong> as tarefas diárias dão {{ s.trigo }} {{ s.moeda }}, o bastante para
-          <strong class="num">{{ s.sementes }}</strong> sementes por dia. Replantando
-        </span>
-        <input type="number" min="1" [max]="maxPlantios" inputmode="numeric" [value]="lar.plantiosPorDia()"
-          aria-label="Quantas vezes você replanta por dia" (change)="escolherPlantios($event)" />
-        <span>
-          vezes por dia, elas cabem em <strong class="num">{{ s.coringas }}</strong>
+          <strong class="num">{{ s.sementes }}</strong> sementes por dia. Cada semente leva {{ s.minutos }} min e os
+          Aniimo replantam sozinhos, então uma Fazenda dá {{ s.colheitas }} colheitas por dia: bastam
+          <strong class="num">{{ s.coringas }}</strong>
           {{ s.coringas === 1 ? 'Fazenda coringa' : 'Fazendas coringa' }}@if (s.noTeto) { (todas as do RV {{ rvAtual() }})}.
         </span>
         @if (s.coringas !== lar.coringas()) {
@@ -74,12 +71,13 @@
         @if (s.comAsSuas; as c) {
           <span class="ritmo">
             Com as suas <strong class="num">{{ c.coringas }}</strong> {{ c.coringas === 1 ? 'coringa' : 'coringas' }}:
-            replante <strong class="num">{{ c.plantios }}</strong> {{ c.plantios === 1 ? 'vez' : 'vezes' }} por dia
-            (a cada <strong>{{ c.intervalo }}</strong>)
-            @if (c.faltam) {
-              e ainda sobram <strong class="num">{{ c.faltam }}</strong> sementes sem plantar: são poucas coringas.
+            @if (c.sobram) {
+              plantam <span class="num">{{ c.sementes }}</span> sementes por dia e sobram
+              <strong class="num">{{ c.sobram }}</strong> sem lote: são poucas coringas.
+            } @else if (c.ocupacao < 100) {
+              plantam as <span class="num">{{ c.sementes }}</span> sementes do dia e ficam ocupadas {{ c.ocupacao }}% do tempo.
             } @else {
-              para plantar as <span class="num">{{ c.sementes }}</span> sementes do dia.
+              plantam as <span class="num">{{ c.sementes }}</span> sementes do dia, sem folga.
             }
           </span>
         }

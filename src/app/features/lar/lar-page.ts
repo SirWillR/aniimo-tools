@@ -9,7 +9,7 @@ import { inventario, moedasPorHora } from '../../core/lar/inventario';
 import { LarStore, MAX_ARMAZENS, MAX_CHOCADEIRAS, MAX_CORINGAS } from '../../core/lar/lar.store';
 import type { Ambiente, Produto } from '../../core/lar/modelos-lar';
 import { AMBIENTE_PT, ETAPA_PT, nomeConstrucao, nomeProduto } from '../../core/lar/nomes-pt';
-import { FESTIVAL, MAX_PLANTIOS_POR_DIA, RECEITAS_DO_FESTIVAL, SEMENTES_DO_FESTIVAL, coringasSugeridas, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from '../../core/lar/festival';
+import { COLHEITAS_POR_DIA, FESTIVAL, RECEITAS_DO_FESTIVAL, SEMENTES_DO_FESTIVAL, coringasSugeridas, pratosDoBanquete, sementesPorDia, usoDasCoringas } from '../../core/lar/festival';
 import type { Foco } from '../../core/lar/foco';
 import { liberacaoPorItem, rvDoProduto } from '../../core/lar/liberacao';
 import { type TipoBloco, plantaDoLar } from '../../core/lar/planta';
@@ -81,22 +81,23 @@ export class LarPage {
   protected readonly dicaCoringas = this.festival
     ? `Fazendas sem cultura fixa, para as sementes do ${FESTIVAL.nome} (${SEMENTES_DO_FESTIVAL})`
     : 'Fazendas sem cultura fixa, para sementes de evento';
-  protected readonly maxPlantios = MAX_PLANTIOS_POR_DIA;
 
   /** Quantas coringas dão conta das sementes que o Trigo do Luar diário compra (só durante o festival). */
   protected readonly sugestaoFestival = computed(() => {
     const fazendas = this.dados.construcaoPorChave().get('farmland')?.quantidadePorRv[this.rvAtual() - 1];
     if (!this.festival || !fazendas) return null;
-    const coringas = coringasSugeridas(FESTIVAL.trigoPorDia, this.lar.plantiosPorDia(), fazendas);
+    const coringas = coringasSugeridas(FESTIVAL.trigoPorDia, fazendas);
     return {
       festival: FESTIVAL.nome,
       moeda: FESTIVAL.moeda,
       trigo: FESTIVAL.trigoPorDia,
       sementes: sementesPorDia(FESTIVAL.trigoPorDia),
+      minutos: FESTIVAL.crescimentoMin,
+      colheitas: COLHEITAS_POR_DIA,
       coringas,
       noTeto: coringas === fazendas,
-      // O inverso, já calculado para as coringas que o jogador tem agora.
-      comAsSuas: this.ritmoDasCoringas(),
+      // O inverso: o que as coringas que o jogador tem agora fazem com as sementes do dia.
+      comAsSuas: this.usoDasCoringas(),
     };
   });
   protected readonly zonas = ZONAS.map((z) => ({ nome: AMBIENTE_PT[z], cor: COR_AMBIENTE[z] }));
@@ -529,19 +530,11 @@ export class LarPage {
     };
   });
 
-  /** Com as coringas atuais: quantas vezes replantar por dia e de quanto em quanto tempo. */
-  private ritmoDasCoringas(): { coringas: number; plantios: number; intervalo: string; sementes: number; faltam: number } | null {
+  /** Com as coringas atuais: quantas sementes do dia cabem e quanto do tempo os lotes ficam ocupados. */
+  private usoDasCoringas(): { coringas: number; sementes: number; sobram: number; ocupacao: number } | null {
     const coringas = this.lar.coringas();
-    const r = plantiosNecessarios(FESTIVAL.trigoPorDia, coringas);
-    if (!r) return null;
-    const h = Math.floor(r.intervaloMin / 60);
-    const min = r.intervaloMin % 60;
-    const intervalo = [h ? `${h} h` : '', min ? `${min} min` : ''].filter(Boolean).join(' ');
-    return { coringas, plantios: r.plantios, intervalo, sementes: r.sementes, faltam: sementesPorDia(FESTIVAL.trigoPorDia) - r.sementes };
-  }
-
-  protected escolherPlantios(evento: Event): void {
-    this.lar.definirPlantiosPorDia(Number((evento.target as HTMLInputElement).value));
+    const uso = usoDasCoringas(FESTIVAL.trigoPorDia, coringas);
+    return uso && { coringas, sementes: uso.sementes, sobram: uso.sobram, ocupacao: Math.round(uso.ocupacao * 100) };
   }
 
   protected escolherCoringas(evento: Event): void {

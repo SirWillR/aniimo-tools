@@ -1,5 +1,5 @@
 import json from '../../../assets/data/lar-construcao.json';
-import { FESTIVAL, MAX_PLANTIOS_POR_DIA, PRODUTOS_DO_FESTIVAL, RECEITAS_DO_FESTIVAL, comFestival, coringasSugeridas, festivalAtivo, plantiosNecessarios, pratosDoBanquete, sementesPorDia } from './festival';
+import { COLHEITAS_POR_DIA, FESTIVAL, PRODUTOS_DO_FESTIVAL, RECEITAS_DO_FESTIVAL, comFestival, coringasSugeridas, festivalAtivo, pratosDoBanquete, sementesPorDia, usoDasCoringas } from './festival';
 import { rvDoProduto } from './liberacao';
 import type { DadosConstrucao } from './modelos-lar';
 
@@ -16,44 +16,35 @@ describe('festivalAtivo', () => {
 });
 
 describe('coringasSugeridas', () => {
-  it('600 Trigo do Luar compram 150 sementes; com 8 plantios por dia, 19 Fazendas', () => {
+  it('600 Trigo do Luar compram 150 sementes; a 40 min cada, com os Aniimo replantando, 5 Fazendas bastam', () => {
     expect(sementesPorDia(600)).toBe(150);
-    expect(coringasSugeridas(600, 8, 40)).toBe(19);
-  });
-
-  it('replantando sem parar (36 ciclos de 40 min), 5 Fazendas bastam', () => {
-    expect(MAX_PLANTIOS_POR_DIA).toBe(36);
-    expect(coringasSugeridas(600, 36, 40)).toBe(5);
-    expect(coringasSugeridas(600, 99, 40)).toBe(5);
+    expect(COLHEITAS_POR_DIA).toBe(36);
+    expect(coringasSugeridas(600, 40)).toBe(5);
   });
 
   it('nunca passa das Fazendas que o jogador tem', () => {
-    expect(coringasSugeridas(600, 1, 40)).toBe(40);
-    expect(coringasSugeridas(600, 8, 6)).toBe(6);
-  });
-
-  it('plantios inválidos contam como 1', () => {
-    expect(coringasSugeridas(600, 0, 200)).toBe(150);
-    expect(coringasSugeridas(600, Number.NaN, 200)).toBe(150);
+    expect(coringasSugeridas(600, 3)).toBe(3);
+    expect(coringasSugeridas(600, 0)).toBe(0);
   });
 });
 
-describe('plantiosNecessarios', () => {
-  it('19 coringas: 8 plantios por dia, um a cada 3 h', () => {
-    expect(plantiosNecessarios(600, 19)).toEqual({ plantios: 8, intervaloMin: 180, sementes: 150 });
+describe('usoDasCoringas', () => {
+  it('5 coringas plantam as 150 sementes do dia, ocupadas 83% do tempo', () => {
+    const r = usoDasCoringas(600, 5)!;
+    expect(r).toMatchObject({ sementes: 150, sobram: 0 });
+    expect(r.ocupacao).toBeCloseTo(150 / 180, 6);
   });
 
-  it('150 coringas ou mais: um plantio por dia', () => {
-    expect(plantiosNecessarios(600, 150)!.plantios).toBe(1);
-    expect(plantiosNecessarios(600, 400)!.plantios).toBe(1);
+  it('coringas de menos: plantam sem parar e ainda sobram sementes', () => {
+    expect(usoDasCoringas(600, 2)).toEqual({ sementes: 72, sobram: 78, ocupacao: 1 });
   });
 
-  it('coringas de menos: replantando sem parar, só parte das sementes', () => {
-    expect(plantiosNecessarios(600, 2)).toEqual({ plantios: 36, intervaloMin: 40, sementes: 72 });
+  it('coringas de mais: ficam paradas boa parte do tempo', () => {
+    expect(usoDasCoringas(600, 19)!.ocupacao).toBeCloseTo(150 / (19 * 36), 6);
   });
 
   it('sem coringas, nada a calcular', () => {
-    expect(plantiosNecessarios(600, 0)).toBeNull();
+    expect(usoDasCoringas(600, 0)).toBeNull();
   });
 });
 
