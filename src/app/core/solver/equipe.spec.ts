@@ -158,15 +158,24 @@ describe('montarEquipe', () => {
 
     it('instalação que não roda com energia (moradia) nunca vai para a rede', () => {
       const r = montarEquipe(highs, [aniimo('001-a', { lightning: 2 })], entrada({ instalacoes: fornos(null), precos: { pao: 5 }, energia: rede }));
-      expect(r).toMatchObject({ total: 0, moedasPorHora: 0 });
+      expect(r).toMatchObject({ moedasPorHora: 0, energia: { wattsUsados: 0 } });
+    });
+
+    it('os geradores informados ficam todos ligados, mesmo quando um só bastaria', () => {
+      const dois: Energia = { ...rede, geradores: 2 };
+      const r = montarEquipe(highs, [aniimo('001-a', { lightning: 2 })], entrada({ instalacoes: fornos(60), precos: { pao: 5 }, energia: dois }));
+      expect(quem(r)).toEqual(['001-a×2:gerador']);
+      expect(r.energia).toEqual({ geradores: 2, wattsUsados: 180, wattsDisponiveis: 1600 });
     });
 
     it('uma unidade trabalha com Aniimo ou com energia, não com os dois', () => {
       const gente = [aniimo('001-a', { lightning: 2 }), aniimo('002-a', { fire: 4 })];
       const forno = [instalacao('forno', 1, receita('pao', 'fire', 1, { watts: 60 }))];
       const r = montarEquipe(highs, gente, entrada({ instalacoes: forno, precos: { pao: 5 }, energia: rede }));
-      // Fogo 4 em receita de nível 1 faz 5 vezes a velocidade da rede: fica o Aniimo.
-      expect(quem(r)).toEqual(['002-a×1:maquinas']);
+      // Fogo 4 em receita de nível 1 faz 5 vezes a velocidade da rede: fica o Aniimo (o gerador fica
+      // ligado assim mesmo, porque o jogador o informou).
+      expect(quem(r)).toEqual(['001-a×1:gerador', '002-a×1:maquinas']);
+      expect(escolhida(r, 'pao')).toMatchObject({ naRede: 0 });
       expect(r.moedasPorHora).toBeCloseTo(250, 3);
     });
   });

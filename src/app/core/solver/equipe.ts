@@ -6,8 +6,8 @@
 // Aniimo no Lar e eles vão sozinhos para o trabalho da aptidão deles, um trabalho de cada vez; a
 // receita pede um nível mínimo da aptidão e acima dele o Aniimo trabalha mais rápido; alguns produtos
 // só uma família faz; a máquina só trabalha enquanto tem material; uma instalação pode trabalhar com
-// energia em vez de Aniimo; ambientes e armazéns ocupam um Aniimo fixo; os Aniimo dos lotes circulam e
-// contam em todas as tarefas que sabem fazer.
+// energia em vez de Aniimo; ambientes ocupam um Aniimo fixo; os Aniimo dos lotes (e os que levam a
+// produção ao armazém) circulam e contam em todas as tarefas que sabem fazer.
 //
 // Modelo (Aniimo com as mesmas aptidões formam um perfil p):
 //   n_r ∈ ℤ  unidades da instalação com a receita r      e_r ∈ ℤ  dessas, quantas ligadas na rede
@@ -17,7 +17,7 @@
 //   para cada produto: oferta dos lotes + Σ produzido − Σ consumido − vendido = 0
 //   v_p ∈ ℤ  cópias de p nas máquinas, Σ_r t_pr ≤ v_p    f_pc, w_p, g_p ∈ ℤ  cópias em posto fixo, lotes, gerador
 //   Σ_p f_pc + falta_c = postos de c     Σ_{p serve a tarefa} w_p + falta_t ≥ pedido
-//   Σ_r watts_r·e_r ≤ watts·G, G = Σ_p g_p ≤ geradores  v_p + Σ_c f_pc + w_p + g_p ≤ cópias de p
+//   Σ_r watts_r·e_r ≤ watts·G, G = Σ_p g_p = geradores − falta_g  v_p + Σ_c f_pc + w_p + g_p ≤ cópias de p
 //   Σ de todos os Aniimo ≤ limite
 // Fases: 1) menos postos fixos e tarefas dos lotes sem gente; 2) as metas do foco; 3) moedas por
 // hora; 4) com 99,5% delas, menos Aniimo (e, no empate, menos Prismana e mais moedas).
@@ -240,13 +240,17 @@ function calcular(ilp: IlpBackend, aniimos: readonly AniimoLar[], entrada: Entra
     faltas.push([1, `ft${j}`]);
     restricoes.push(` lt${j}: ${expressao([...termos, [1, `ft${j}`]])} >= ${t.quantidade}`);
   });
+  // Pedido do usuário (2026-10-17): os geradores informados ficam todos ligados, cada um com o seu
+  // Aniimo, como um posto fixo (faltar Aniimo para um gerador conta na fase 1).
   const gs = new Map<number, string>();
-  if (watts.length) {
+  if (comEnergia) {
     perfis.forEach((p, i) => {
       if (nivel(p, entrada.energia.aptidao) >= entrada.energia.nivel) gs.set(i, contar(i, `g${i}`));
     });
     const geradores: Termo[] = [...gs.values()].map((v) => [1, v]);
-    restricoes.push(` ge: ${expressao(geradores)} <= ${entrada.energia.geradores}`, ` wa: ${expressao([...watts, ...geradores.map(([, v]): Termo => [-entrada.energia.watts, v])])} <= 0`);
+    faltas.push([1, 'fg']);
+    restricoes.push(` ge: ${expressao([...geradores, [1, 'fg']])} = ${entrada.energia.geradores}`);
+    if (watts.length) restricoes.push(` wa: ${expressao([...watts, ...geradores.map(([, v]): Termo => [-entrada.energia.watts, v])])} <= 0`);
   }
 
   perfis.forEach((p, i) => {

@@ -45,7 +45,7 @@ export const AMBIENTE_PT: Readonly<Record<Ambiente, string>> = {
 /** Etapas do cultivo (os nomes vêm em inglês nos dados). */
 export const ETAPA_PT: Readonly<Record<string, string>> = {
   Reclaiming: 'Preparar a terra', Sowing: 'Semear', Reaping: 'Colher', Collecting: 'Coletar', Logging: 'Cortar',
-  Watering: 'Regar',
+  Watering: 'Regar', Hauling: 'Levar ao armazém',
 };
 
 /** Produtos de coleta e cultivo (os que aparecem nos lotes do mapa). */

@@ -82,28 +82,35 @@ export class EquipePage {
     }));
   });
 
-  /** "Quem colocar": uma linha por forma, com tudo o que ela faz. */
+  /**
+   * "Quem colocar": uma linha por forma, com tudo o que ela faz. O Aniimo do gerador fica nele o dia
+   * todo (informado pelo usuário), então ganha uma linha só dele, para não parecer que também faz o resto.
+   */
   protected readonly quem = computed(() => {
     const r = this.equipe();
     if (!r) return [];
     const receitas = new Map((this.entrada()?.instalacoes ?? []).flatMap((i) => i.receitas).map((x) => [x.chave, x]));
-    const porForma = new Map<string, { aniimo: AniimoLar; copias: number; faz: Map<string, number> }>();
+    const porForma = new Map<string, { aniimo: AniimoLar; copias: number; gerador: boolean; faz: Map<string, number> }>();
     const rotulo = (funcao: Funcao, chave: string) =>
       funcao === 'maquinas' ? this.nomeDaConstrucao(receitas.get(chave)?.construcao ?? chave) : funcao === 'fixo' ? this.nomeDaConstrucao(chave) : '';
     for (const q of r.quem) {
-      const linha = porForma.get(q.aniimo.id) ?? { aniimo: q.aniimo, copias: 0, faz: new Map<string, number>() };
+      const gerador = q.funcao === 'gerador';
+      const chave = `${q.aniimo.id}|${gerador}`;
+      const linha = porForma.get(chave) ?? { aniimo: q.aniimo, copias: 0, gerador, faz: new Map<string, number>() };
       linha.copias += q.copias;
       const somar = (onde: string, tempo: number) => linha.faz.set(onde, (linha.faz.get(onde) ?? 0) + tempo);
       if (q.funcao === 'lotes') somar('Lotes', q.copias);
-      else if (q.funcao === 'gerador') somar('Gerador de Estalos', q.copias);
+      else if (gerador) somar('Só o Gerador de Estalos, o dia todo', q.copias);
       else if (q.funcao === 'fixo') for (const o of q.onde) somar(rotulo('fixo', o.chave), q.copias / q.onde.length);
       else for (const o of q.onde) somar(rotulo('maquinas', o.chave), o.tempo);
-      porForma.set(q.aniimo.id, linha);
+      porForma.set(chave, linha);
     }
     return [...porForma.values()]
       .map((l) => ({
+        chave: `${l.aniimo.id}|${l.gerador}`,
         aniimo: l.aniimo,
         copias: l.copias,
+        gerador: l.gerador,
         aptidoes: Object.entries(l.aniimo.aptidoes).map(([chave, nivel]) => ({ chave: chave as Aptidao, nivel: nivel! })),
         faz: [...l.faz]
           .filter(([, tempo]) => tempo >= TEMPO_MINIMO)
@@ -111,7 +118,7 @@ export class EquipePage {
           .map(([onde]) => onde)
           .join(', '),
       }))
-      .sort((a, b) => b.copias - a.copias || a.aniimo.nome.localeCompare(b.aniimo.nome));
+      .sort((a, b) => Number(a.gerador) - Number(b.gerador) || b.copias - a.copias || a.aniimo.nome.localeCompare(b.aniimo.nome));
   });
 
   /** "O que cada instalação faz": uma receita por unidade; as que trabalham primeiro, as paradas no fim. */

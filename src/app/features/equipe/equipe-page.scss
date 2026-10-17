@@ -133,6 +133,16 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .detalhes { max-width: 60ch; color: var(--tinta-suave); font-size: 0.9rem; }
 
+.raio {
+  width: 0.95em;
+  height: 0.95em;
+  vertical-align: -0.12em;
+  fill: var(--ap-lightning);
+  stroke: color-mix(in srgb, var(--ap-lightning) 60%, var(--tinta));
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
 .marca-pendente {
   display: inline-grid;
   place-items: center;
@@ -221,6 +231,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
   li { display: flex; justify-content: space-between; gap: 0.75rem; }
   small { display: inline; margin-left: 0.3rem; font-size: 0.78rem; }
+  .na-rede { white-space: nowrap; }
   b { color: var(--tinta-suave); }
   .num { flex: none; color: var(--tinta-suave); }
 }

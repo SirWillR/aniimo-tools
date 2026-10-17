@@ -39,12 +39,10 @@ export interface InstalacaoDaEntrada {
   receitas: ReceitaDaEntrada[];
 }
 
-export type TipoFixo = 'ambiente' | 'armazem';
-
-/** Posto que ocupa um Aniimo o tempo todo, sem receita. */
+/** Posto que ocupa um Aniimo o tempo todo, sem receita (hoje, só ambientes). */
 export interface PostoFixo {
   id: string;
-  tipo: TipoFixo;
+  tipo: 'ambiente';
   construcao: string;
   aptidao: Aptidao;
   nivel: number;
@@ -139,14 +137,12 @@ export function entradaDaEquipe(dados: DadosConstrucao, rv: number, foco: Foco, 
     const n = Math.min(construidos, AMBIENTES_NA_PLANTA[chave] ?? construidos);
     for (let k = 1; k <= n; k++) fixos.push({ id: `${chave}#${k}`, tipo: 'ambiente', construcao: chave, aptidao, nivel: 1 });
   }
-  // Armazém: quem carrega usa Transporte (nível desconhecido, conta 1).
-  for (let k = 1; k <= opcoes.armazens; k++) fixos.push({ id: `armazem#${k}`, tipo: 'armazem', construcao: 'armazem', aptidao: 'hauling', nivel: 1 });
 
   // Equipe dos lotes: as aptidões das etapas das culturas liberadas, mais regar (não vem nas etapas dos
   // dados; o usuário confirmou que pede Água, nível desconhecido).
   const porAptidao = new Map<Aptidao, TarefaDosLotes>();
-  const automatico = Math.ceil(opcoes.lotes / LOTES_POR_ANIIMO);
-  const tarefa = (aptidao: Aptidao, nivel: number, etapa: string) => {
+  const lotesPorAniimo = Math.ceil(opcoes.lotes / LOTES_POR_ANIIMO);
+  const tarefa = (aptidao: Aptidao, nivel: number, etapa: string, automatico = lotesPorAniimo) => {
     const fixado = opcoes.equipeLotes?.[aptidao];
     const t = porAptidao.get(aptidao) ?? { aptidao, nivel: 0, etapas: [], quantidade: Math.max(0, Math.floor(fixado ?? automatico)), manual: fixado !== undefined };
     t.nivel = Math.max(t.nivel, nivel);
@@ -157,6 +153,10 @@ export function entradaDaEquipe(dados: DadosConstrucao, rv: number, foco: Foco, 
     for (const p of inv.produtos) if (p.construcao === 'farmland' || p.construcao === 'woodland') for (const e of p.etapas) tarefa(e.aptidao, e.nivel, e.etapa);
     tarefa('water', 1, 'Watering');
   }
+  // Armazém (informado pelo usuário, 2026-10-17): não prende um Aniimo; quem tem Transporte só vai
+  // quando há produção pronta para levar. Entra junto da equipe dos lotes, 1 por armazém no automático
+  // (nível desconhecido, conta 1).
+  if (opcoes.armazens > 0) tarefa('hauling', 1, 'Hauling', opcoes.armazens);
 
   const limiteDoLar = dados.aniimoPorRv[rv - 1] ?? null;
   const pedido = opcoes.aniimoAUsar ?? null;

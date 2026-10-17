@@ -391,7 +391,10 @@ Regras do jogo usadas, e de onde vêm:
   vez; quem produz matéria-prima trabalha 24 h e quem faz receita só quando há material; a receita
   pede um **nível mínimo** da aptidão ("não tenho certeza, mas acho": `NIVEL_MINIMO_OBRIGATORIO` em
   `velocidade.ts`; em `false`, abaixo do nível o Aniimo só fica mais lento, como diz o Aniimo Tools);
-  ambiente e armazém ocupam um Aniimo fixo cada; regar pede Água; pode sacrificar produções.
+  ambiente ocupa um Aniimo fixo; regar pede Água; pode sacrificar produções. **Informado pelo usuário
+  (2026-10-17):** o armazém **não** ocupa Aniimo fixo; quem tem Transporte só vai quando há produção
+  pronta para levar. Virou tarefa na equipe dos lotes ("Levar ao armazém", etapa `Hauling`), 1 por
+  armazém no automático.
 - Usuário, famílias dos produtos de moradia (`especies-exigidas.ts`): Pérola = Conchita, Estrela =
   Celéstis, Lã = Nimbi, Sal Marinho = Timilontra, Aromatista = Orval, Pétalas = Íris, Escamas =
   Irisális, Borbossono e Sonhovino (esses três nomes são dele). Nas outras, quem é de cada família é
@@ -402,7 +405,11 @@ Regras do jogo usadas, e de onde vêm:
   mesmo sem limite de cópias.
 - Usuário, energia (`energia.ts`): cada instalação trabalha com um Aniimo OU com energia; consumo por
   instalação (lista de 2026-10-03); o gerador dele está no nível 2, dá 800 W e pede um Aniimo de
-  Elétrico nível 2 (600 W no nível 1). Suposições nossas, a confirmar: moradias, ambientes e armazéns
+  Elétrico nível 2 (600 W no nível 1). **Informado pelo usuário (2026-10-17):** o Aniimo do gerador
+  fica nele 24 h e não faz mais nada; no modelo já são cópias à parte (`g_p`), e em "Quem colocar" ele
+  tem linha própria, mesmo quando a mesma forma também trabalha em máquinas. **Pedido do usuário
+  (mesmo dia):** os geradores informados ficam todos ligados, cada um com o seu Aniimo, mesmo quando
+  menos bastariam; faltar Aniimo para um gerador conta como posto fixo vazio (fase 1). Suposições nossas, a confirmar: moradias, ambientes e armazéns
   não rodam com energia; na rede a instalação trabalha a 100% (o Aniimo Tools fala em "até 120%").
 - Aniimo Tools (`velocidade.ts`): velocidade por nível do Aniimo × nível da receita, uma tabela para
   processamento e outra para Mina, Poço, moradias e Fabricante de Aniicápsula; 1 Aniimo por tarefa
@@ -414,8 +421,8 @@ Código:
   (a coleta entra como receita: o solver decide se a Mina faz o que vende mais ou o que as máquinas
   pedem), a oferta dos lotes (`ofertaDosLotes` em `utilizacao.ts`: o que os lotes liberados colhem
   por hora; no festival, as coringas dão as duas sementes até onde o Trigo do Luar compra), preços,
-  postos fixos (ambientes de `AMBIENTES_NA_PLANTA` e armazéns), tarefas dos lotes (automático
-  `ceil(lotes / 8)` ou o que o jogador fixar), energia, limite e as metas do foco.
+  postos fixos (ambientes de `AMBIENTES_NA_PLANTA`), tarefas dos lotes (automático
+  `ceil(lotes / 8)`, e no transporte 1 por armazém, ou o que o jogador fixar), energia, limite e as metas do foco.
 - `core/solver/equipe.ts` (`montarEquipe`): um MILP, descrito no topo do arquivo. Pontos que importam:
   Aniimo com as mesmas aptidões viram um perfil (sem limite de cópias, perfil superado por outro sai
   do modelo; Prismana não tira um comum); balanço de material por produto, e o que sobra é vendido;
@@ -444,7 +451,7 @@ Código:
 - Tela (`features/equipe/`): plano em uso e "Aniimo a usar", opções, energia, equipe dos lotes,
   placar (Aniimo usados, moedas/h), "Quem colocar" (por forma, com quantidade e onde trabalha), "O
   que cada instalação faz" (quantas unidades em cada receita, itens/h e quanto trabalham; paradas no fim), ambientes e
-  armazéns, e o que sobra para vender. **Decisão do usuário:** manter "só os meus" e "sem Prismana".
+  o que sobra para vender. **Decisão do usuário:** manter "só os meus" e "sem Prismana".
 - **Aprovado pelo usuário (2026-10-11).** `EquipeService` (`core/solver/equipe.service.ts`) guarda a
   entrada e o resultado, e as duas páginas leem dele: na do Lar, "Deve produzir" e "Produz por dia".
   O card "O que vender" do Lar continua sendo o ranking de receitas por hora de máquina

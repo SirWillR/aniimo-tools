@@ -65,7 +65,7 @@
     <div class="folha opcao com-campo">
       <label for="watts">
         Watts por gerador
-        <small>600 no nível 1, 800 no nível 2.</small>
+        <small>Quanto o seu gerador dá; aparece no jogo e cresce com o nível dele.</small>
       </label>
       <input id="watts" class="campo-num" type="number" inputmode="numeric" min="0" step="50"
         [value]="zona.wattsPorGerador()" (change)="definirWatts($event)" />
@@ -77,8 +77,9 @@
   <section class="folha lotes" aria-labelledby="titulo-lotes">
     <h2 id="titulo-lotes">Equipe dos lotes</h2>
     <p class="nota">
-      Quantos Aniimo circulam em cada tarefa das Fazendas e Bosques. O número em cinza é o automático (1 para
-      cada 8 lotes); digite outro para fixar.
+      Quantos Aniimo circulam em cada tarefa das Fazendas e Bosques, e quantos levam a produção pronta às
+      Unidades de Armazenamento. O número em cinza é o automático (1 para cada 8 lotes; no transporte, 1 por
+      Unidade de Armazenamento); digite outro para fixar.
     </p>
     <ul class="tarefas">
       @for (t of tarefas(); track t.aptidao) {
@@ -119,7 +120,10 @@
         <span class="num">{{ r.moedasPorDia }}</span> por dia, vendendo tudo o que sobra.
         @if (r.diasParaSubir) { Itens do próximo RV em cerca de {{ r.diasParaSubir }} dias. }
         @if (r.banquete !== null) { Banquete: {{ r.banquete }}% do ritmo para fechar no prazo. }
-        @if (r.energia.geradores) { Rede: {{ r.energia.wattsUsados }} de {{ r.energia.wattsDisponiveis }} W. }
+        @if (r.energia.geradores) {
+          Rede: {{ r.energia.geradores }} de {{ energia().geradores }} gerador{{ energia().geradores > 1 ? 'es' : '' }} ligado{{ r.energia.geradores > 1 ? 's' : '' }},
+          {{ r.energia.wattsUsados }} de {{ r.energia.wattsDisponiveis }} W.
+        }
         @if (r.paradas) { {{ r.paradas }} máquinas paradas. }
         @if (r.fixosVazios) { {{ r.fixosVazios }} postos fixos sem Aniimo. }
         @if (r.tarefasFaltando) { Falta gente para os lotes. }
@@ -131,7 +135,7 @@
     <section class="folha bloco" aria-labelledby="titulo-quem">
       <h2 id="titulo-quem">Quem colocar</h2>
       <ul class="quem">
-        @for (q of quem(); track q.aniimo.id) {
+        @for (q of quem(); track q.chave) {
           <li class="aniimo" [class.prismana]="q.aniimo.prismana">
             <span class="retrato">
               @if (q.aniimo.imagem) {
@@ -146,7 +150,12 @@
                   <app-aptidao-icone [aptidao]="a.chave" [tamanho]="18" [titulo]="nomeAptidao(a.chave) + ' nível ' + a.nivel" />
                 }
               </span>
-              <span class="faz">{{ q.faz }}</span>
+              <span class="faz">
+                @if (q.gerador) {
+                  <svg class="raio" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 1 3 9h4.2L6 15l7-8.4H8.6L9.5 1Z" /></svg>
+                }
+                {{ q.faz }}
+              </span>
             </span>
           </li>
         } @empty {
@@ -179,7 +188,12 @@
                   <li [title]="x.pede">
                     <span>
                       <b class="num">{{ x.unidades }}×</b> {{ x.nome }}
-                      @if (x.naRede) { <small>{{ x.naRede === x.unidades ? 'na rede' : x.naRede + ' na rede' }}</small> }
+                      @if (x.naRede) {
+                        <small class="na-rede">
+                          <svg class="raio" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 1 3 9h4.2L6 15l7-8.4H8.6L9.5 1Z" /></svg>
+                          {{ x.naRede === x.unidades ? 'na rede' : x.naRede + ' na rede' }}
+                        </small>
+                      }
                       @if (x.familia) { <small>só {{ x.familia }}</small> }
                       @if (x.pendente) { <span class="marca-pendente" title="Família exigida ainda não cadastrada">?</span> }
                     </span>
@@ -197,7 +211,7 @@
   <div class="colunas" [class.recarregando]="resultado.isLoading()">
     @if (fixos().length) {
       <section class="folha bloco" aria-labelledby="titulo-fixos">
-        <h2 id="titulo-fixos">Ambientes e armazéns</h2>
+        <h2 id="titulo-fixos">Ambientes</h2>
         <ul class="fixos">
           @for (f of fixos(); track f.id) {
             <li [class.sem]="!f.aniimo">

@@ -50,21 +50,28 @@ describe('entradaDaEquipe', () => {
     expect(receitas.get('gem')!.watts).toBe(90);
   });
 
-  it('postos fixos: os ambientes que a planta usa e os armazéns', () => {
+  it('postos fixos: só os ambientes que a planta usa', () => {
     const e = entradaDaEquipe(dados, 20, 'dinheiro', opcoes(20, { armazens: 2 }));
-    expect(e.fixos.map((f) => f.id)).toEqual(['heat-furnace#1', 'heat-furnace#2', 'cooling-unit#1', 'sunlamp#1', 'armazem#1', 'armazem#2']);
-    expect(e.fixos.filter((f) => f.tipo === 'armazem').every((f) => f.aptidao === 'hauling')).toBe(true);
-    expect(entradaDaEquipe(dados, 3, 'dinheiro', opcoes(3)).fixos.map((f) => f.id)).toEqual(['armazem#1']);
+    expect(e.fixos.map((f) => f.id)).toEqual(['heat-furnace#1', 'heat-furnace#2', 'cooling-unit#1', 'sunlamp#1']);
+    expect(entradaDaEquipe(dados, 3, 'dinheiro', opcoes(3)).fixos).toEqual([]);
+  });
+
+  it('armazém: Transporte circula com a equipe dos lotes, 1 por armazém no automático', () => {
+    const transporte = (extra: Partial<OpcoesEntrada>) => entradaDaEquipe(dados, 20, 'dinheiro', opcoes(20, extra)).tarefas.find((t) => t.etapas.includes('Hauling'));
+    expect(transporte({ armazens: 3 })).toMatchObject({ aptidao: 'hauling', nivel: 1, quantidade: 3, manual: false });
+    expect(transporte({ armazens: 3, equipeLotes: { hauling: 1 } })).toMatchObject({ quantidade: 1, manual: true });
+    expect(transporte({ armazens: 2, lotes: 0 })).toMatchObject({ quantidade: 2 });
+    expect(transporte({ armazens: 0 })).toBeUndefined();
   });
 
   it('equipe dos lotes: 1 Aniimo por tarefa para cada 8 lotes, ou o que o jogador fixar', () => {
     expect(LOTES_POR_ANIIMO).toBe(8);
-    const e = entradaDaEquipe(dados, 20, 'dinheiro', opcoes(20, { lotes: 17, equipeLotes: { grass: 1 } }));
+    const e = entradaDaEquipe(dados, 20, 'dinheiro', opcoes(20, { lotes: 17, armazens: 0, equipeLotes: { grass: 1 } }));
     expect(new Set(e.tarefas.map((t) => t.aptidao))).toEqual(new Set(['rock', 'grass', 'dark', 'water']));
     expect(e.tarefas.find((t) => t.aptidao === 'rock')).toMatchObject({ quantidade: 3, manual: false });
     expect(e.tarefas.find((t) => t.aptidao === 'grass')).toMatchObject({ quantidade: 1, manual: true });
     expect(e.tarefas.find((t) => t.aptidao === 'water')!.etapas).toEqual(['Watering']);
-    expect(entradaDaEquipe(dados, 20, 'dinheiro', opcoes(20, { lotes: 0 })).tarefas).toEqual([]);
+    expect(entradaDaEquipe(dados, 20, 'dinheiro', opcoes(20, { lotes: 0, armazens: 0 })).tarefas).toEqual([]);
   });
 
   it('o limite é o do Lar, ou menos se o jogador pedir', () => {
